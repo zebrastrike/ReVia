@@ -125,3 +125,22 @@ model Review {
   @@index([productId])
   @@index([userId])
 }
+
+model Coupon {
+  id        String    @id @default(cuid())
+  code      String    @unique
+  type      String    @default("percentage")
+  value     Float
+  minOrder  Float     @default(0)
+  maxUses   Int       @default(0)
+  usedCount Int       @default(0)
+  active    Boolean   @default(true)
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+}
+
+model Newsletter {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}

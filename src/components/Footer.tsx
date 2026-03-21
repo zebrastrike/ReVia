@@ -1,4 +1,5 @@
 import Link from "next/link";
+import NewsletterSignup from "@/components/NewsletterSignup";
 
 const shopLinks = [
   { href: "/shop", label: "All Products" },
@@ -10,6 +11,7 @@ const shopLinks = [
 const companyLinks = [
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
+  { href: "/faq", label: "FAQ" },
 ];
 
 const legalLinks = [
@@ -98,10 +100,23 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Newsletter */}
+        <div className="mt-12 border-t border-white/10 pt-8">
+          <div className="max-w-md mx-auto text-center">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-4">
+              Stay Updated
+            </h3>
+            <p className="text-sm text-gray-500 mb-4">
+              Get the latest research peptide news and exclusive offers.
+            </p>
+            <NewsletterSignup />
+          </div>
+        </div>
+
         {/* Bottom bar */}
-        <div className="mt-12 border-t border-white/10 pt-8 text-center">
+        <div className="mt-8 border-t border-white/10 pt-8 text-center">
           <p className="text-xs text-gray-600">
-            &copy; 2024&ndash;2025 ReVia. All rights reserved. For research use only.
+            &copy; 2024&ndash;2026 ReVia. All rights reserved. For research use only.
           </p>
         </div>
       </div>

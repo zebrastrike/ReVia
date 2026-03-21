@@ -43,9 +43,10 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { items, shipping } = body as {
+    const { items, shipping, couponCode } = body as {
       items: OrderItemInput[];
       shipping: ShippingInput;
+      couponCode?: string;
     };
 
     // ── Validate order items ──
@@ -108,10 +109,63 @@ export async function POST(request: NextRequest) {
     }
 
     // ── Calculate total from verified prices ──
-    const total = sanitizedItems.reduce((sum, i) => {
+    let total = sanitizedItems.reduce((sum, i) => {
       const dbPrice = variantPriceMap.get(i.variantId)!;
       return sum + dbPrice * i.quantity;
     }, 0);
+
+    // ── Apply coupon if provided ──
+    let appliedCouponId: string | null = null;
+    if (couponCode) {
+      const coupon = await prisma.coupon.findUnique({
+        where: { code: couponCode.toUpperCase().trim() },
+      });
+
+      if (!coupon) {
+        return NextResponse.json(
+          { error: "Invalid coupon code" },
+          { status: 400 }
+        );
+      }
+
+      if (!coupon.active) {
+        return NextResponse.json(
+          { error: "This coupon is no longer active" },
+          { status: 400 }
+        );
+      }
+
+      if (coupon.expiresAt && new Date(coupon.expiresAt) < new Date()) {
+        return NextResponse.json(
+          { error: "This coupon has expired" },
+          { status: 400 }
+        );
+      }
+
+      if (coupon.maxUses > 0 && coupon.usedCount >= coupon.maxUses) {
+        return NextResponse.json(
+          { error: "This coupon has reached its usage limit" },
+          { status: 400 }
+        );
+      }
+
+      if (total < coupon.minOrder) {
+        return NextResponse.json(
+          { error: `Minimum order of $${(coupon.minOrder / 100).toFixed(2)} required for this coupon` },
+          { status: 400 }
+        );
+      }
+
+      let discount = 0;
+      if (coupon.type === "percentage") {
+        discount = Math.round(total * (coupon.value / 100));
+      } else {
+        discount = Math.min(coupon.value, total);
+      }
+
+      total = Math.max(0, total - discount);
+      appliedCouponId = coupon.id;
+    }
 
     // ── Check auth (optional) ──
     const cookieStore = await cookies();
@@ -139,6 +193,14 @@ export async function POST(request: NextRequest) {
       },
       include: { items: true },
     });
+
+    // ── Increment coupon usage ──
+    if (appliedCouponId) {
+      await prisma.coupon.update({
+        where: { id: appliedCouponId },
+        data: { usedCount: { increment: 1 } },
+      });
+    }
 
     // ── Clear server-side cart if user is logged in ──
     if (user) {

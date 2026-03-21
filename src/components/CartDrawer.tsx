@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { X, Minus, Plus, ShoppingBag } from "lucide-react";
 import { useCartStore } from "@/store/cart";
+import { useToastStore } from "@/store/toast";
 
 export default function CartDrawer() {
   const isOpen = useCartStore((s) => s.isOpen);
@@ -12,6 +13,7 @@ export default function CartDrawer() {
   const removeItem = useCartStore((s) => s.removeItem);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const totalPrice = useCartStore((s) => s.totalPrice());
+  const addToast = useToastStore((s) => s.addToast);
 
   return (
     <AnimatePresence>
@@ -84,7 +86,10 @@ export default function CartDrawer() {
                             <p className="text-xs text-gray-500">{item.variantLabel}</p>
                           </div>
                           <button
-                            onClick={() => removeItem(item.variantId)}
+                            onClick={() => {
+                              removeItem(item.variantId);
+                              addToast("info", "Item removed from cart");
+                            }}
                             className="rounded p-1 text-gray-600 transition-colors hover:bg-white/10 hover:text-red-400"
                             aria-label={`Remove ${item.productName}`}
                           >

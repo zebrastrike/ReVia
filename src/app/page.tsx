@@ -3,6 +3,7 @@ import HeroBanner from "@/components/HeroBanner";
 import ProductCard from "@/components/ProductCard";
 import CategoryCard from "@/components/CategoryCard";
 import Link from "next/link";
+import NewsletterSignup from "@/components/NewsletterSignup";
 
 export default async function HomePage() {
   const featuredProducts = await prisma.product.findMany({
@@ -66,6 +67,22 @@ export default async function HomePage() {
               productCount={cat._count.products}
             />
           ))}
+        </div>
+      </section>
+
+      {/* Newsletter CTA */}
+      <section className="max-w-7xl mx-auto px-4 py-16">
+        <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-8 md:p-12 text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+            Stay Updated
+          </h2>
+          <p className="text-gray-400 mb-6 max-w-xl mx-auto">
+            Get the latest research peptide news, new product alerts, and
+            exclusive offers.
+          </p>
+          <div className="max-w-md mx-auto">
+            <NewsletterSignup />
+          </div>
         </div>
       </section>
 
