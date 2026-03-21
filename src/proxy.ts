@@ -20,7 +20,7 @@ async function verifyEdgeToken(token: string): Promise<TokenPayload | null> {
   }
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const token = request.cookies.get("auth-token")?.value;
   const { pathname } = request.nextUrl;
 
