@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ShoppingCart } from "lucide-react";
 import { useCartStore } from "@/store/cart";
+import WishlistButton from "@/components/WishlistButton";
 
 interface Variant {
   id: string;
@@ -13,6 +14,7 @@ interface Variant {
 }
 
 interface Product {
+  id: string;
   name: string;
   slug: string;
   image?: string | null;
@@ -57,6 +59,9 @@ export default function ProductCard({ product }: { product: Product }) {
       >
         {/* Image / Placeholder */}
         <div className="relative aspect-square w-full overflow-hidden">
+          <div className="absolute right-2 top-2 z-10">
+            <WishlistButton productId={product.id} />
+          </div>
           {product.image ? (
             <img
               src={product.image}

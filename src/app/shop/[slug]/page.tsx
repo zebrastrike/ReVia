@@ -5,6 +5,8 @@ import { ChevronRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import ProductCard from "@/components/ProductCard";
 import AddToCart from "@/components/AddToCart";
+import WishlistButton from "@/components/WishlistButton";
+import ReviewSection from "@/components/ReviewSection";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -83,7 +85,10 @@ export default async function ProductDetailPage({ params }: PageProps) {
       {/* ── Product layout ── */}
       <div className="grid gap-12 lg:grid-cols-2">
         {/* Image */}
-        <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#1a1a1a]">
+        <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#1a1a1a]">
+          <div className="absolute right-3 top-3 z-10">
+            <WishlistButton productId={product.id} />
+          </div>
           {product.image ? (
             <img
               src={product.image}
@@ -144,6 +149,9 @@ export default async function ProductDetailPage({ params }: PageProps) {
           </div>
         </div>
       </div>
+
+      {/* ── Reviews ── */}
+      <ReviewSection productId={product.id} />
 
       {/* ── Related Products ── */}
       {related.length > 0 && (

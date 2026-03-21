@@ -26,6 +26,8 @@ model Product {
   image       String?
   featured    Boolean          @default(false)
   tags        String           @default("[]")
+  wishlist    Wishlist[]
+  reviews     Review[]
 
   @@index([categoryId])
 }
@@ -53,13 +55,15 @@ model CartItem {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
+  id        String     @id @default(cuid())
+  email     String     @unique
   password  String
   name      String
-  role      String   @default("customer")
-  createdAt DateTime @default(now())
+  role      String     @default("customer")
+  createdAt DateTime   @default(now())
   orders    Order[]
+  wishlist  Wishlist[]
+  reviews   Review[]
 }
 
 model Order {
@@ -92,4 +96,32 @@ model OrderItem {
   quantity     Int
 
   @@index([orderId])
+}
+
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@index([userId])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  rating    Int
+  title     String
+  body      String
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+  @@index([userId])
 }

@@ -2,9 +2,24 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, generateToken } from "@/lib/auth";
 import { serialize } from "cookie";
+import { rateLimit } from "@/lib/rate-limit";
+import { validateEmail, validatePassword, sanitizeString } from "@/lib/validation";
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit: 5 registrations per IP per 15 minutes
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
+    const { success, remaining } = rateLimit(`register:${ip}`, 5, 15 * 60 * 1000);
+    if (!success) {
+      return NextResponse.json(
+        { error: "Too many registration attempts. Please try again later." },
+        { status: 429, headers: { "X-RateLimit-Remaining": String(remaining) } }
+      );
+    }
+
     const body = await request.json();
     const { email, name, password } = body;
 
@@ -16,23 +31,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    const sanitizedName = sanitizeString(name);
+    const sanitizedEmail = sanitizeString(email).toLowerCase();
+
+    if (!validateEmail(sanitizedEmail)) {
       return NextResponse.json(
         { error: "Invalid email format" },
         { status: 400 }
       );
     }
 
-    if (password.length < 8) {
+    const passwordCheck = validatePassword(password);
+    if (!passwordCheck.valid) {
       return NextResponse.json(
-        { error: "Password must be at least 8 characters" },
+        { error: passwordCheck.message },
         { status: 400 }
       );
     }
 
     // Check if email already exists
-    const existing = await prisma.user.findUnique({ where: { email } });
+    const existing = await prisma.user.findUnique({ where: { email: sanitizedEmail } });
     if (existing) {
       return NextResponse.json(
         { error: "An account with this email already exists" },
@@ -43,7 +61,7 @@ export async function POST(request: NextRequest) {
     // Create user
     const hashedPassword = await hashPassword(password);
     const user = await prisma.user.create({
-      data: { email, name, password: hashedPassword },
+      data: { email: sanitizedEmail, name: sanitizedName, password: hashedPassword },
       select: { id: true, email: true, name: true, role: true },
     });
 

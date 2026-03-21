@@ -2,9 +2,39 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { comparePassword, generateToken } from "@/lib/auth";
 import { serialize } from "cookie";
+import { rateLimit } from "@/lib/rate-limit";
+import { validateEmail, sanitizeString } from "@/lib/validation";
+import { timingSafeEqual } from "crypto";
+
+/**
+ * Constant-time string comparison to prevent timing attacks.
+ */
+function safeCompare(a: string, b: string): boolean {
+  const bufA = Buffer.from(a);
+  const bufB = Buffer.from(b);
+  if (bufA.length !== bufB.length) {
+    // Compare against self to keep constant time, but return false
+    timingSafeEqual(bufA, bufA);
+    return false;
+  }
+  return timingSafeEqual(bufA, bufB);
+}
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit: 10 attempts per IP per 15 minutes
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
+    const { success, remaining } = rateLimit(`login:${ip}`, 10, 15 * 60 * 1000);
+    if (!success) {
+      return NextResponse.json(
+        { error: "Too many login attempts. Please try again later." },
+        { status: 429, headers: { "X-RateLimit-Remaining": String(remaining) } }
+      );
+    }
+
     const body = await request.json();
     const { email, password } = body;
 
@@ -15,8 +45,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    const sanitizedEmail = sanitizeString(email).toLowerCase();
+
+    if (!validateEmail(sanitizedEmail)) {
+      return NextResponse.json(
+        { error: "Invalid email format" },
+        { status: 400 }
+      );
+    }
+
+    const user = await prisma.user.findUnique({ where: { email: sanitizedEmail } });
     if (!user) {
+      // Perform a dummy comparison to prevent timing attacks that reveal user existence
+      await comparePassword(password, "$2b$10$dummyhashfortimingattkprevention000000000000000");
       return NextResponse.json(
         { error: "Invalid email or password" },
         { status: 401 }

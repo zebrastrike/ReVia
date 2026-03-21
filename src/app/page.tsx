@@ -36,6 +36,7 @@ export default async function HomePage() {
             <ProductCard
               key={product.id}
               product={{
+                id: product.id,
                 name: product.name,
                 slug: product.slug,
                 image: product.image,

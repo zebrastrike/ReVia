@@ -3,6 +3,8 @@ import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
 import { sendOrderConfirmation } from "@/lib/email";
+import { rateLimit } from "@/lib/rate-limit";
+import { validateShippingAddress, validateOrderItems, sanitizeString } from "@/lib/validation";
 
 /* ------------------------------------------------------------------ */
 /*  POST /api/orders – create a new order                              */
@@ -27,44 +29,89 @@ interface ShippingInput {
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit: 20 orders per IP per hour
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
+    const { success, remaining } = rateLimit(`orders:${ip}`, 20, 60 * 60 * 1000);
+    if (!success) {
+      return NextResponse.json(
+        { error: "Too many order attempts. Please try again later." },
+        { status: 429, headers: { "X-RateLimit-Remaining": String(remaining) } }
+      );
+    }
+
     const body = await request.json();
     const { items, shipping } = body as {
       items: OrderItemInput[];
       shipping: ShippingInput;
     };
 
-    // ── Validate ──
-    if (!items || !Array.isArray(items) || items.length === 0) {
+    // ── Validate order items ──
+    const itemValidation = validateOrderItems(items);
+    if (!itemValidation.valid) {
       return NextResponse.json(
-        { error: "At least one item is required" },
+        { error: "Invalid order items", details: itemValidation.errors },
         { status: 400 }
       );
     }
 
-    if (!shipping || !shipping.name || !shipping.email || !shipping.address || !shipping.city || !shipping.state || !shipping.zip) {
+    // ── Validate shipping ──
+    const shippingValidation = validateShippingAddress(shipping as unknown as Record<string, unknown>);
+    if (!shippingValidation.valid) {
       return NextResponse.json(
-        { error: "All shipping fields are required" },
+        { error: "Invalid shipping address", details: shippingValidation.errors },
         { status: 400 }
       );
     }
 
-    for (const item of items) {
-      if (!item.variantId || !item.productName || !item.variantLabel || !item.price || !item.quantity) {
+    // ── Sanitize inputs ──
+    const sanitizedShipping: ShippingInput = {
+      name: sanitizeString(shipping.name),
+      email: sanitizeString(shipping.email).toLowerCase(),
+      address: sanitizeString(shipping.address),
+      city: sanitizeString(shipping.city),
+      state: sanitizeString(shipping.state),
+      zip: sanitizeString(shipping.zip),
+    };
+
+    const sanitizedItems = items.map((i) => ({
+      ...i,
+      productName: sanitizeString(i.productName),
+      variantLabel: sanitizeString(i.variantLabel),
+    }));
+
+    // ── Verify variant prices against database (prevent price manipulation) ──
+    const variantIds = sanitizedItems.map((i) => i.variantId);
+    const dbVariants = await prisma.productVariant.findMany({
+      where: { id: { in: variantIds } },
+      select: { id: true, price: true },
+    });
+
+    const variantPriceMap = new Map(dbVariants.map((v) => [v.id, v.price]));
+
+    for (const item of sanitizedItems) {
+      const dbPrice = variantPriceMap.get(item.variantId);
+      if (dbPrice === undefined) {
         return NextResponse.json(
-          { error: "Each item must have variantId, productName, variantLabel, price, and quantity" },
+          { error: `Variant ${item.variantId} not found` },
           { status: 400 }
         );
       }
-      if (item.quantity < 1 || item.price < 0) {
+      if (Math.abs(dbPrice - item.price) > 0.01) {
         return NextResponse.json(
-          { error: "Invalid item quantity or price" },
+          { error: "Price mismatch detected. Please refresh and try again." },
           { status: 400 }
         );
       }
     }
 
-    // ── Calculate total ──
-    const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    // ── Calculate total from verified prices ──
+    const total = sanitizedItems.reduce((sum, i) => {
+      const dbPrice = variantPriceMap.get(i.variantId)!;
+      return sum + dbPrice * i.quantity;
+    }, 0);
 
     // ── Check auth (optional) ──
     const cookieStore = await cookies();
@@ -73,19 +120,19 @@ export async function POST(request: NextRequest) {
     // ── Create order ──
     const order = await prisma.order.create({
       data: {
-        email: shipping.email,
-        name: shipping.name,
-        address: shipping.address,
-        city: shipping.city,
-        state: shipping.state,
-        zip: shipping.zip,
+        email: sanitizedShipping.email,
+        name: sanitizedShipping.name,
+        address: sanitizedShipping.address,
+        city: sanitizedShipping.city,
+        state: sanitizedShipping.state,
+        zip: sanitizedShipping.zip,
         total,
         userId: user?.id ?? null,
         items: {
-          create: items.map((i) => ({
+          create: sanitizedItems.map((i) => ({
             productName: i.productName,
             variantLabel: i.variantLabel,
-            price: i.price,
+            price: variantPriceMap.get(i.variantId)!,
             quantity: i.quantity,
           })),
         },
@@ -102,7 +149,7 @@ export async function POST(request: NextRequest) {
 
     // ── Send confirmation email ──
     try {
-      await sendOrderConfirmation(order, shipping.email);
+      await sendOrderConfirmation(order, sanitizedShipping.email);
     } catch (emailErr) {
       console.error("Failed to send order confirmation email:", emailErr);
     }
