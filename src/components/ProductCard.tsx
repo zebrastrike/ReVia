@@ -9,6 +9,7 @@ interface Variant {
   id: string;
   label: string;
   price: number;
+  [key: string]: unknown;
 }
 
 interface Product {
@@ -17,6 +18,7 @@ interface Product {
   image?: string | null;
   category?: { name: string } | null;
   variants: Variant[];
+  [key: string]: unknown;
 }
 
 export default function ProductCard({ product }: { product: Product }) {
@@ -80,7 +82,7 @@ export default function ProductCard({ product }: { product: Product }) {
           <div className="mt-3 flex items-center justify-between">
             {cheapest && (
               <span className="text-sm font-medium text-gray-300">
-                {hasMultipleVariants ? "From " : ""}${(cheapest.price / 100).toFixed(2)}
+                {hasMultipleVariants ? "From " : ""}${cheapest.price.toFixed(2)}
               </span>
             )}
 

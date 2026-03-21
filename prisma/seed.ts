@@ -1,8 +1,10 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import path from "path";
 
-const prisma = new PrismaClient({
-  datasourceUrl: "file:./prisma/dev.db",
-});
+const dbPath = path.join(__dirname, "dev.db");
+const adapter = new PrismaBetterSqlite3({ url: dbPath });
+const prisma = new PrismaClient({ adapter });
 
 function slugify(text: string): string {
   return text
@@ -12,13 +14,9 @@ function slugify(text: string): string {
 }
 
 function sku(category: string, product: string, variant: string): string {
-  const c = category.substring(0, 3).toUpperCase();
-  const p = product
-    .replace(/[^a-zA-Z0-9]/g, "")
-    .substring(0, 6)
-    .toUpperCase();
+  const p = slugify(product).toUpperCase();
   const v = variant.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
-  return `${c}-${p}-${v}`;
+  return `${p}-${v}`;
 }
 
 interface VariantInput {

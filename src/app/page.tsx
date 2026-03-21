@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
-import { HeroBanner } from "@/components/HeroBanner";
-import { ProductCard } from "@/components/ProductCard";
-import { CategoryCard } from "@/components/CategoryCard";
+import HeroBanner from "@/components/HeroBanner";
+import ProductCard from "@/components/ProductCard";
+import CategoryCard from "@/components/CategoryCard";
 import Link from "next/link";
 
 export default async function HomePage() {
@@ -39,8 +39,12 @@ export default async function HomePage() {
                 name: product.name,
                 slug: product.slug,
                 image: product.image,
-                variants: product.variants.map((v) => ({ price: v.price })),
-                categoryName: product.category.name,
+                variants: product.variants.map((v) => ({
+                  id: v.id,
+                  label: v.label,
+                  price: v.price,
+                })),
+                category: { name: product.category.name },
               }}
             />
           ))}
