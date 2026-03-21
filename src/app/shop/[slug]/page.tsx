@@ -14,10 +14,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const product = await prisma.product.findUnique({
     where: { slug },
-    select: { name: true },
+    include: { category: true, variants: true },
   });
+  if (!product) return { title: "Product Not Found" };
+  const minPrice = Math.min(...product.variants.map((v) => v.price));
   return {
-    title: product ? `${product.name} | ReVia` : "Product Not Found | ReVia",
+    title: product.name,
+    description:
+      product.description ||
+      `${product.name} - Research-grade peptide from ReVia. Starting at $${(minPrice / 100).toFixed(2)}.`,
+    openGraph: {
+      title: `${product.name} | ReVia`,
+      description: product.description || `Research-grade ${product.name}`,
+      type: "website",
+    },
   };
 }
 

@@ -1,9 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingCart, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { ShoppingCart, Menu, X, User } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useCartStore } from "@/store/cart";
+
+interface AuthUser {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+}
 
 const navLinks = [
   { href: "/shop", label: "Shop" },
@@ -16,6 +23,16 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const totalItems = useCartStore((s) => s.totalItems());
   const toggleCart = useCartStore((s) => s.toggleCart);
+  const [user, setUser] = useState<AuthUser | null>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.user) setUser(data.user);
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/80 backdrop-blur-xl">
@@ -41,6 +58,35 @@ export default function Navbar() {
 
         {/* Right side */}
         <div className="flex items-center gap-4">
+          {/* Auth links */}
+          {user ? (
+            <>
+              {user.role === "admin" && (
+                <Link
+                  href="/admin"
+                  className="hidden text-sm font-medium text-gray-300 transition-colors hover:text-emerald-400 sm:block"
+                >
+                  Admin
+                </Link>
+              )}
+              <Link
+                href="/account"
+                className="flex items-center gap-1.5 rounded-lg p-2 text-gray-300 transition-colors hover:bg-white/10 hover:text-emerald-400"
+                aria-label="Account"
+              >
+                <User className="h-5 w-5" />
+                <span className="hidden text-sm font-medium sm:inline">Account</span>
+              </Link>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              className="hidden text-sm font-medium text-gray-300 transition-colors hover:text-emerald-400 sm:block"
+            >
+              Login
+            </Link>
+          )}
+
           {/* Cart button */}
           <button
             onClick={toggleCart}
@@ -81,6 +127,40 @@ export default function Navbar() {
                 </Link>
               </li>
             ))}
+            {user ? (
+              <>
+                <li>
+                  <Link
+                    href="/account"
+                    onClick={() => setMobileOpen(false)}
+                    className="block rounded-lg px-4 py-3 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 hover:text-emerald-400"
+                  >
+                    Account
+                  </Link>
+                </li>
+                {user.role === "admin" && (
+                  <li>
+                    <Link
+                      href="/admin"
+                      onClick={() => setMobileOpen(false)}
+                      className="block rounded-lg px-4 py-3 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 hover:text-emerald-400"
+                    >
+                      Admin
+                    </Link>
+                  </li>
+                )}
+              </>
+            ) : (
+              <li>
+                <Link
+                  href="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="block rounded-lg px-4 py-3 text-sm font-medium text-emerald-400 transition-colors hover:bg-white/5"
+                >
+                  Login
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       )}

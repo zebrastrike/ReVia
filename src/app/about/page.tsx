@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About | ReVia",
+  title: "About",
   description:
     "Learn about ReVia's mission to provide researchers with the highest quality peptides and research compounds.",
 };

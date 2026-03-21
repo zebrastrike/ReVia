@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ShoppingBag, ArrowLeft, Trash2 } from "lucide-react";
+import { ShoppingBag, ArrowLeft, Trash2, Loader2 } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 
 export default function CheckoutPage() {
@@ -20,19 +20,57 @@ export default function CheckoutPage() {
     zip: "",
   });
 
-  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [orderId, setOrderId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const update = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Order submitted:", { ...form, items, total: totalPrice() });
-    setSubmitted(true);
-    clearCart();
+    setError(null);
+    setSubmitting(true);
+
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: items.map((i) => ({
+            variantId: i.variantId,
+            productName: i.productName,
+            variantLabel: i.variantLabel,
+            price: i.price,
+            quantity: i.quantity,
+          })),
+          shipping: {
+            name: form.name,
+            email: form.email,
+            address: form.address,
+            city: form.city,
+            state: form.state,
+            zip: form.zip,
+          },
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to place order");
+      }
+
+      setOrderId(data.order.id);
+      clearCart();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  if (submitted) {
+  if (orderId) {
     return (
       <section className="mx-auto flex max-w-xl flex-col items-center px-4 py-32 text-center">
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-600/20">
@@ -42,7 +80,11 @@ export default function CheckoutPage() {
           Thank you for your order!
         </h1>
         <p className="mt-2 text-gray-400">
-          Your order has been received. We will send a confirmation to your email.
+          Your order{" "}
+          <span className="font-semibold text-emerald-400">
+            #{orderId.slice(-8).toUpperCase()}
+          </span>{" "}
+          has been received. We will send a confirmation to your email.
         </p>
         <Link
           href="/shop"
@@ -85,6 +127,12 @@ export default function CheckoutPage() {
         <form onSubmit={handleSubmit} className="space-y-6 lg:col-span-3">
           <h2 className="text-lg font-semibold text-white">Shipping Information</h2>
 
+          {error && (
+            <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+              {error}
+            </div>
+          )}
+
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className="mb-1 block text-xs font-medium text-gray-400">
@@ -97,6 +145,7 @@ export default function CheckoutPage() {
                 value={form.name}
                 onChange={update("name")}
                 className={inputClass}
+                disabled={submitting}
               />
             </div>
             <div>
@@ -110,6 +159,7 @@ export default function CheckoutPage() {
                 value={form.email}
                 onChange={update("email")}
                 className={inputClass}
+                disabled={submitting}
               />
             </div>
           </div>
@@ -125,6 +175,7 @@ export default function CheckoutPage() {
               value={form.address}
               onChange={update("address")}
               className={inputClass}
+              disabled={submitting}
             />
           </div>
 
@@ -140,6 +191,7 @@ export default function CheckoutPage() {
                 value={form.city}
                 onChange={update("city")}
                 className={inputClass}
+                disabled={submitting}
               />
             </div>
             <div>
@@ -153,6 +205,7 @@ export default function CheckoutPage() {
                 value={form.state}
                 onChange={update("state")}
                 className={inputClass}
+                disabled={submitting}
               />
             </div>
             <div>
@@ -166,15 +219,24 @@ export default function CheckoutPage() {
                 value={form.zip}
                 onChange={update("zip")}
                 className={inputClass}
+                disabled={submitting}
               />
             </div>
           </div>
 
           <button
             type="submit"
-            className="w-full rounded-xl bg-emerald-600 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-emerald-500"
+            disabled={submitting}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Place Order &mdash; ${(totalPrice() / 100).toFixed(2)}
+            {submitting ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              <>Place Order &mdash; ${(totalPrice() / 100).toFixed(2)}</>
+            )}
           </button>
         </form>
 
@@ -204,6 +266,7 @@ export default function CheckoutPage() {
                     <button
                       onClick={() => removeItem(item.variantId)}
                       className="text-gray-600 transition hover:text-red-400"
+                      disabled={submitting}
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>

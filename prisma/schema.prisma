@@ -52,6 +52,16 @@ model CartItem {
   @@index([sessionId])
 }
 
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("customer")
+  createdAt DateTime @default(now())
+  orders    Order[]
+}
+
 model Order {
   id        String      @id @default(cuid())
   email     String
@@ -62,9 +72,14 @@ model Order {
   zip       String
   country   String      @default("US")
   status    String      @default("pending")
+  tracking  String?
   total     Float
   items     OrderItem[]
+  userId    String?
+  user      User?       @relation(fields: [userId], references: [id])
   createdAt DateTime    @default(now())
+
+  @@index([userId])
 }
 
 model OrderItem {

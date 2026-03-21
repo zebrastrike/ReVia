@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Contact | ReVia",
+  title: "Contact Us",
   description:
     "Get in touch with the ReVia team for questions about peptides, orders, or wholesale inquiries.",
 };

@@ -16,9 +16,43 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ReVia | Research-Grade Peptides",
+  title: {
+    default: "ReVia | Research-Grade Peptides",
+    template: "%s | ReVia",
+  },
   description:
-    "Premium research peptides and compounds for scientific research",
+    "Premium research-grade peptides and compounds for scientific research. Rigorous testing, fast shipping, extensive catalog.",
+  keywords: [
+    "research peptides",
+    "peptide supply",
+    "BPC-157",
+    "semaglutide",
+    "tirzepatide",
+    "GHK-Cu",
+    "research compounds",
+    "peptide vendor",
+  ],
+  authors: [{ name: "ReVia Research Supply" }],
+  creator: "ReVia Research Supply LLC",
+  metadataBase: new URL("https://revia.bio"),
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "ReVia",
+    title: "ReVia | Research-Grade Peptides",
+    description:
+      "Premium research-grade peptides and compounds for scientific research.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ReVia | Research-Grade Peptides",
+    description:
+      "Premium research-grade peptides and compounds for scientific research.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
