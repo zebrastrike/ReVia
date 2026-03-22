@@ -4,22 +4,6 @@ import { comparePassword, generateToken } from "@/lib/auth";
 import { serialize } from "cookie";
 import { rateLimit } from "@/lib/rate-limit";
 import { validateEmail, sanitizeString } from "@/lib/validation";
-import { timingSafeEqual } from "crypto";
-
-/**
- * Constant-time string comparison to prevent timing attacks.
- */
-function safeCompare(a: string, b: string): boolean {
-  const bufA = Buffer.from(a);
-  const bufB = Buffer.from(b);
-  if (bufA.length !== bufB.length) {
-    // Compare against self to keep constant time, but return false
-    timingSafeEqual(bufA, bufA);
-    return false;
-  }
-  return timingSafeEqual(bufA, bufB);
-}
-
 export async function POST(request: NextRequest) {
   try {
     // Rate limit: 10 attempts per IP per 15 minutes
