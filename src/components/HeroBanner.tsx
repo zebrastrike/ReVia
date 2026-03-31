@@ -51,7 +51,7 @@ export default function HeroBanner() {
               transition={{ duration: 0.6, delay: 3.8, type: "spring", stiffness: 200, damping: 15 }}
               className="relative inline-block"
             >
-              <span className="pill-shimmer relative inline-flex items-center gap-2 rounded-full border border-sky-300/60 bg-white/60 backdrop-blur-sm px-4 py-1.5 text-xs font-semibold tracking-widest text-stone-600 uppercase overflow-hidden">
+              <span className="pill-shimmer relative inline-flex items-center gap-2 rounded-full border border-sky-400/60 bg-white/60 backdrop-blur-sm px-4 py-1.5 text-xs font-semibold tracking-widest text-stone-600 uppercase overflow-hidden">
                 <motion.span
                   animate={{ rotate: 360 }}
                   transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
@@ -124,7 +124,7 @@ export default function HeroBanner() {
                 style={{ transition: "color 600ms cubic-bezier(0.23,1,0.32,1)" }}
               >
                 {/* Inner fill */}
-                <span className="absolute inset-[2px] rounded-full bg-[#FAF9F7] z-[0]" />
+                <span className="absolute inset-[2px] rounded-full bg-[#F0EDE5] z-[0]" />
                 <ArrowRight className="absolute w-4 h-4 left-[-25%] stroke-stone-600 fill-none z-[9] group-hover:left-4 group-hover:stroke-white transition-all duration-[800ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]" />
                 <span className="relative z-[1] -translate-x-3 group-hover:translate-x-3 transition-all duration-[800ms] ease-out">
                   View Stacks

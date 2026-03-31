@@ -141,18 +141,18 @@ export default function FeaturedProducts({ products }: { products: Product[] }) 
       >
         {/* Curtain overlay — splits from center, opens left and right */}
         <div
-          className="pointer-events-none absolute top-0 bottom-0 left-0 w-1/2 z-20 bg-gradient-to-l from-[#EFF8FE] to-[#EFF8FE] transition-transform duration-[2.2s] ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
+          className="pointer-events-none absolute top-0 bottom-0 left-0 w-1/2 z-20 bg-gradient-to-l from-[#F0EDE5] to-[#F0EDE5] transition-transform duration-[2.2s] ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
           style={{ transform: inView ? "translateX(-105%)" : "translateX(0%)" }}
         />
         <div
-          className="pointer-events-none absolute top-0 bottom-0 right-0 w-1/2 z-20 bg-gradient-to-r from-[#EFF8FE] to-[#EFF8FE] transition-transform duration-[2.2s] ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
+          className="pointer-events-none absolute top-0 bottom-0 right-0 w-1/2 z-20 bg-gradient-to-r from-[#F0EDE5] to-[#F0EDE5] transition-transform duration-[2.2s] ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
           style={{ transform: inView ? "translateX(105%)" : "translateX(0%)" }}
         />
 
         {/* Left fade */}
-        <div className="pointer-events-none absolute left-4 top-0 bottom-0 z-10 w-20 bg-gradient-to-r from-[#EFF8FE] to-transparent" />
+        <div className="pointer-events-none absolute left-4 top-0 bottom-0 z-10 w-20 bg-gradient-to-r from-[#F0EDE5] to-transparent" />
         {/* Right fade */}
-        <div className="pointer-events-none absolute right-4 top-0 bottom-0 z-10 w-20 bg-gradient-to-l from-[#EFF8FE] to-transparent" />
+        <div className="pointer-events-none absolute right-4 top-0 bottom-0 z-10 w-20 bg-gradient-to-l from-[#F0EDE5] to-transparent" />
 
         <div
           ref={scrollRef}

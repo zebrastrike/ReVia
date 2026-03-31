@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "Premium research-grade peptides",
     start_url: "/",
     display: "standalone",
-    background_color: "#f0fdf4",
-    theme_color: "#059669",
+    background_color: "#F0EDE5",
+    theme_color: "#A38569",
     icons: [
       { src: "/favicon.ico", sizes: "any", type: "image/x-icon" },
     ],

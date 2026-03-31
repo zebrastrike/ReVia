@@ -52,7 +52,7 @@ export default function Navbar() {
                   className="text-sm font-semibold uppercase tracking-wide inline-block"
                   variants={{
                     rest: { color: "#78716c" },
-                    hover: { color: "#4aafe0", y: -1 },
+                    hover: { color: "#A38569", y: -1 },
                   }}
                   transition={{ duration: 0.2 }}
                 >

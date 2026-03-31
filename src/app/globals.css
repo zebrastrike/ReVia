@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FAF9F7;
-  --foreground: #453834;
+  --background: #F0EDE5;
+  --foreground: #3D3229;
   --surface: rgba(255, 255, 255, 0.65);
   --surface-hover: rgba(255, 255, 255, 0.8);
-  --border: rgba(114, 197, 234, 0.15);
-  --accent: #72C5EA;
+  --border: rgba(163, 133, 105, 0.15);
+  --accent: #A38569;
 }
 
 @theme inline {
@@ -15,18 +15,18 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  /* Sky palette recentered on logo blue #72C5EA */
-  --color-sky-50: #f0f9fe;
-  --color-sky-100: #ddf1fc;
-  --color-sky-200: #bee5f9;
-  --color-sky-300: #96d5f3;
-  --color-sky-400: #72C5EA;
-  --color-sky-500: #4aafe0;
-  --color-sky-600: #3498cc;
-  --color-sky-700: #2b7dab;
-  --color-sky-800: #28688b;
-  --color-sky-900: #255873;
-  --color-sky-950: #19394c;
+  /* Warm mocha palette centered on Cloud Dancer */
+  --color-sky-50: #FAF8F4;
+  --color-sky-100: #F0EDE5;
+  --color-sky-200: #E3DDD2;
+  --color-sky-300: #D1C7B8;
+  --color-sky-400: #B8A68F;
+  --color-sky-500: #A38569;
+  --color-sky-600: #8B6D4F;
+  --color-sky-700: #725840;
+  --color-sky-800: #5C4733;
+  --color-sky-900: #4A3929;
+  --color-sky-950: #3D3229;
 }
 
 html {
@@ -38,17 +38,17 @@ body {
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
-  background: #FAF9F7;
+  background: #F0EDE5;
 }
 
 
 ::selection {
-  background: rgba(114, 197, 234, 0.2);
-  color: #453834;
+  background: rgba(163, 133, 105, 0.2);
+  color: #3D3229;
 }
 
 *:focus-visible {
-  outline: 2px solid rgba(114, 197, 234, 0.4);
+  outline: 2px solid rgba(163, 133, 105, 0.4);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -58,14 +58,14 @@ body {
   background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(114, 197, 234, 0.12);
+  border: 1px solid rgba(163, 133, 105, 0.12);
 }
 
 .glass-strong {
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(24px) saturate(200%);
   -webkit-backdrop-filter: blur(24px) saturate(200%);
-  border: 1px solid rgba(114, 197, 234, 0.15);
+  border: 1px solid rgba(163, 133, 105, 0.15);
 }
 
 ::-webkit-scrollbar {
@@ -75,20 +75,20 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(114, 197, 234, 0.2);
+  background: rgba(163, 133, 105, 0.2);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(114, 197, 234, 0.35);
+  background: rgba(163, 133, 105, 0.35);
 }
 
 /* Hero shimmer text effect */
 .hero-shimmer {
   background: linear-gradient(
     110deg,
-    #44403c 35%,
-    #3498cc 50%,
-    #44403c 65%
+    #3D3229 35%,
+    #A38569 50%,
+    #3D3229 65%
   );
   background-size: 250% 100%;
   -webkit-background-clip: text;
@@ -137,7 +137,7 @@ body {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(114, 197, 234, 0.25) 50%,
+    rgba(163, 133, 105, 0.25) 50%,
     transparent 100%
   );
   animation: pill-sweep 0.8s ease-in-out 4.6s forwards;
@@ -161,7 +161,7 @@ body {
 
 .glow-border-blue {
   --border-angle: 0deg;
-  background: conic-gradient(from var(--border-angle), transparent, #72C5EA 30%, transparent 50%, #72C5EA 80%, transparent) border-box;
+  background: conic-gradient(from var(--border-angle), transparent, #A38569 30%, transparent 50%, #A38569 80%, transparent) border-box;
   border: 2px solid transparent;
   animation: spin-border 3s linear infinite;
 }
