@@ -32,7 +32,7 @@
     "zustand": "~5.0.12"
   },
   "prisma": {
-    "seed": "npx tsx prisma/seed.ts"
+    "seed": "npx tsx prisma/seed-v3.ts"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

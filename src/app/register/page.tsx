@@ -77,7 +77,7 @@ export default function RegisterPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder-neutral-400 outline-none transition-colors focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+              className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder-neutral-400 outline-none transition-colors focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
               placeholder="Your full name"
             />
           </div>
@@ -92,7 +92,7 @@ export default function RegisterPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder-neutral-400 outline-none transition-colors focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+              className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder-neutral-400 outline-none transition-colors focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
               placeholder="you@example.com"
             />
           </div>
@@ -108,7 +108,7 @@ export default function RegisterPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={8}
-              className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder-neutral-400 outline-none transition-colors focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+              className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder-neutral-400 outline-none transition-colors focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
               placeholder="Min. 8 characters"
             />
           </div>
@@ -123,7 +123,7 @@ export default function RegisterPage() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder-neutral-400 outline-none transition-colors focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+              className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder-neutral-400 outline-none transition-colors focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
               placeholder="Re-enter your password"
             />
           </div>
@@ -131,7 +131,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-emerald-600 px-4 py-3 font-semibold text-white transition-colors hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full rounded-lg bg-sky-600 px-4 py-3 font-semibold text-white transition-colors hover:bg-sky-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Creating account..." : "Create Account"}
           </button>
@@ -139,7 +139,7 @@ export default function RegisterPage() {
 
         <p className="mt-6 text-center text-sm text-neutral-500">
           Already have an account?{" "}
-          <Link href="/login" className="text-emerald-600 hover:text-emerald-500 transition-colors">
+          <Link href="/login" className="text-sky-600 hover:text-sky-500 transition-colors">
             Sign in
           </Link>
         </p>

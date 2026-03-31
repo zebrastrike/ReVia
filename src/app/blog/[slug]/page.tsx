@@ -93,7 +93,7 @@ export default async function BlogPostPage({
 
         {/* Meta */}
         <div className="flex flex-wrap items-center gap-3 text-sm text-neutral-400">
-          <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-600">
+          <span className="rounded-full bg-sky-50 px-3 py-1 text-xs font-medium text-sky-600">
             {post.category}
           </span>
           <span>By {post.author}</span>
@@ -131,8 +131,8 @@ export default async function BlogPostPage({
                 href={`/blog/${r.slug}`}
                 className="group rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm transition hover:shadow-md hover:-translate-y-1"
               >
-                <span className="text-xs text-emerald-600">{r.category}</span>
-                <h3 className="mt-2 font-semibold text-neutral-900 group-hover:text-emerald-600 transition-colors line-clamp-2">
+                <span className="text-xs text-sky-600">{r.category}</span>
+                <h3 className="mt-2 font-semibold text-neutral-900 group-hover:text-sky-600 transition-colors line-clamp-2">
                   {r.title}
                 </h3>
                 <p className="mt-2 text-sm text-neutral-500 line-clamp-2">

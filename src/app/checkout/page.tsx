@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { ShoppingBag, ArrowLeft, Trash2, Loader2, Tag, Truck } from "lucide-react";
 import { useCartStore } from "@/store/cart";
+import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from "@/lib/constants";
 
 export default function CheckoutPage() {
   const items = useCartStore((s) => s.items);
@@ -35,7 +36,7 @@ export default function CheckoutPage() {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
   const subtotal = totalPrice();
-  const shippingCost = subtotal >= 20000 ? 0 : 2500;
+  const shippingCost = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
   const finalTotal = Math.max(0, subtotal - couponDiscount) + shippingCost;
 
   const handleApplyCoupon = async () => {
@@ -122,22 +123,22 @@ export default function CheckoutPage() {
   if (orderId) {
     return (
       <section className="mx-auto flex max-w-xl flex-col items-center px-4 py-32 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50">
-          <ShoppingBag className="h-8 w-8 text-emerald-600" />
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-sky-50">
+          <ShoppingBag className="h-8 w-8 text-sky-600" />
         </div>
         <h1 className="mt-6 text-2xl font-bold text-neutral-900">
           Thank you for your order!
         </h1>
         <p className="mt-2 text-neutral-500">
           Your order{" "}
-          <span className="font-semibold text-emerald-600">
+          <span className="font-semibold text-sky-600">
             #{orderId.slice(-8).toUpperCase()}
           </span>{" "}
           has been received. We will send a confirmation to your email.
         </p>
         <Link
           href="/shop"
-          className="mt-8 rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-500"
+          className="mt-8 rounded-xl bg-sky-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-sky-500"
         >
           Continue Shopping
         </Link>
@@ -155,7 +156,7 @@ export default function CheckoutPage() {
         </p>
         <Link
           href="/shop"
-          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-500"
+          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-sky-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-sky-500"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Shop
@@ -165,7 +166,7 @@ export default function CheckoutPage() {
   }
 
   const inputClass =
-    "w-full rounded-lg border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 placeholder-neutral-400 outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30";
+    "w-full rounded-lg border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 placeholder-neutral-400 outline-none transition focus:border-sky-500 focus:ring-1 focus:ring-sky-500/30";
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -276,7 +277,7 @@ export default function CheckoutPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-sky-600 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-sky-500 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {submitting ? (
               <>
@@ -331,8 +332,8 @@ export default function CheckoutPage() {
                 Coupon Code
               </label>
               {appliedCoupon ? (
-                <div className="flex items-center justify-between rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2">
-                  <span className="text-sm font-mono text-emerald-700">
+                <div className="flex items-center justify-between rounded-lg border border-sky-200 bg-sky-50 px-3 py-2">
+                  <span className="text-sm font-mono text-stone-600">
                     {appliedCoupon}
                   </span>
                   <button
@@ -371,7 +372,7 @@ export default function CheckoutPage() {
                 <p
                   className={`mt-2 text-xs ${
                     couponMessage.type === "success"
-                      ? "text-emerald-600"
+                      ? "text-sky-600"
                       : "text-red-500"
                   }`}
                 >
@@ -389,8 +390,8 @@ export default function CheckoutPage() {
               </div>
               {couponDiscount > 0 && (
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-emerald-600">Discount</span>
-                  <span className="text-sm text-emerald-600">
+                  <span className="text-sm text-sky-600">Discount</span>
+                  <span className="text-sm text-sky-600">
                     -${(couponDiscount / 100).toFixed(2)}
                   </span>
                 </div>
@@ -399,16 +400,16 @@ export default function CheckoutPage() {
                 <span className="text-sm text-neutral-500">Shipping</span>
                 <span className="text-sm text-neutral-700">
                   {shippingCost === 0 ? (
-                    <span className="text-emerald-600 font-medium">FREE</span>
+                    <span className="text-sky-600 font-medium">FREE</span>
                   ) : (
                     "$25.00"
                   )}
                 </span>
               </div>
               {shippingCost > 0 && (
-                <div className="flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
+                <div className="flex items-center gap-2 rounded-lg bg-sky-50 px-3 py-2 text-xs text-stone-600">
                   <Truck className="h-3.5 w-3.5 shrink-0" />
-                  Add ${((20000 - subtotal) / 100).toFixed(2)} more for free shipping
+                  Add ${((FREE_SHIPPING_THRESHOLD - subtotal) / 100).toFixed(2)} more for free shipping
                 </div>
               )}
               <div className="flex items-center justify-between pt-2 border-t border-neutral-100">

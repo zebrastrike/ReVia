@@ -41,7 +41,7 @@ export default async function WishlistPage() {
       </div>
 
       {wishlistItems.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-emerald-200/40 bg-white/5 px-6 py-20 text-center backdrop-blur-xl">
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-sky-200/40 bg-white/5 px-6 py-20 text-center backdrop-blur-xl">
           <Heart className="mb-4 h-12 w-12 text-gray-600" />
           <h2 className="text-lg font-semibold text-white">
             Your wishlist is empty
@@ -51,7 +51,7 @@ export default async function WishlistPage() {
           </p>
           <Link
             href="/shop"
-            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-500"
+            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-sky-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-sky-500"
           >
             <ShoppingBag className="h-4 w-4" />
             Browse Products
@@ -73,7 +73,7 @@ export default async function WishlistPage() {
             return (
               <div
                 key={item.id}
-                className="group overflow-hidden rounded-2xl border border-emerald-200/40 bg-white/60 backdrop-blur-sm transition-colors hover:border-emerald-300"
+                className="group overflow-hidden rounded-2xl border border-sky-200/40 bg-white/60 backdrop-blur-sm transition-colors hover:border-sky-300"
               >
                 <Link href={`/shop/${product.slug}`}>
                   {/* Image */}
@@ -85,8 +85,8 @@ export default async function WishlistPage() {
                         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-emerald-900/40 to-emerald-700/20">
-                        <span className="text-5xl font-bold text-emerald-500/60">
+                      <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-sky-900/40 to-sky-700/20">
+                        <span className="text-5xl font-bold text-sky-500/60">
                           {initial}
                         </span>
                       </div>
@@ -95,7 +95,7 @@ export default async function WishlistPage() {
 
                   {/* Info */}
                   <div className="p-4">
-                    <p className="text-xs font-medium uppercase tracking-wider text-emerald-500/80">
+                    <p className="text-xs font-medium uppercase tracking-wider text-sky-500/80">
                       {categoryName}
                     </p>
                     <h3 className="mt-1 text-sm font-semibold text-gray-100 line-clamp-2">

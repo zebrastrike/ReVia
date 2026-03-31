@@ -17,7 +17,7 @@ export default function NotFound() {
         </Link>
         <Link
           href="/shop"
-          className="rounded-lg bg-emerald-600 px-6 py-3 text-sm font-medium text-white transition hover:bg-emerald-500"
+          className="rounded-lg bg-sky-600 px-6 py-3 text-sm font-medium text-white transition hover:bg-sky-500"
         >
           Browse Shop
         </Link>

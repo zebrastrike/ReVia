@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X, Minus, Plus, ShoppingBag, Truck } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { useToastStore } from "@/store/toast";
+import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from "@/lib/constants";
 
 export default function CartDrawer() {
   const isOpen = useCartStore((s) => s.isOpen);
@@ -15,7 +16,7 @@ export default function CartDrawer() {
   const totalPrice = useCartStore((s) => s.totalPrice());
   const addToast = useToastStore((s) => s.addToast);
 
-  const shippingCost = totalPrice >= 20000 ? 0 : 2500;
+  const shippingCost = totalPrice >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
 
   return (
     <AnimatePresence>
@@ -41,7 +42,7 @@ export default function CartDrawer() {
             {/* Header */}
             <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-4">
               <h2 className="flex items-center gap-2 text-lg font-semibold text-neutral-900">
-                <ShoppingBag className="h-5 w-5 text-emerald-600" />
+                <ShoppingBag className="h-5 w-5 text-sky-600" />
                 Cart
                 {items.length > 0 && (
                   <span className="text-sm font-normal text-neutral-500">
@@ -73,8 +74,8 @@ export default function CartDrawer() {
                       className="flex gap-4 rounded-xl border border-neutral-100 bg-neutral-50 p-4"
                     >
                       {/* Thumbnail placeholder */}
-                      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-linear-to-br from-emerald-50 to-emerald-100">
-                        <span className="text-lg font-bold text-emerald-600/60">
+                      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-linear-to-br from-sky-50 to-sky-100">
+                        <span className="text-lg font-bold text-sky-600/60">
                           {item.productName.charAt(0)}
                         </span>
                       </div>
@@ -150,7 +151,7 @@ export default function CartDrawer() {
                   <span className="text-sm text-neutral-500">Shipping</span>
                   <span className="text-sm text-neutral-700">
                     {shippingCost === 0 ? (
-                      <span className="text-emerald-600 font-medium">FREE</span>
+                      <span className="text-sky-600 font-medium">FREE</span>
                     ) : (
                       "$25.00"
                     )}
@@ -158,9 +159,9 @@ export default function CartDrawer() {
                 </div>
 
                 {shippingCost > 0 && (
-                  <div className="flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
+                  <div className="flex items-center gap-2 rounded-lg bg-sky-50 px-3 py-2 text-xs text-stone-600">
                     <Truck className="h-3.5 w-3.5 shrink-0" />
-                    Add ${((20000 - totalPrice) / 100).toFixed(2)} more for free shipping
+                    Add ${((FREE_SHIPPING_THRESHOLD - totalPrice) / 100).toFixed(2)} more for free shipping
                   </div>
                 )}
 
@@ -174,7 +175,7 @@ export default function CartDrawer() {
                 <Link
                   href="/checkout"
                   onClick={closeCart}
-                  className="block w-full rounded-xl bg-emerald-600 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-emerald-500"
+                  className="block w-full rounded-xl bg-sky-600 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-sky-500"
                 >
                   Checkout
                 </Link>

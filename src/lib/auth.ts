@@ -2,7 +2,10 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { prisma } from "./prisma";
 
-const JWT_SECRET = process.env.JWT_SECRET || "revia-secret-key-change-in-production";
+if (!process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET environment variable is required");
+}
+const JWT_SECRET = process.env.JWT_SECRET;
 const TOKEN_EXPIRY = "7d";
 
 export interface AuthUser {

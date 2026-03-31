@@ -1,16 +1,16 @@
 "use client";
 
 const categoryGradients: Record<string, [string, string]> = {
-  Recovery: ["from-emerald-600", "to-teal-500"],
+  Recovery: ["from-sky-600", "to-blue-500"],
   Metabolic: ["from-amber-600", "to-orange-500"],
   "Growth Hormone": ["from-blue-600", "to-indigo-500"],
   Nootropic: ["from-violet-600", "to-purple-500"],
   Longevity: ["from-cyan-600", "to-blue-500"],
   Cosmetic: ["from-pink-600", "to-rose-500"],
-  Immune: ["from-green-600", "to-emerald-500"],
+  Immune: ["from-sky-600", "to-sky-500"],
   Mitochondrial: ["from-sky-600", "to-cyan-500"],
   Sleep: ["from-indigo-600", "to-violet-500"],
-  Stacks: ["from-emerald-600", "to-cyan-500"],
+  Stacks: ["from-sky-600", "to-cyan-500"],
 };
 
 const defaultGradient: [string, string] = ["from-zinc-600", "to-gray-500"];

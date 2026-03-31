@@ -89,7 +89,7 @@ export default async function AccountPage() {
                     <p className="text-sm font-semibold text-neutral-900">
                       ${order.total.toFixed(2)}
                     </p>
-                    <span className="inline-block rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium capitalize text-emerald-600">
+                    <span className="inline-block rounded-full bg-sky-50 px-2.5 py-0.5 text-xs font-medium capitalize text-sky-600">
                       {order.status}
                     </span>
                   </div>

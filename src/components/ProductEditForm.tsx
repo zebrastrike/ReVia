@@ -53,7 +53,7 @@ export default function ProductEditForm({
   );
 
   const inputClass =
-    "w-full rounded-lg border border-emerald-200/40 bg-white/50 px-4 py-2.5 text-sm text-emerald-950 placeholder-gray-500 outline-none transition focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/30";
+    "w-full rounded-lg border border-sky-200/40 bg-white/50 px-4 py-2.5 text-sm text-stone-800 placeholder-gray-500 outline-none transition focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/30";
 
   const handleSave = async () => {
     setSaving(true);
@@ -167,7 +167,7 @@ export default function ProductEditForm({
         <div
           className={`rounded-lg border px-4 py-3 text-sm ${
             message.type === "success"
-              ? "border-emerald-500/30 bg-emerald-100 text-emerald-400"
+              ? "border-sky-500/30 bg-sky-100 text-sky-400"
               : "border-red-500/30 bg-red-500/10 text-red-400"
           }`}
         >
@@ -176,11 +176,11 @@ export default function ProductEditForm({
       )}
 
       {/* Product Details */}
-      <div className="bg-white/50 backdrop-blur border border-emerald-200/40 rounded-2xl p-6 space-y-5">
-        <h2 className="text-lg font-semibold text-emerald-950">Product Details</h2>
+      <div className="bg-white/50 backdrop-blur border border-sky-200/40 rounded-2xl p-6 space-y-5">
+        <h2 className="text-lg font-semibold text-stone-800">Product Details</h2>
 
         <div>
-          <label className="mb-1 block text-xs font-medium text-emerald-800/50">
+          <label className="mb-1 block text-xs font-medium text-stone-500">
             Product Name
           </label>
           <input
@@ -193,7 +193,7 @@ export default function ProductEditForm({
         </div>
 
         <div>
-          <label className="mb-1 block text-xs font-medium text-emerald-800/50">
+          <label className="mb-1 block text-xs font-medium text-stone-500">
             Description
           </label>
           <textarea
@@ -206,7 +206,7 @@ export default function ProductEditForm({
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-xs font-medium text-emerald-800/50">
+            <label className="mb-1 block text-xs font-medium text-stone-500">
               Category
             </label>
             <select
@@ -229,7 +229,7 @@ export default function ProductEditForm({
               className={`flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition ${
                 featured
                   ? "border-yellow-400/30 bg-yellow-400/10 text-yellow-400"
-                  : "border-emerald-200/40 bg-white/50 text-emerald-800/50 hover:text-emerald-950/70"
+                  : "border-sky-200/40 bg-white/50 text-stone-500 hover:text-stone-800/70"
               }`}
             >
               <Star
@@ -243,13 +243,13 @@ export default function ProductEditForm({
       </div>
 
       {/* Variants */}
-      <div className="bg-white/50 backdrop-blur border border-emerald-200/40 rounded-2xl p-6 space-y-5">
+      <div className="bg-white/50 backdrop-blur border border-sky-200/40 rounded-2xl p-6 space-y-5">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-emerald-950">Variants</h2>
+          <h2 className="text-lg font-semibold text-stone-800">Variants</h2>
           <button
             type="button"
             onClick={addVariant}
-            className="flex items-center gap-1.5 rounded-lg bg-emerald-500/20 px-3 py-1.5 text-xs font-medium text-emerald-400 transition hover:bg-emerald-500/30"
+            className="flex items-center gap-1.5 rounded-lg bg-sky-500/20 px-3 py-1.5 text-xs font-medium text-sky-400 transition hover:bg-sky-500/30"
           >
             <Plus size={14} />
             Add Variant
@@ -257,7 +257,7 @@ export default function ProductEditForm({
         </div>
 
         {variants.length === 0 ? (
-          <p className="text-sm text-emerald-800/50 py-4 text-center">
+          <p className="text-sm text-stone-500 py-4 text-center">
             No variants. Add one to set pricing.
           </p>
         ) : (
@@ -265,11 +265,11 @@ export default function ProductEditForm({
             {variants.map((variant, index) => (
               <div
                 key={variant.id}
-                className="flex items-center gap-3 rounded-xl border border-emerald-100/40 bg-white/500 p-3"
+                className="flex items-center gap-3 rounded-xl border border-sky-100/40 bg-white/500 p-3"
               >
                 <div className="flex-1 grid gap-3 sm:grid-cols-3">
                   <div>
-                    <label className="mb-1 block text-[10px] font-medium text-emerald-800/50 uppercase tracking-wider">
+                    <label className="mb-1 block text-[10px] font-medium text-stone-500 uppercase tracking-wider">
                       Label
                     </label>
                     <input
@@ -283,7 +283,7 @@ export default function ProductEditForm({
                     />
                   </div>
                   <div>
-                    <label className="mb-1 block text-[10px] font-medium text-emerald-800/50 uppercase tracking-wider">
+                    <label className="mb-1 block text-[10px] font-medium text-stone-500 uppercase tracking-wider">
                       Price (cents)
                     </label>
                     <input
@@ -297,7 +297,7 @@ export default function ProductEditForm({
                     />
                   </div>
                   <div>
-                    <label className="mb-1 block text-[10px] font-medium text-emerald-800/50 uppercase tracking-wider">
+                    <label className="mb-1 block text-[10px] font-medium text-stone-500 uppercase tracking-wider">
                       SKU
                     </label>
                     <input
@@ -315,7 +315,7 @@ export default function ProductEditForm({
                 <button
                   type="button"
                   onClick={() => removeVariant(index)}
-                  className="mt-4 text-emerald-950/20 transition hover:text-red-400"
+                  className="mt-4 text-stone-800/20 transition hover:text-red-400"
                 >
                   <X size={16} />
                 </button>
@@ -333,7 +333,7 @@ export default function ProductEditForm({
           disabled={deleting}
           className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium transition ${
             confirmDelete
-              ? "bg-red-600 text-emerald-950 hover:bg-red-500"
+              ? "bg-red-600 text-stone-800 hover:bg-red-500"
               : "border border-red-500/20 text-red-400 hover:bg-red-500/10"
           }`}
         >
@@ -349,7 +349,7 @@ export default function ProductEditForm({
           <button
             type="button"
             onClick={() => setConfirmDelete(false)}
-            className="text-sm text-emerald-800/50 hover:text-emerald-950/70 transition"
+            className="text-sm text-stone-500 hover:text-stone-800/70 transition"
           >
             Cancel
           </button>
@@ -359,7 +359,7 @@ export default function ProductEditForm({
           type="button"
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-emerald-950 transition hover:bg-emerald-500 disabled:opacity-60"
+          className="flex items-center gap-2 rounded-xl bg-sky-600 px-6 py-2.5 text-sm font-semibold text-stone-800 transition hover:bg-sky-500 disabled:opacity-60"
         >
           {saving ? (
             <Loader2 size={16} className="animate-spin" />

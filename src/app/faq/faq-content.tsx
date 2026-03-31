@@ -94,20 +94,20 @@ export default function FAQContent() {
       <div className="text-center">
         <h1 className="text-4xl font-bold tracking-tight text-neutral-900 sm:text-5xl">
           Frequently Asked{" "}
-          <span className="bg-linear-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">Questions</span>
+          <span className="bg-linear-to-r from-sky-600 to-blue-500 bg-clip-text text-transparent">Questions</span>
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-neutral-500">Everything you need to know about ReVia, our products, and how we support your research.</p>
       </div>
 
       <div className="relative mx-auto mt-10 max-w-xl">
         <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
-        <input type="text" placeholder="Search questions..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full rounded-xl border border-neutral-300 bg-white py-3 pl-12 pr-4 text-neutral-900 placeholder-neutral-400 outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30" />
+        <input type="text" placeholder="Search questions..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full rounded-xl border border-neutral-300 bg-white py-3 pl-12 pr-4 text-neutral-900 placeholder-neutral-400 outline-none transition focus:border-sky-500 focus:ring-1 focus:ring-sky-500/30" />
       </div>
 
       <div className="mt-12 space-y-10">
         {filtered.map((section) => (
           <div key={section.title}>
-            <div className="mb-4 flex items-center gap-3 text-emerald-600">
+            <div className="mb-4 flex items-center gap-3 text-sky-600">
               {section.icon}
               <h2 className="text-xl font-semibold">{section.title}</h2>
             </div>
@@ -141,7 +141,7 @@ export default function FAQContent() {
       <div className="mt-16 rounded-2xl border border-neutral-200 bg-white p-8 text-center shadow-sm">
         <h3 className="text-xl font-semibold text-neutral-900">Still have questions?</h3>
         <p className="mt-2 text-neutral-500">Our team is here to help. Reach out and we&apos;ll get back to you within 24 hours.</p>
-        <Link href="/contact" className="mt-6 inline-flex items-center justify-center rounded-xl bg-emerald-600 px-8 py-3 text-sm font-semibold text-white transition hover:bg-emerald-500">Contact Support</Link>
+        <Link href="/contact" className="mt-6 inline-flex items-center justify-center rounded-xl bg-sky-600 px-8 py-3 text-sm font-semibold text-white transition hover:bg-sky-500">Contact Support</Link>
       </div>
     </section>
   );

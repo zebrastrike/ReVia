@@ -39,7 +39,7 @@ export default function ContactPage() {
                   id="name"
                   name="name"
                   required
-                  className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder-neutral-400 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
+                  className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder-neutral-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none transition-colors"
                   placeholder="Your name"
                 />
               </div>
@@ -55,7 +55,7 @@ export default function ContactPage() {
                   id="email"
                   name="email"
                   required
-                  className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder-neutral-400 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
+                  className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder-neutral-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none transition-colors"
                   placeholder="you@example.com"
                 />
               </div>
@@ -72,7 +72,7 @@ export default function ContactPage() {
                 id="subject"
                 name="subject"
                 required
-                className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-3 text-neutral-900 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
+                className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-3 text-neutral-900 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none transition-colors"
               >
                 <option value="">Select a subject</option>
                 <option value="general">General Inquiry</option>
@@ -95,14 +95,14 @@ export default function ContactPage() {
                 name="message"
                 rows={6}
                 required
-                className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder-neutral-400 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors resize-none"
+                className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder-neutral-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none transition-colors resize-none"
                 placeholder="How can we help you?"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full sm:w-auto px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded-lg transition-colors"
+              className="w-full sm:w-auto px-8 py-3 bg-sky-600 hover:bg-sky-500 text-white font-medium rounded-lg transition-colors"
             >
               Send Message
             </button>
@@ -121,7 +121,7 @@ export default function ContactPage() {
                 <span className="text-neutral-400 block">Email</span>
                 <a
                   href="mailto:support@revia.bio"
-                  className="text-emerald-600 hover:text-emerald-500"
+                  className="text-sky-600 hover:text-sky-500"
                 >
                   support@revia.bio
                 </a>
@@ -163,7 +163,7 @@ export default function ContactPage() {
               <li>
                 <Link
                   href="/shipping"
-                  className="text-emerald-600 hover:text-emerald-500 transition-colors"
+                  className="text-sky-600 hover:text-sky-500 transition-colors"
                 >
                   Shipping Information
                 </Link>
@@ -174,7 +174,7 @@ export default function ContactPage() {
               <li>
                 <Link
                   href="/returns"
-                  className="text-emerald-600 hover:text-emerald-500 transition-colors"
+                  className="text-sky-600 hover:text-sky-500 transition-colors"
                 >
                   Return Policy
                 </Link>
@@ -185,7 +185,7 @@ export default function ContactPage() {
               <li>
                 <Link
                   href="/faq"
-                  className="text-emerald-600 hover:text-emerald-500 transition-colors"
+                  className="text-sky-600 hover:text-sky-500 transition-colors"
                 >
                   FAQ
                 </Link>

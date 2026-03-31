@@ -12,14 +12,14 @@ const iconMap = {
 };
 
 const colorMap = {
-  success: "border-emerald-200 bg-emerald-50 text-emerald-800",
+  success: "border-sky-200 bg-sky-50 text-stone-600",
   error: "border-red-200 bg-red-50 text-red-800",
   info: "border-blue-200 bg-blue-50 text-blue-800",
   warning: "border-yellow-200 bg-yellow-50 text-yellow-800",
 };
 
 const iconColorMap = {
-  success: "text-emerald-600",
+  success: "text-sky-600",
   error: "text-red-600",
   info: "text-blue-600",
   warning: "text-yellow-600",

@@ -1,30 +1,73 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  Pill,
+  Flame,
+  TrendingUp,
+  ShieldPlus,
+  Brain,
+  Moon,
+  Droplets,
+  Layers,
+  Beaker,
+  Package,
+  Syringe,
+  Shield,
+  Sparkles,
+  Dna,
+  Heart,
+  Zap,
+  Eye,
+  Sun,
+  Atom,
+  Activity,
+  Microscope,
+  Baby,
+  BedDouble,
+  FlaskConical,
+} from "lucide-react";
+import type { ComponentType } from "react";
 
-const categoryMeta: Record<string, { gradient: string; emoji: string }> = {
-  recovery: { gradient: "from-emerald-50 to-teal-100", emoji: "🔬" },
-  metabolic: { gradient: "from-amber-50 to-orange-100", emoji: "⚡" },
-  "growth-hormone": { gradient: "from-blue-50 to-indigo-100", emoji: "📈" },
-  nootropic: { gradient: "from-violet-50 to-purple-100", emoji: "🧠" },
-  longevity: { gradient: "from-cyan-50 to-blue-100", emoji: "♾️" },
-  cosmetic: { gradient: "from-pink-50 to-rose-100", emoji: "✨" },
-  "copper-peptide---cosmetic": { gradient: "from-amber-50 to-yellow-100", emoji: "🟤" },
-  immune: { gradient: "from-green-50 to-emerald-100", emoji: "🛡️" },
-  mitochondrial: { gradient: "from-sky-50 to-cyan-100", emoji: "🔋" },
-  sleep: { gradient: "from-indigo-50 to-violet-100", emoji: "🌙" },
-  stacks: { gradient: "from-emerald-50 to-cyan-100", emoji: "🧬" },
-  "anti-inflammatory": { gradient: "from-teal-50 to-emerald-100", emoji: "💚" },
-  reproductive: { gradient: "from-rose-50 to-pink-100", emoji: "🔄" },
-  supplies: { gradient: "from-zinc-50 to-gray-100", emoji: "🧪" },
-  antimicrobial: { gradient: "from-lime-50 to-green-100", emoji: "🦠" },
-  antioxidant: { gradient: "from-yellow-50 to-amber-100", emoji: "🌿" },
-  hormone: { gradient: "from-fuchsia-50 to-pink-100", emoji: "⚖️" },
-  neuropeptide: { gradient: "from-purple-50 to-indigo-100", emoji: "🧬" },
-  neuroprotective: { gradient: "from-blue-50 to-indigo-100", emoji: "🛡️" },
-  "sexual-health": { gradient: "from-red-50 to-rose-100", emoji: "❤️" },
-  tanning: { gradient: "from-orange-50 to-amber-100", emoji: "☀️" },
+const categoryIcons: Record<string, ComponentType<{ className?: string }>> = {
+  // Original 10 planned categories
+  "oral-capsules-supplements": Pill,
+  "metabolic-weight-management": Flame,
+  "growth-hormone-performance": TrendingUp,
+  "health-recovery-immune": ShieldPlus,
+  "cognitive-longevity": Brain,
+  "sexual-health-sleep": Moon,
+  "topicals-serums": Droplets,
+  "stacks-blends-liquids": Layers,
+  "water-supplies": Beaker,
+  miscellaneous: Package,
+  // Granular subcategories
+  "anti-inflammatory": Shield,
+  "antimicrobial": Syringe,
+  "antioxidant": Sparkles,
+  "capsules": Pill,
+  "copper-peptide": Atom,
+  "copper-peptide-cosmetic": Atom,
+  "cosmetic": Eye,
+  "growth-hormone": TrendingUp,
+  "hormone": Dna,
+  "immune": ShieldPlus,
+  "longevity": Activity,
+  "metabolic": Flame,
+  "mitochondrial": Zap,
+  "neuropeptide": Brain,
+  "neuroprotective": Microscope,
+  "nootropic": FlaskConical,
+  "recovery": Heart,
+  "reproductive": Baby,
+  "sexual-health": Moon,
+  "sleep": BedDouble,
+  "stacks": Layers,
+  "supplies": Beaker,
+  "tanning": Sun,
 };
-
-const fallback = { gradient: "from-emerald-50 to-teal-100", emoji: "💊" };
 
 interface CategoryCardProps {
   name: string;
@@ -33,20 +76,50 @@ interface CategoryCardProps {
 }
 
 export default function CategoryCard({ name, slug, productCount }: CategoryCardProps) {
-  const meta = categoryMeta[slug] ?? fallback;
+  const Icon = categoryIcons[slug] ?? Package;
+  const [hovered, setHovered] = useState(false);
 
   return (
-    <Link
-      href={`/shop?category=${slug}`}
-      className="group relative overflow-hidden rounded-2xl bg-white/50 backdrop-blur-sm border border-emerald-200/40 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-900/5 hover:bg-white/70"
-    >
-      <div className={`flex flex-col items-start justify-end bg-linear-to-br ${meta.gradient} p-5 h-32 sm:h-36`}>
-        <span className="text-2xl mb-2">{meta.emoji}</span>
-        <h3 className="text-base font-bold text-emerald-900 leading-tight">{name}</h3>
-        <p className="text-xs text-emerald-800/50 mt-0.5">
-          {productCount} {productCount === 1 ? "product" : "products"}
-        </p>
-      </div>
+    <Link href={`/shop?category=${slug}`}>
+      <motion.div
+        className="relative flex items-center gap-4 overflow-hidden rounded-2xl border border-sky-200/50 bg-white p-4 cursor-pointer"
+        onHoverStart={() => setHovered(true)}
+        onHoverEnd={() => setHovered(false)}
+        whileHover={{
+          y: -4,
+          boxShadow: "0 8px 24px rgba(114, 197, 234, 0.15)",
+          borderColor: "rgba(114, 197, 234, 0.4)",
+        }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      >
+        {/* Accent bar */}
+        <motion.div
+          className="absolute left-0 top-0 bottom-0 rounded-full bg-sky-400"
+          animate={{ width: hovered ? 5 : 3 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        />
+
+        {/* Icon badge */}
+        <motion.div
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+          animate={{
+            backgroundColor: hovered ? "rgb(74, 175, 224)" : "rgb(240, 249, 254)",
+            borderColor: hovered ? "rgb(74, 175, 224)" : "rgb(190, 229, 249)",
+          }}
+          style={{ border: "1px solid" }}
+          transition={{ duration: 0.2 }}
+        >
+          <Icon className={`h-5 w-5 transition-colors duration-200 ${hovered ? "text-white" : "text-sky-600"}`} />
+        </motion.div>
+
+        {/* Text */}
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold text-stone-800 leading-tight truncate">{name}</h3>
+          <p className="text-xs text-stone-400 mt-0.5">
+            {productCount} {productCount === 1 ? "product" : "products"}
+          </p>
+        </div>
+      </motion.div>
     </Link>
   );
 }

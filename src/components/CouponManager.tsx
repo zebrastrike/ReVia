@@ -39,7 +39,7 @@ export default function CouponManager({
   });
 
   const inputClass =
-    "w-full rounded-lg border border-emerald-200/40 bg-white/50 px-4 py-2.5 text-sm text-emerald-950 placeholder-gray-500 outline-none transition focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/30";
+    "w-full rounded-lg border border-sky-200/40 bg-white/50 px-4 py-2.5 text-sm text-stone-800 placeholder-gray-500 outline-none transition focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/30";
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,7 +126,7 @@ export default function CouponManager({
         <div
           className={`rounded-lg border px-4 py-3 text-sm ${
             message.type === "success"
-              ? "border-emerald-500/30 bg-emerald-100 text-emerald-400"
+              ? "border-sky-500/30 bg-sky-100 text-sky-400"
               : "border-red-500/30 bg-red-500/10 text-red-400"
           }`}
         >
@@ -138,18 +138,18 @@ export default function CouponManager({
       {!showForm ? (
         <button
           onClick={() => setShowForm(true)}
-          className="flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-emerald-950 transition hover:bg-emerald-500"
+          className="flex items-center gap-2 rounded-xl bg-sky-600 px-5 py-2.5 text-sm font-semibold text-stone-800 transition hover:bg-sky-500"
         >
           <Plus size={16} />
           New Coupon
         </button>
       ) : (
-        <div className="bg-white/50 backdrop-blur border border-emerald-200/40 rounded-2xl p-6">
+        <div className="bg-white/50 backdrop-blur border border-sky-200/40 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-emerald-950">Create Coupon</h2>
+            <h2 className="text-lg font-semibold text-stone-800">Create Coupon</h2>
             <button
               onClick={() => setShowForm(false)}
-              className="text-emerald-950/30 hover:text-emerald-800/60 transition"
+              className="text-stone-800/30 hover:text-stone-500 transition"
             >
               <X size={18} />
             </button>
@@ -158,7 +158,7 @@ export default function CouponManager({
           <form onSubmit={handleCreate} className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <div>
-                <label className="mb-1 block text-xs font-medium text-emerald-800/50">
+                <label className="mb-1 block text-xs font-medium text-stone-500">
                   Code
                 </label>
                 <input
@@ -173,7 +173,7 @@ export default function CouponManager({
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs font-medium text-emerald-800/50">
+                <label className="mb-1 block text-xs font-medium text-stone-500">
                   Type
                 </label>
                 <select
@@ -188,7 +188,7 @@ export default function CouponManager({
                 </select>
               </div>
               <div>
-                <label className="mb-1 block text-xs font-medium text-emerald-800/50">
+                <label className="mb-1 block text-xs font-medium text-stone-500">
                   Value {formData.type === "percentage" ? "(%)" : "(cents)"}
                 </label>
                 <input
@@ -203,7 +203,7 @@ export default function CouponManager({
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs font-medium text-emerald-800/50">
+                <label className="mb-1 block text-xs font-medium text-stone-500">
                   Min Order (cents, 0 = none)
                 </label>
                 <input
@@ -217,7 +217,7 @@ export default function CouponManager({
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs font-medium text-emerald-800/50">
+                <label className="mb-1 block text-xs font-medium text-stone-500">
                   Max Uses (0 = unlimited)
                 </label>
                 <input
@@ -231,7 +231,7 @@ export default function CouponManager({
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs font-medium text-emerald-800/50">
+                <label className="mb-1 block text-xs font-medium text-stone-500">
                   Expires At (optional)
                 </label>
                 <input
@@ -249,7 +249,7 @@ export default function CouponManager({
               <button
                 type="submit"
                 disabled={creating}
-                className="flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-emerald-950 transition hover:bg-emerald-500 disabled:opacity-60"
+                className="flex items-center gap-2 rounded-xl bg-sky-600 px-6 py-2.5 text-sm font-semibold text-stone-800 transition hover:bg-sky-500 disabled:opacity-60"
               >
                 {creating && <Loader2 size={14} className="animate-spin" />}
                 Create Coupon
@@ -260,16 +260,16 @@ export default function CouponManager({
       )}
 
       {/* Coupons Table */}
-      <div className="bg-white/50 backdrop-blur border border-emerald-200/40 rounded-2xl overflow-hidden">
+      <div className="bg-white/50 backdrop-blur border border-sky-200/40 rounded-2xl overflow-hidden">
         {coupons.length === 0 ? (
-          <p className="text-emerald-800/50 text-sm py-12 text-center">
+          <p className="text-stone-500 text-sm py-12 text-center">
             No coupons yet.
           </p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-emerald-800/50 border-b border-emerald-200/40 bg-white/500">
+                <tr className="text-stone-500 border-b border-sky-200/40 bg-white/500">
                   <th className="text-left px-6 py-4 font-medium">Code</th>
                   <th className="text-left px-6 py-4 font-medium">Type</th>
                   <th className="text-left px-6 py-4 font-medium">Value</th>
@@ -284,27 +284,27 @@ export default function CouponManager({
                 {coupons.map((coupon) => (
                   <tr
                     key={coupon.id}
-                    className="border-b border-emerald-100/40 hover:bg-white/50 transition-colors"
+                    className="border-b border-sky-100/40 hover:bg-white/50 transition-colors"
                   >
                     <td className="px-6 py-4">
-                      <span className="font-mono text-emerald-400 font-medium">
+                      <span className="font-mono text-sky-400 font-medium">
                         {coupon.code}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-emerald-950/50 capitalize">
+                    <td className="px-6 py-4 text-stone-800/50 capitalize">
                       {coupon.type}
                     </td>
-                    <td className="px-6 py-4 text-emerald-950 font-medium">
+                    <td className="px-6 py-4 text-stone-800 font-medium">
                       {coupon.type === "percentage"
                         ? `${coupon.value}%`
                         : `$${(coupon.value / 100).toFixed(2)}`}
                     </td>
-                    <td className="px-6 py-4 text-emerald-950/50">
+                    <td className="px-6 py-4 text-stone-800/50">
                       {coupon.minOrder > 0
                         ? `$${(coupon.minOrder / 100).toFixed(2)}`
                         : "None"}
                     </td>
-                    <td className="px-6 py-4 text-emerald-950/50">
+                    <td className="px-6 py-4 text-stone-800/50">
                       {coupon.usedCount}
                       {coupon.maxUses > 0 ? `/${coupon.maxUses}` : "/Unlimited"}
                     </td>
@@ -316,14 +316,14 @@ export default function CouponManager({
                         {coupon.active ? (
                           <ToggleRight
                             size={22}
-                            className="text-emerald-400"
+                            className="text-sky-400"
                           />
                         ) : (
-                          <ToggleLeft size={22} className="text-emerald-950/20" />
+                          <ToggleLeft size={22} className="text-stone-800/20" />
                         )}
                       </button>
                     </td>
-                    <td className="px-6 py-4 text-emerald-950/50 text-xs">
+                    <td className="px-6 py-4 text-stone-800/50 text-xs">
                       {coupon.expiresAt
                         ? new Date(coupon.expiresAt).toLocaleDateString()
                         : "Never"}
@@ -332,7 +332,7 @@ export default function CouponManager({
                       <button
                         onClick={() => handleDelete(coupon.id)}
                         disabled={deletingId === coupon.id}
-                        className="text-emerald-950/20 transition hover:text-red-400 disabled:opacity-50"
+                        className="text-stone-800/20 transition hover:text-red-400 disabled:opacity-50"
                       >
                         {deletingId === coupon.id ? (
                           <Loader2 size={16} className="animate-spin" />

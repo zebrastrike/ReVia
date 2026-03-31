@@ -25,6 +25,7 @@ model Product {
   variants    ProductVariant[]
   image       String?
   featured    Boolean          @default(false)
+  active      Boolean          @default(true)
   tags        String           @default("[]")
   wishlist    Wishlist[]
   reviews     Review[]
@@ -33,14 +34,19 @@ model Product {
 }
 
 model ProductVariant {
-  id             String  @id @default(cuid())
-  productId      String
-  product        Product @relation(fields: [productId], references: [id])
-  label          String
-  price          Float
-  compareAtPrice Float?
-  sku            String  @unique
-  inStock        Boolean @default(true)
+  id               String  @id @default(cuid())
+  productId        String
+  product          Product @relation(fields: [productId], references: [id])
+  label            String
+  price            Float
+  compareAtPrice   Float?
+  sku              String  @unique
+  inStock          Boolean @default(true)
+  retailPrice      Float?
+  foundersPrice    Float?
+  friendsPrice     Float?
+  quantity         Int     @default(0)
+  reorderThreshold Int     @default(0)
 
   @@index([productId])
 }
@@ -143,6 +149,13 @@ model Newsletter {
   id        String   @id @default(cuid())
   email     String   @unique
   createdAt DateTime @default(now())
+}
+
+model SiteSettings {
+  id                    String   @id @default("singleton")
+  activePricingTier     String   @default("retail")
+  freeShippingThreshold Int      @default(15000)
+  updatedAt             DateTime @updatedAt
 }
 
 model BlogPost {

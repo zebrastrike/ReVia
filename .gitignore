@@ -36,3 +36,9 @@ next-env.d.ts
 # database
 prisma/dev.db
 prisma/dev.db-journal
+
+# seed backups / dev artifacts
+prisma/seed-original-backup.ts
+
+# claude code
+.claude/

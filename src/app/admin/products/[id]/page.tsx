@@ -30,7 +30,7 @@ export default async function AdminProductEditPage({
       <div className="flex items-center gap-4">
         <Link
           href="/admin/products"
-          className="flex items-center gap-1.5 text-sm text-emerald-800/50 hover:text-emerald-950/70 transition-colors"
+          className="flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-800/70 transition-colors"
         >
           <ArrowLeft size={16} />
           Back to Products
@@ -38,8 +38,8 @@ export default async function AdminProductEditPage({
       </div>
 
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-emerald-950">{product.name}</h1>
-        <span className="text-sm text-emerald-950/30">ID: {product.id}</span>
+        <h1 className="text-2xl font-bold text-stone-800">{product.name}</h1>
+        <span className="text-sm text-stone-800/30">ID: {product.id}</span>
       </div>
 
       <ProductEditForm product={product} categories={categories} />

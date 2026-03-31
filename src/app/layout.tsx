@@ -1,21 +1,33 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, JetBrains_Mono, Fraunces, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import ShippingBanner from "@/components/ShippingBanner";
 import CartDrawer from "@/components/CartDrawer";
 import Toast from "@/components/Toast";
-import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
+import LayoutShell from "@/components/LayoutShell";
 
-const geistSans = Geist({
+const jakarta = Plus_Jakarta_Sans({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
-const geistMono = Geist_Mono({
+const mono = JetBrains_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  weight: ["400", "500"],
+});
+
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -88,16 +100,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${jakarta.variable} ${mono.variable} ${fraunces.variable} ${spaceGrotesk.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col text-[#1a2e1a]">
+      <body className="min-h-full flex flex-col text-[#453834]">
         <JsonLd data={organizationLd} />
-        <Navbar />
-        <ShippingBanner />
         <CartDrawer />
         <Toast />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <LayoutShell>{children}</LayoutShell>
       </body>
     </html>
   );

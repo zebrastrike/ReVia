@@ -41,7 +41,7 @@ export default async function BlogPage({
       <div className="text-center">
         <h1 className="text-4xl font-bold tracking-tight text-neutral-900 sm:text-5xl">
           The ReVia{" "}
-          <span className="bg-linear-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-sky-600 to-blue-500 bg-clip-text text-transparent">
             Journal
           </span>
         </h1>
@@ -57,7 +57,7 @@ export default async function BlogPage({
           href="/blog"
           className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
             !category
-              ? "bg-emerald-600 text-white"
+              ? "bg-sky-600 text-white"
               : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
           }`}
         >
@@ -69,7 +69,7 @@ export default async function BlogPage({
             href={`/blog?category=${encodeURIComponent(c.category)}`}
             className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
               category === c.category
-                ? "bg-emerald-600 text-white"
+                ? "bg-sky-600 text-white"
                 : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
             }`}
           >
@@ -97,12 +97,12 @@ export default async function BlogPage({
             )}
             <div className="p-6">
               <div className="flex items-center gap-3 text-xs text-neutral-400">
-                <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 font-medium text-emerald-600">
+                <span className="rounded-full bg-sky-50 px-2.5 py-0.5 font-medium text-sky-600">
                   {post.category}
                 </span>
                 <span>{readTime(post.content)} min read</span>
               </div>
-              <h2 className="mt-3 text-lg font-semibold text-neutral-900 line-clamp-2 group-hover:text-emerald-600 transition-colors">
+              <h2 className="mt-3 text-lg font-semibold text-neutral-900 line-clamp-2 group-hover:text-sky-600 transition-colors">
                 {post.title}
               </h2>
               <p className="mt-2 text-sm text-neutral-500 line-clamp-3">

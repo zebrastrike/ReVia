@@ -8,6 +8,7 @@ import AddToCart from "@/components/AddToCart";
 import WishlistButton from "@/components/WishlistButton";
 import ReviewSection from "@/components/ReviewSection";
 import JsonLd from "@/components/JsonLd";
+import { getProductImage } from "@/lib/product-images";
 export const dynamic = "force-dynamic";
 
 interface PageProps {
@@ -112,15 +113,15 @@ export default async function ProductDetailPage({ params }: PageProps) {
           <div className="absolute right-3 top-3 z-10">
             <WishlistButton productId={product.id} />
           </div>
-          {product.image ? (
+          {getProductImage(product.slug, product.image) ? (
             <img
-              src={product.image}
+              src={getProductImage(product.slug, product.image)!}
               alt={product.name}
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="flex aspect-square w-full items-center justify-center bg-linear-to-br from-emerald-50 to-emerald-100">
-              <span className="text-7xl font-bold text-emerald-600/40">
+            <div className="flex aspect-square w-full items-center justify-center bg-linear-to-br from-sky-50 to-sky-100">
+              <span className="text-7xl font-bold text-sky-600/40">
                 {product.name.charAt(0)}
               </span>
             </div>
@@ -130,7 +131,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         {/* Details */}
         <div className="flex flex-col justify-center">
           {product.category && (
-            <p className="text-xs font-semibold uppercase tracking-widest text-emerald-600">
+            <p className="text-xs font-semibold uppercase tracking-widest text-sky-600">
               {product.category.name}
             </p>
           )}
@@ -156,7 +157,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
               }))}
               productName={product.name}
               productSlug={product.slug}
-              productImage={product.image}
+              productImage={getProductImage(product.slug, product.image)}
             />
           </div>
 

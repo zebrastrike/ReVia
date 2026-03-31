@@ -143,7 +143,7 @@ export default function ReviewSection({ productId }: { productId: string }) {
       {isLoggedIn && !showForm && (
         <button
           onClick={() => setShowForm(true)}
-          className="mt-6 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-500"
+          className="mt-6 rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-sky-500"
         >
           Write a Review
         </button>
@@ -175,7 +175,7 @@ export default function ReviewSection({ productId }: { productId: string }) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Summary of your review"
-              className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm text-neutral-900 placeholder-neutral-400 outline-none focus:border-emerald-500"
+              className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm text-neutral-900 placeholder-neutral-400 outline-none focus:border-sky-500"
             />
           </div>
 
@@ -186,7 +186,7 @@ export default function ReviewSection({ productId }: { productId: string }) {
               onChange={(e) => setBody(e.target.value)}
               placeholder="Share your experience with this product"
               rows={4}
-              className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm text-neutral-900 placeholder-neutral-400 outline-none focus:border-emerald-500"
+              className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm text-neutral-900 placeholder-neutral-400 outline-none focus:border-sky-500"
             />
           </div>
 
@@ -194,7 +194,7 @@ export default function ReviewSection({ productId }: { productId: string }) {
             <button
               type="submit"
               disabled={submitting}
-              className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-500 disabled:opacity-50"
+              className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-sky-500 disabled:opacity-50"
             >
               {submitting ? "Submitting..." : "Submit Review"}
             </button>
@@ -227,7 +227,7 @@ export default function ReviewSection({ productId }: { productId: string }) {
                   <div className="flex items-center gap-2">
                     <StarRating rating={review.rating} />
                     {review.verified && (
-                      <span className="flex items-center gap-1 text-xs font-medium text-emerald-600">
+                      <span className="flex items-center gap-1 text-xs font-medium text-sky-600">
                         <BadgeCheck className="h-3.5 w-3.5" />
                         Verified Purchase
                       </span>

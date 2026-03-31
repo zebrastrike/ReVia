@@ -52,7 +52,7 @@ export default function AddToCart({
                 disabled={!v.inStock}
                 className={`rounded-xl border px-4 py-3 text-sm font-medium transition ${
                   isSelected
-                    ? "border-emerald-600 bg-emerald-50 text-emerald-700"
+                    ? "border-sky-600 bg-sky-50 text-stone-600"
                     : v.inStock
                     ? "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-300 hover:bg-neutral-50"
                     : "cursor-not-allowed border-neutral-100 bg-neutral-50 text-neutral-300 line-through"
@@ -81,9 +81,9 @@ export default function AddToCart({
         disabled={!selected?.inStock}
         className={`flex w-full items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold transition ${
           added
-            ? "bg-emerald-700 text-white"
+            ? "bg-sky-700 text-white"
             : selected?.inStock
-            ? "bg-emerald-600 text-white hover:bg-emerald-500"
+            ? "bg-sky-600 text-white hover:bg-sky-500"
             : "cursor-not-allowed bg-neutral-200 text-neutral-400"
         }`}
       >

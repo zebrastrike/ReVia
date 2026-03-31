@@ -64,7 +64,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder-neutral-400 outline-none transition-colors focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+              className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder-neutral-400 outline-none transition-colors focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
               placeholder="you@example.com"
             />
           </div>
@@ -79,7 +79,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder-neutral-400 outline-none transition-colors focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+              className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder-neutral-400 outline-none transition-colors focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
               placeholder="Enter your password"
             />
           </div>
@@ -87,7 +87,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-emerald-600 px-4 py-3 font-semibold text-white transition-colors hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full rounded-lg bg-sky-600 px-4 py-3 font-semibold text-white transition-colors hover:bg-sky-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
@@ -95,7 +95,7 @@ export default function LoginPage() {
 
         <p className="mt-6 text-center text-sm text-neutral-500">
           Don&apos;t have an account?{" "}
-          <Link href="/register" className="text-emerald-600 hover:text-emerald-500 transition-colors">
+          <Link href="/register" className="text-sky-600 hover:text-sky-500 transition-colors">
             Create one
           </Link>
         </p>

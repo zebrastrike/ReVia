@@ -40,7 +40,7 @@ const values = [
 const iconMap: Record<string, React.ReactNode> = {
   shield: (
     <svg
-      className="w-8 h-8 text-emerald-600"
+      className="w-8 h-8 text-sky-600"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -55,7 +55,7 @@ const iconMap: Record<string, React.ReactNode> = {
   ),
   "check-circle": (
     <svg
-      className="w-8 h-8 text-emerald-600"
+      className="w-8 h-8 text-sky-600"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -70,7 +70,7 @@ const iconMap: Record<string, React.ReactNode> = {
   ),
   lightbulb: (
     <svg
-      className="w-8 h-8 text-emerald-600"
+      className="w-8 h-8 text-sky-600"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -85,7 +85,7 @@ const iconMap: Record<string, React.ReactNode> = {
   ),
   truck: (
     <svg
-      className="w-8 h-8 text-emerald-600"
+      className="w-8 h-8 text-sky-600"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -115,7 +115,7 @@ export default function AboutPage() {
         <div className="relative max-w-4xl mx-auto px-4 text-center">
           <h1 className="text-5xl font-bold text-neutral-900 mb-6">
             The People Behind{" "}
-            <span className="bg-linear-to-r from-emerald-600 via-teal-500 to-emerald-600 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-sky-600 via-blue-500 to-sky-600 bg-clip-text text-transparent">
               ReVia
             </span>
           </h1>
@@ -226,7 +226,7 @@ export default function AboutPage() {
       {/* Research Use Only */}
       <section className="bg-neutral-100 border-y border-neutral-200 py-12">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h3 className="text-xl font-semibold text-emerald-600 mb-3">
+          <h3 className="text-xl font-semibold text-sky-600 mb-3">
             Commitment to Responsible Research
           </h3>
           <p className="text-neutral-500 leading-relaxed">
