@@ -98,10 +98,10 @@ export default function ShippingPolicyPage() {
         not receive tracking information within three (3) business days of
         placing your order, please contact us at{" "}
         <a
-          href="mailto:support@revia.bio"
+          href="mailto:info@revialife.com"
           className="text-blue-600 hover:underline"
         >
-          support@revia.bio
+          info@revialife.com
         </a>
         .
       </p>
@@ -120,10 +120,10 @@ export default function ShippingPolicyPage() {
         If your order arrives damaged, you must report the damage within
         forty-eight (48) hours of delivery by contacting us at{" "}
         <a
-          href="mailto:support@revia.bio"
+          href="mailto:info@revialife.com"
           className="text-blue-600 hover:underline"
         >
-          support@revia.bio
+          info@revialife.com
         </a>
         . When reporting damage, please include:
       </p>
@@ -174,10 +174,10 @@ export default function ShippingPolicyPage() {
         <br />
         Email:{" "}
         <a
-          href="mailto:support@revia.bio"
+          href="mailto:info@revialife.com"
           className="text-blue-600 hover:underline"
         >
-          support@revia.bio
+          info@revialife.com
         </a>
       </address>
     </>

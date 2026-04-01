@@ -120,10 +120,10 @@ export default function ContactPage() {
               <div>
                 <span className="text-neutral-400 block">Email</span>
                 <a
-                  href="mailto:support@revia.bio"
+                  href="mailto:contact@revialife.com"
                   className="text-sky-600 hover:text-sky-500"
                 >
-                  support@revia.bio
+                  contact@revialife.com
                 </a>
               </div>
               <div>

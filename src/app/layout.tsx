@@ -82,7 +82,7 @@ const organizationLd = {
   description: "Premium research-grade peptides and compounds for scientific research.",
   contactPoint: {
     "@type": "ContactPoint",
-    email: "support@revia.bio",
+    email: "contact@revialife.com",
     contactType: "customer service",
   },
   address: {

@@ -48,7 +48,7 @@ function createTransporter() {
   return null;
 }
 
-const FROM = '"ReVia Research Supply" <orders@revia.bio>';
+const FROM = '"ReVia" <orders@revialife.com>';
 
 async function send(to: string, subject: string, html: string) {
   const transporter = createTransporter();

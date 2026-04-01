@@ -124,10 +124,10 @@ export default function CCPANoticePage() {
         <li>
           <strong>Email:</strong>{" "}
           <a
-            href="mailto:support@revia.bio"
+            href="mailto:info@revialife.com"
             className="text-blue-600 hover:underline"
           >
-            support@revia.bio
+            info@revialife.com
           </a>{" "}
           with the subject line &quot;CCPA Request&quot;
         </li>
@@ -159,10 +159,10 @@ export default function CCPANoticePage() {
         be considered a &quot;sale&quot; under the CCPA, you may opt out by
         contacting us at{" "}
         <a
-          href="mailto:support@revia.bio"
+          href="mailto:info@revialife.com"
           className="text-blue-600 hover:underline"
         >
-          support@revia.bio
+          info@revialife.com
         </a>{" "}
         with the subject line &quot;Do Not Sell My Personal Information.&quot;
         We will process your request within fifteen (15) business days.
@@ -201,10 +201,10 @@ export default function CCPANoticePage() {
         <br />
         Email:{" "}
         <a
-          href="mailto:support@revia.bio"
+          href="mailto:info@revialife.com"
           className="text-blue-600 hover:underline"
         >
-          support@revia.bio
+          info@revialife.com
         </a>
       </address>
     </>

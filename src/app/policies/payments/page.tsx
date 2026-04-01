@@ -57,10 +57,10 @@ export default function PaymentPolicyPage() {
         If you do not recognize a charge, please review your recent orders
         before contacting your bank, and reach out to us at{" "}
         <a
-          href="mailto:support@revia.bio"
+          href="mailto:info@revialife.com"
           className="text-blue-600 hover:underline"
         >
-          support@revia.bio
+          info@revialife.com
         </a>{" "}
         for clarification.
       </p>
@@ -143,10 +143,10 @@ export default function PaymentPolicyPage() {
       <p>
         If you believe a charge is incorrect, we encourage you to contact us at{" "}
         <a
-          href="mailto:support@revia.bio"
+          href="mailto:info@revialife.com"
           className="text-blue-600 hover:underline"
         >
-          support@revia.bio
+          info@revialife.com
         </a>{" "}
         before initiating a chargeback with your bank. Filing a chargeback
         without first contacting us may result in delays in resolution and may
@@ -166,10 +166,10 @@ export default function PaymentPolicyPage() {
         <br />
         Email:{" "}
         <a
-          href="mailto:support@revia.bio"
+          href="mailto:info@revialife.com"
           className="text-blue-600 hover:underline"
         >
-          support@revia.bio
+          info@revialife.com
         </a>
       </address>
     </>

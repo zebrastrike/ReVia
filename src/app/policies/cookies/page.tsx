@@ -211,10 +211,10 @@ export default function CookiePolicyPage() {
         <br />
         Email:{" "}
         <a
-          href="mailto:support@revia.bio"
+          href="mailto:info@revialife.com"
           className="text-blue-600 hover:underline"
         >
-          support@revia.bio
+          info@revialife.com
         </a>
       </address>
     </>

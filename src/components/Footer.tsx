@@ -92,8 +92,8 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-2 text-sm text-stone-500">
               <Mail className="h-4 w-4 text-sky-500" />
-              <a href="mailto:support@revia.bio" className="hover:text-sky-600 transition-colors">
-                support@revia.bio
+              <a href="mailto:contact@revialife.com" className="hover:text-sky-600 transition-colors">
+                contact@revialife.com
               </a>
             </div>
           </AnimatedContainer>

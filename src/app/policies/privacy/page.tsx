@@ -179,10 +179,10 @@ export default function PrivacyPolicyPage() {
       <p>
         To exercise any of these rights, please contact us at{" "}
         <a
-          href="mailto:support@revia.bio"
+          href="mailto:info@revialife.com"
           className="text-blue-600 hover:underline"
         >
-          support@revia.bio
+          info@revialife.com
         </a>
         . We will respond to your request within thirty (30) days.
       </p>
@@ -226,10 +226,10 @@ export default function PrivacyPolicyPage() {
         promptly. If you believe we have inadvertently collected information
         from a minor, please contact us immediately at{" "}
         <a
-          href="mailto:support@revia.bio"
+          href="mailto:info@revialife.com"
           className="text-blue-600 hover:underline"
         >
-          support@revia.bio
+          info@revialife.com
         </a>
         .
       </p>
@@ -266,10 +266,10 @@ export default function PrivacyPolicyPage() {
         <br />
         Email:{" "}
         <a
-          href="mailto:support@revia.bio"
+          href="mailto:info@revialife.com"
           className="text-blue-600 hover:underline"
         >
-          support@revia.bio
+          info@revialife.com
         </a>
       </address>
     </>

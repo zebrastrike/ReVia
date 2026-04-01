@@ -27,7 +27,7 @@ const sections: Section[] = [
       { q: "What purity level are your peptides?", a: "We maintain a 98%+ purity standard across our catalog, verified by HPLC. Many products exceed 99%. This quality level is essential for reproducible research." },
       { q: "How should I store my peptides?", a: "Store lyophilized peptides at 2-8°C, protected from light and moisture. Once reconstituted, use within 30 days and keep refrigerated. For long-term storage, -20°C is recommended." },
       { q: "What is the shelf life?", a: "Lyophilized peptides remain stable 18-24 months when stored properly. Reconstituted peptides should be used within 30 days." },
-      { q: "Do you offer Certificates of Analysis?", a: "Yes. Batch-specific COAs are available for every product. Email support@revia.bio with your order number and we'll provide documentation within 24 hours." },
+      { q: "Do you offer Certificates of Analysis?", a: "Yes. Batch-specific COAs are available for every product. Email contact@revialife.com with your order number and we'll provide documentation within 24 hours." },
       { q: "What's the difference between lyophilized and reconstituted?", a: "Lyophilized = freeze-dried powder (stable, ship and store this way). Reconstituted = dissolved in solvent like BAC water (use within 30 days). Reconstitute only when ready to begin research." },
     ],
   },
@@ -46,7 +46,7 @@ const sections: Section[] = [
     icon: <CreditCard className="h-5 w-5" />,
     items: [
       { q: "What payment methods do you accept?", a: "Visa, Mastercard, Amex, Discover, and potentially cryptocurrency. All transactions are PCI-DSS compliant." },
-      { q: "Do you offer wholesale pricing?", a: "Yes. Contact support@revia.bio for B2B and wholesale inquiries with your organization details and anticipated volume." },
+      { q: "Do you offer wholesale pricing?", a: "Yes. Contact contact@revialife.com for B2B and wholesale inquiries with your organization details and anticipated volume." },
       { q: "Is there a minimum order?", a: "No minimum — purchase as little as a single product." },
       { q: "Can I use a discount code?", a: "Yes! Enter your code in the coupon field at checkout. The discount will appear in your order summary before payment." },
       { q: "How do I track my order?", a: "You'll receive a tracking email when your order ships. You can also check status in your account dashboard." },
@@ -59,7 +59,7 @@ const sections: Section[] = [
       { q: "How long does shipping take?", a: "Processing: 1-3 business days. Standard: 5-7 days. Priority: 2-3 days. Overnight available for urgent needs. All orders include tracking." },
       { q: "Do you ship internationally?", a: "US domestic only currently. Subscribe to our newsletter for updates on international shipping availability." },
       { q: "Do you offer cold chain shipping?", a: "Yes. Temperature-sensitive compounds ship with insulated packaging and cold packs at no extra charge." },
-      { q: "What if my package arrives damaged?", a: "Contact us within 48 hours at support@revia.bio with photos and your order number. We'll ship a free replacement." },
+      { q: "What if my package arrives damaged?", a: "Contact us within 48 hours at contact@revialife.com with photos and your order number. We'll ship a free replacement." },
     ],
   },
   {
@@ -75,7 +75,7 @@ const sections: Section[] = [
     icon: <Package className="h-5 w-5" />,
     items: [
       { q: "Are your products FDA approved?", a: "No. Our products are research chemicals for laboratory use only. Not FDA approved, not for human/animal consumption, not for diagnosis or treatment of any disease." },
-      { q: "Can I get research guidance?", a: "We can answer questions about product composition, storage, and handling. Contact support@revia.bio. We cannot provide research protocols or dosing guidance." },
+      { q: "Can I get research guidance?", a: "We can answer questions about product composition, storage, and handling. Contact contact@revialife.com. We cannot provide research protocols or dosing guidance." },
       { q: "What reconstitution supplies do you carry?", a: "BAC water (3ml & 10ml), sterile water (3ml & 10ml), and acetic acid (3ml & 10ml) — the most common solvents for peptide reconstitution." },
     ],
   },
