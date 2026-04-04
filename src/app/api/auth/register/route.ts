@@ -5,6 +5,8 @@ import { hashPassword, generateToken } from "@/lib/auth";
 import { serialize } from "cookie";
 import { rateLimit } from "@/lib/rate-limit";
 import { validateEmail, validatePassword, sanitizeString } from "@/lib/validation";
+import crypto from "crypto";
+import { sendVerificationEmail } from "@/lib/email";
 
 export async function POST(request: NextRequest) {
   try {
@@ -59,12 +61,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create user
+    // Create user with verification token
     const hashedPassword = await hashPassword(password);
+    const verifyToken = crypto.randomBytes(32).toString("hex");
     const user = await prisma.user.create({
-      data: { email: sanitizedEmail, name: sanitizedName, password: hashedPassword },
+      data: {
+        email: sanitizedEmail,
+        name: sanitizedName,
+        password: hashedPassword,
+        verifyToken,
+        emailVerified: false,
+      },
       select: { id: true, email: true, name: true, role: true },
     });
+
+    // Send verification email
+    try {
+      await sendVerificationEmail(sanitizedName, sanitizedEmail, verifyToken);
+    } catch (err) {
+      console.error("Failed to send verification email:", err);
+    }
 
     // Generate token and set cookie
     const token = generateToken(user);

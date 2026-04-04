@@ -17,13 +17,14 @@ export async function PATCH(
 
     const { id } = await params;
     const body = await request.json();
-    const { name, description, featured, active, categoryId, image } = body as {
+    const { name, description, featured, active, categoryId, image, coaUrl } = body as {
       name?: string;
       description?: string;
       featured?: boolean;
       active?: boolean;
       categoryId?: string;
       image?: string;
+      coaUrl?: string | null;
     };
 
     const data: Record<string, unknown> = {};
@@ -33,6 +34,7 @@ export async function PATCH(
     if (active !== undefined) data.active = active;
     if (categoryId !== undefined) data.categoryId = categoryId;
     if (image !== undefined) data.image = image;
+    if (coaUrl !== undefined) data.coaUrl = coaUrl;
 
     const product = await prisma.product.update({
       where: { id },
@@ -65,8 +67,6 @@ export async function DELETE(
 
     // Delete variants first
     await prisma.productVariant.deleteMany({ where: { productId: id } });
-    // Delete wishlists referencing this product
-    await prisma.wishlist.deleteMany({ where: { productId: id } });
     // Delete reviews referencing this product
     await prisma.review.deleteMany({ where: { productId: id } });
     // Then delete the product

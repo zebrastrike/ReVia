@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { ShoppingCart, Check } from "lucide-react";
+import { ShoppingCart, Check, Clock, XCircle } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 
 interface AddToCartProps {
-  variants: { id: string; label: string; price: number; inStock: boolean }[];
+  variants: { id: string; label: string; price: number; inStock: boolean; stockStatus?: string }[];
   productName: string;
   productSlug: string;
   productImage?: string | null;
@@ -18,15 +18,19 @@ export default function AddToCart({
   productImage,
 }: AddToCartProps) {
   const [selectedId, setSelectedId] = useState(
-    () => (variants.find((v) => v.inStock) ?? variants[0])?.id ?? ""
+    () => (variants.find((v) => v.stockStatus !== "out_of_stock") ?? variants[0])?.id ?? ""
   );
   const [added, setAdded] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
 
   const selected = variants.find((v) => v.id === selectedId);
+  const status = selected?.stockStatus ?? (selected?.inStock ? "in_stock" : "out_of_stock");
+  const isPreOrder = status === "pre_order";
+  const isOutOfStock = status === "out_of_stock";
+  const canPurchase = !isOutOfStock;
 
   const handleAdd = () => {
-    if (!selected || !selected.inStock) return;
+    if (!selected || !canPurchase) return;
     addItem({
       variantId: selected.id,
       productName,
@@ -47,22 +51,33 @@ export default function AddToCart({
         <div className="flex flex-wrap gap-3">
           {variants.map((v) => {
             const isSelected = v.id === selectedId;
+            const vStatus = v.stockStatus ?? (v.inStock ? "in_stock" : "out_of_stock");
+            const vIsOut = vStatus === "out_of_stock";
+            const vIsPreOrder = vStatus === "pre_order";
             return (
               <button
                 key={v.id}
                 onClick={() => setSelectedId(v.id)}
-                disabled={!v.inStock}
+                disabled={vIsOut}
                 className={`rounded-xl border px-4 py-3 text-sm font-medium transition ${
-                  isSelected
-                    ? "border-sky-600 bg-sky-50 text-stone-600"
-                    : v.inStock
-                    ? "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-300 hover:bg-neutral-50"
-                    : "cursor-not-allowed border-neutral-100 bg-neutral-50 text-neutral-300 line-through"
+                  vIsOut
+                    ? "cursor-not-allowed border-neutral-100 bg-neutral-50 text-neutral-300"
+                    : isSelected
+                    ? vIsPreOrder
+                      ? "border-amber-500 bg-amber-50 text-stone-600"
+                      : "border-sky-600 bg-sky-50 text-stone-600"
+                    : "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-300 hover:bg-neutral-50"
                 }`}
               >
-                <span className="block">{v.label}</span>
+                <span className={`block ${vIsOut ? "line-through" : ""}`}>{v.label}</span>
                 <span className="mt-1 block text-xs">
-                  {v.inStock ? `$${(v.price / 100).toFixed(2)}` : "Out of stock"}
+                  {vIsOut ? (
+                    <span className="text-red-400">Out of Stock</span>
+                  ) : vIsPreOrder ? (
+                    <span className="text-amber-600">Pre-Order · ${(v.price / 100).toFixed(2)}</span>
+                  ) : (
+                    `$${(v.price / 100).toFixed(2)}`
+                  )}
                 </span>
               </button>
             );
@@ -71,28 +86,50 @@ export default function AddToCart({
       </div>
 
       {/* Price display */}
-      {selected && (
-        <p className="text-2xl font-bold text-neutral-900">
-          ${(selected.price / 100).toFixed(2)}
-        </p>
+      {selected && !isOutOfStock && (
+        <div>
+          <p className="text-2xl font-bold text-neutral-900">
+            ${(selected.price / 100).toFixed(2)}
+          </p>
+          {isPreOrder && (
+            <div className="flex items-center gap-2 mt-2 text-amber-600">
+              <Clock className="h-4 w-4" />
+              <p className="text-sm font-medium">
+                Pre-Order — Estimated to ship within 5–7 business days
+              </p>
+            </div>
+          )}
+        </div>
       )}
 
-      {/* Add to cart button */}
+      {/* Add to cart / Pre-order / Out of stock button */}
       <button
         onClick={handleAdd}
-        disabled={!selected?.inStock}
+        disabled={!canPurchase}
         className={`flex w-full items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold transition ${
           added
             ? "bg-sky-700 text-white"
-            : selected?.inStock
-            ? "bg-sky-400 text-white hover:bg-sky-500"
-            : "cursor-not-allowed bg-neutral-200 text-neutral-400"
+            : isOutOfStock
+            ? "cursor-not-allowed bg-neutral-200 text-neutral-400"
+            : isPreOrder
+            ? "bg-amber-500 text-white hover:bg-amber-600"
+            : "bg-sky-400 text-white hover:bg-sky-500"
         }`}
       >
         {added ? (
           <>
             <Check className="h-5 w-5" />
             Added to Cart
+          </>
+        ) : isOutOfStock ? (
+          <>
+            <XCircle className="h-5 w-5" />
+            Out of Stock
+          </>
+        ) : isPreOrder ? (
+          <>
+            <Clock className="h-5 w-5" />
+            Pre-Order Now
           </>
         ) : (
           <>

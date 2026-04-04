@@ -56,6 +56,7 @@ const categoryIcons: Record<string, ComponentType<{ className?: string }>> = {
   "immune": ShieldPlus,
   "longevity": Activity,
   "metabolic": Flame,
+  "weight-management": Flame,
   "mitochondrial": Zap,
   "neuropeptide": Brain,
   "neuroprotective": Microscope,

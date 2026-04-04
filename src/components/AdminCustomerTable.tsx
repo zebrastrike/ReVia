@@ -10,9 +10,10 @@ interface Customer {
   role: string;
   createdAt: string;
   orderCount: number;
+  totalSpent?: number;
 }
 
-type SortKey = "name" | "email" | "role" | "registered" | "orders";
+type SortKey = "name" | "email" | "role" | "registered" | "orders" | "spent";
 type SortDir = "asc" | "desc" | null;
 
 function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {
@@ -61,6 +62,8 @@ export default function AdminCustomerTable({ customers }: { customers: Customer[
         return dir * (new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
       case "orders":
         return dir * (a.orderCount - b.orderCount);
+      case "spent":
+        return dir * ((a.totalSpent ?? 0) - (b.totalSpent ?? 0));
       default:
         return 0;
     }
@@ -72,6 +75,7 @@ export default function AdminCustomerTable({ customers }: { customers: Customer[
     { key: "role", label: "Role" },
     { key: "registered", label: "Registered" },
     { key: "orders", label: "Orders" },
+    { key: "spent", label: "Total Spent" },
   ];
 
   return (
@@ -143,6 +147,9 @@ export default function AdminCustomerTable({ customers }: { customers: Customer[
                     </td>
                     <td className="px-6 py-4 text-stone-800/70">
                       {customer.orderCount}
+                    </td>
+                    <td className="px-6 py-4 text-stone-800 font-medium">
+                      {customer.totalSpent ? `$${(customer.totalSpent / 100).toFixed(2)}` : "$0.00"}
                     </td>
                   </tr>
                 ))}

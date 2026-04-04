@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -11,27 +11,32 @@ import { useCartStore } from "@/store/cart";
 const navLinks = [
   { href: "/shop", label: "Shop" },
   { href: "/shop?category=stacks", label: "Stacks" },
-  { href: "/blog", label: "Blog" },
-  { href: "/research", label: "Research" },
+  { href: "/learn", label: "Learn" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<{ role: string } | null>(null);
+  const authFetched = useRef(false);
   const pathname = usePathname();
   const toggleCart = useCartStore((s) => s.toggleCart);
   const totalItems = useCartStore((s) => s.totalItems)();
 
+  useEffect(() => { setMounted(true); }, []);
+
   useEffect(() => {
+    if (authFetched.current) return;
+    authFetched.current = true;
     fetch("/api/auth/me")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         setUser(data?.user ?? null);
       })
       .catch(() => {});
-  }, [pathname]);
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-sky-200/60 bg-stone-50/80 backdrop-blur-xl">
@@ -77,6 +82,12 @@ export default function Navbar() {
 
         {/* Right — Actions */}
         <div className="flex flex-1 items-center justify-end gap-3">
+          {/* US Manufactured badge */}
+          <div className="hidden items-center gap-1.5 rounded-full border border-sky-200/60 bg-sky-50/80 px-3 py-1.5 sm:flex">
+            <Image src="/images/us-flag.png" alt="US Flag" width={20} height={14} className="h-3.5 w-5 object-contain" />
+            <span className="text-[11px] font-semibold uppercase tracking-wide text-stone-600">US Made</span>
+          </div>
+
           {user ? (
             <>
               {user.role === "admin" && (
@@ -97,7 +108,7 @@ export default function Navbar() {
 
           <button onClick={toggleCart} className="relative rounded-xl p-2 text-stone-600 transition hover:bg-sky-50" aria-label="Open cart">
             <ShoppingCart className="h-5 w-5" />
-            {totalItems > 0 && (
+            {mounted && totalItems > 0 && (
               <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-sky-600 text-[10px] font-bold text-white">
                 {totalItems > 99 ? "99+" : totalItems}
               </span>

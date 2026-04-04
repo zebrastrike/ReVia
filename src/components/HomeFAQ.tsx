@@ -48,7 +48,7 @@ export default function HomeFAQ() {
               initial={shouldReduceMotion ? {} : { opacity: 0, x: -40 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
             >
               <p className="text-xs font-semibold uppercase tracking-[0.25em] text-sky-500 mb-3">
                 Common Questions
@@ -80,7 +80,7 @@ export default function HomeFAQ() {
                   initial={shouldReduceMotion ? {} : { opacity: 0, x: 40 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
-                  transition={{ duration: 0.5, delay: 0.15 + i * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  transition={{ duration: 0.5, delay: 0.15 + i * 0.1, ease: "easeOut" }}
                   className={`rounded-2xl border overflow-hidden transition-all duration-300 ${
                     isOpen
                       ? "border-sky-300/70 bg-white shadow-md shadow-sky-200/20"
@@ -123,7 +123,7 @@ export default function HomeFAQ() {
                         exit={{ height: 0, opacity: 0 }}
                         transition={{
                           duration: 0.25,
-                          ease: [0.25, 0.46, 0.45, 0.94],
+                          ease: "easeOut",
                         }}
                         className="overflow-hidden"
                       >

@@ -11,7 +11,6 @@ import {
   FlaskConical,
   Syringe,
   ShieldAlert,
-  Thermometer,
   CircleCheck,
   CircleX,
 } from "lucide-react";
@@ -72,10 +71,10 @@ const qualityStandards = [
       "Tested for toxic heavy metals including lead, arsenic, mercury, and cadmium.",
   },
   {
-    icon: Thermometer,
-    title: "Proper Lyophilization",
+    icon: Microscope,
+    title: "LC-MS Verified",
     description:
-      "Freeze-dried using controlled cleanroom protocols to preserve compound integrity and shelf life.",
+      "Liquid chromatography–mass spectrometry testing after reconstitution — verifying the molecule exactly as it enters use. No other company does this.",
   },
 ];
 
@@ -88,6 +87,7 @@ const comparisonRows = [
   { label: "Sterility Testing", us: "Fully tested", them: "Rarely tested" },
   { label: "Endotoxin Testing", us: "Fully tested", them: "Not performed" },
   { label: "Heavy Metal Screening", us: "Fully tested", them: "Not performed" },
+  { label: "LC-MS Post-Reconstitution", us: "Verified after reconstitution", them: "Never performed" },
 ];
 
 export default function WhyReVia() {
@@ -100,7 +100,7 @@ export default function WhyReVia() {
           initial: { opacity: 0, y: 24 },
           whileInView: { opacity: 1, y: 0 },
           viewport: { once: true, margin: "-80px" },
-          transition: { duration: 0.55, delay, ease: [0.25, 0.46, 0.45, 0.94] },
+          transition: { duration: 0.55, delay, ease: "easeOut" as const },
         };
 
   return (

@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getActiveTier, resolvePriceForVariant } from "@/lib/pricing";
 import ProductCard from "@/components/ProductCard";
 import FloatingOrbs from "@/components/FloatingOrbs";
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Shop | ReVia",
@@ -16,7 +16,9 @@ export default async function ShopPage({
 }: {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
-  const { category, q, sort } = await searchParams;
+  const { category, q, sort, page: pageParam } = await searchParams;
+  const PRODUCTS_PER_PAGE = 12;
+  const currentPage = Math.max(1, parseInt(pageParam || "1", 10));
 
   /* ── Fetch categories for sidebar ── */
   const categories = await prisma.category.findMany({
@@ -84,6 +86,23 @@ export default async function ShopPage({
     });
   }
 
+  const totalProducts = sortedProducts.length;
+  const totalPages = Math.ceil(totalProducts / PRODUCTS_PER_PAGE);
+  const paginatedProducts = sortedProducts.slice(
+    (currentPage - 1) * PRODUCTS_PER_PAGE,
+    currentPage * PRODUCTS_PER_PAGE
+  );
+
+  function buildPageUrl(page: number) {
+    const params = new URLSearchParams();
+    if (category) params.set("category", category);
+    if (q) params.set("q", q);
+    if (sort) params.set("sort", sort);
+    if (page > 1) params.set("page", String(page));
+    const qs = params.toString();
+    return `/shop${qs ? `?${qs}` : ""}`;
+  }
+
   return (
     <section className="relative mx-auto max-w-[1440px] px-6 py-16 sm:px-10 lg:px-16">
       <FloatingOrbs />
@@ -94,7 +113,7 @@ export default async function ShopPage({
           Shop All Products
         </h1>
         <p className="mt-3 text-sm text-stone-500">
-          Showing {sortedProducts.length} product{sortedProducts.length !== 1 ? "s" : ""}
+          Showing {(currentPage - 1) * PRODUCTS_PER_PAGE + 1}–{Math.min(currentPage * PRODUCTS_PER_PAGE, totalProducts)} of {totalProducts} product{totalProducts !== 1 ? "s" : ""}
         </p>
       </div>
 
@@ -156,51 +175,87 @@ export default async function ShopPage({
       {/* ── Main layout: sidebar + grid ── */}
       <div className="relative z-10 flex flex-col gap-12 lg:flex-row">
         {/* Sidebar */}
-        <aside className="w-full shrink-0 lg:w-60">
+        <aside className="w-full shrink-0 lg:w-72">
           <div className="lg:sticky lg:top-24 rounded-2xl border border-sky-200/40 bg-sky-50/60 backdrop-blur-sm p-4">
-            <h2 className="text-sm font-bold uppercase tracking-widest text-stone-700 mb-4 px-2">
+            <h2 className="text-sm font-bold uppercase tracking-widest text-stone-700 mb-3 px-1">
               Categories
             </h2>
-            <ul className="space-y-1.5">
-              <li>
-                <Link
-                  href="/shop"
-                  className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition ${
-                    !category
-                      ? "bg-sky-400 text-white shadow-sm"
-                      : "bg-white/70 text-stone-600 border border-sky-200/40 hover:bg-white hover:shadow-sm"
-                  }`}
-                >
-                  All Products
-                </Link>
-              </li>
+            <div className="grid grid-cols-2 gap-1.5">
+              <Link
+                href="/shop"
+                className={`rounded-lg px-3 py-2 text-xs font-medium text-center transition ${
+                  !category
+                    ? "bg-sky-400 text-white shadow-sm"
+                    : "bg-white/70 text-stone-600 border border-sky-200/40 hover:bg-white hover:shadow-sm"
+                }`}
+              >
+                All Products
+              </Link>
               {categories.map((cat) => {
                 const isActive = category === cat.slug;
                 return (
-                  <li key={cat.id}>
-                    <Link
-                      href={`/shop?category=${cat.slug}${q ? `&q=${q}` : ""}${sort ? `&sort=${sort}` : ""}`}
-                      className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition ${
-                        isActive
-                          ? "bg-sky-400 text-white shadow-sm"
-                          : "bg-white/70 text-stone-600 border border-sky-200/40 hover:bg-white hover:shadow-sm"
-                      }`}
-                    >
-                      {cat.name}
-                    </Link>
-                  </li>
+                  <Link
+                    key={cat.id}
+                    href={`/shop?category=${cat.slug}${q ? `&q=${q}` : ""}${sort ? `&sort=${sort}` : ""}`}
+                    className={`rounded-lg px-3 py-2 text-xs font-medium text-center transition ${
+                      isActive
+                        ? "bg-sky-400 text-white shadow-sm"
+                        : "bg-white/70 text-stone-600 border border-sky-200/40 hover:bg-white hover:shadow-sm"
+                    }`}
+                  >
+                    {cat.name}
+                  </Link>
                 );
               })}
-            </ul>
+            </div>
           </div>
         </aside>
 
         {/* Product grid */}
-        {sortedProducts.length > 0 ? (
-          <div className="grid flex-1 grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 items-start">
-            {sortedProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+        {paginatedProducts.length > 0 ? (
+          <div className="flex-1 space-y-8">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 items-start">
+              {paginatedProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2 pt-4">
+                {currentPage > 1 && (
+                  <Link
+                    href={buildPageUrl(currentPage - 1)}
+                    className="rounded-lg border border-sky-200/50 bg-white/80 px-4 py-2 text-sm font-medium text-stone-600 transition hover:bg-sky-50"
+                  >
+                    Previous
+                  </Link>
+                )}
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <Link
+                    key={page}
+                    href={buildPageUrl(page)}
+                    className={`rounded-lg px-3.5 py-2 text-sm font-medium transition ${
+                      page === currentPage
+                        ? "bg-sky-400 text-white shadow-sm"
+                        : "border border-sky-200/50 bg-white/80 text-stone-600 hover:bg-sky-50"
+                    }`}
+                  >
+                    {page}
+                  </Link>
+                ))}
+
+                {currentPage < totalPages && (
+                  <Link
+                    href={buildPageUrl(currentPage + 1)}
+                    className="rounded-lg border border-sky-200/50 bg-white/80 px-4 py-2 text-sm font-medium text-stone-600 transition hover:bg-sky-50"
+                  >
+                    Next
+                  </Link>
+                )}
+              </div>
+            )}
           </div>
         ) : (
           <div className="flex flex-1 items-center justify-center py-20">

@@ -13,6 +13,7 @@ import {
   Ticket,
   Warehouse,
   Settings,
+  FileText,
 } from "lucide-react";
 
 const navItems = [
@@ -20,6 +21,7 @@ const navItems = [
   { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
   { href: "/admin/products", label: "Products", icon: Package },
   { href: "/admin/inventory", label: "Inventory", icon: Warehouse },
+  { href: "/admin/newsletter", label: "Newsletter", icon: FileText },
   { href: "/admin/coupons", label: "Coupons", icon: Ticket },
   { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/settings", label: "Settings", icon: Settings },

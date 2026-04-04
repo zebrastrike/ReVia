@@ -67,7 +67,7 @@ export default function HeroBanner() {
                 className="block"
                 initial={{ opacity: 0, y: 25 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+                transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
               >
                 Premium Peptides.
               </motion.span>
@@ -75,7 +75,7 @@ export default function HeroBanner() {
                 className="block"
                 initial={{ opacity: 0, y: 25 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 1.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+                transition={{ duration: 0.8, delay: 1.5, ease: "easeOut" }}
               >
                 Proven Purity.
               </motion.span>
@@ -83,7 +83,7 @@ export default function HeroBanner() {
                 className="block"
                 initial={{ opacity: 0, y: 25 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 2.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+                transition={{ duration: 0.8, delay: 2.2, ease: "easeOut" }}
               >
                 Real <span className="hero-shimmer">Results.</span>
               </motion.span>
@@ -139,6 +139,7 @@ export default function HeroBanner() {
             >
               {[
                 { icon: FlaskConical, text: ">99% Purity" },
+                { icon: Atom, text: "LC-MS Verified" },
                 { icon: Truck, text: "Same-Day Shipping" },
                 { icon: Package, text: "85+ Peptides" },
                 { icon: MapPin, text: "US-Based" },
@@ -154,7 +155,7 @@ export default function HeroBanner() {
           <motion.div
             initial={{ opacity: 0, scale: 0.93 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 0.9, ease: "easeOut" }}
             className="hidden lg:block"
           >
             <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-sky-900/10 border border-sky-200/40 bg-white/30 backdrop-blur-sm p-2">

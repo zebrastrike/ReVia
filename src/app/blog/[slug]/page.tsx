@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import JsonLd from "@/components/JsonLd";
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 function readTime(html: string): number {
   const text = html.replace(/<[^>]*>/g, "");
@@ -74,8 +74,8 @@ export default async function BlogPostPage({
             Home
           </Link>{" "}
           /{" "}
-          <Link href="/blog" className="hover:text-neutral-700">
-            Blog
+          <Link href="/learn" className="hover:text-neutral-700">
+            Learn
           </Link>{" "}
           / <span className="text-neutral-700">{post.title}</span>
         </nav>

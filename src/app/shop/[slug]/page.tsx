@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, FileCheck } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { getActiveTier, resolvePriceForVariant } from "@/lib/pricing";
 import ProductCard from "@/components/ProductCard";
 import AddToCart from "@/components/AddToCart";
-import WishlistButton from "@/components/WishlistButton";
 import ReviewSection from "@/components/ReviewSection";
 import JsonLd from "@/components/JsonLd";
 import { getProductImage } from "@/lib/product-images";
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -49,8 +49,14 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
   if (!product) return notFound();
 
-  const minPrice = Math.min(...product.variants.map((v) => v.price));
-  const maxPrice = Math.max(...product.variants.map((v) => v.price));
+  const tier = await getActiveTier();
+  const resolvedVariants = product.variants.map((v) => ({
+    ...v,
+    price: resolvePriceForVariant(v, tier),
+  }));
+
+  const minPrice = Math.min(...resolvedVariants.map((v) => v.price));
+  const maxPrice = Math.max(...resolvedVariants.map((v) => v.price));
   const productLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -69,7 +75,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
   };
 
   /* ── Related products (same category, exclude current) ── */
-  const related = await prisma.product.findMany({
+  const rawRelated = await prisma.product.findMany({
     where: {
       categoryId: product.categoryId,
       id: { not: product.id },
@@ -77,6 +83,10 @@ export default async function ProductDetailPage({ params }: PageProps) {
     include: { variants: true, category: true },
     take: 4,
   });
+  const related = rawRelated.map((p) => ({
+    ...p,
+    variants: p.variants.map((v) => ({ ...v, price: resolvePriceForVariant(v, tier) })),
+  }));
 
   return (
     <>
@@ -110,9 +120,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
       <div className="grid gap-12 lg:grid-cols-2">
         {/* Image */}
         <div className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
-          <div className="absolute right-3 top-3 z-10">
-            <WishlistButton productId={product.id} />
-          </div>
           {getProductImage(product.slug, product.image) ? (
             <img
               src={getProductImage(product.slug, product.image)!}
@@ -149,17 +156,32 @@ export default async function ProductDetailPage({ params }: PageProps) {
           {/* Variant selector + Add to Cart (client component) */}
           <div className="mt-8">
             <AddToCart
-              variants={product.variants.map((v) => ({
+              variants={resolvedVariants.map((v) => ({
                 id: v.id,
                 label: v.label,
                 price: v.price,
                 inStock: v.inStock,
+                stockStatus: (v as { stockStatus?: string }).stockStatus ?? (v.inStock ? "in_stock" : "out_of_stock"),
               }))}
               productName={product.name}
               productSlug={product.slug}
               productImage={getProductImage(product.slug, product.image)}
             />
           </div>
+
+          {/* COA Link */}
+          {product.coaUrl && (
+            <a
+              href={product.coaUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 flex items-center gap-2 rounded-xl border border-sky-200/60 bg-sky-50/80 px-4 py-3 text-sm font-medium text-sky-700 transition hover:bg-sky-100 hover:border-sky-300/60"
+            >
+              <FileCheck className="h-4.5 w-4.5 shrink-0" />
+              View Certificate of Analysis (COA)
+              <span className="ml-auto text-xs text-sky-500">Independent Lab Verified</span>
+            </a>
+          )}
 
           {/* Disclaimer */}
           <div className="mt-8 rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs leading-relaxed text-stone-500">

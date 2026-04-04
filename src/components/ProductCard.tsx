@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { useCartStore } from "@/store/cart";
-import WishlistButton from "@/components/WishlistButton";
 import { getProductImage } from "@/lib/product-images";
 
 interface Variant {
@@ -26,6 +25,7 @@ interface Product {
 const catColors: Record<string, string> = {
   Recovery: "from-sky-100 to-blue-200",
   Metabolic: "from-amber-100 to-orange-200",
+  "Weight Management": "from-amber-100 to-orange-200",
   "Growth Hormone": "from-blue-100 to-indigo-200",
   Nootropic: "from-violet-100 to-purple-200",
   Longevity: "from-cyan-100 to-blue-200",
@@ -68,17 +68,15 @@ export default function ProductCard({ product }: { product: Product }) {
       className="group relative flex flex-col overflow-hidden rounded-2xl border border-sky-300/50 bg-sky-50/80 shadow-md shadow-stone-300/25 transition-all duration-300 hover:shadow-lg hover:shadow-stone-400/20 hover:-translate-y-1 hover:border-sky-300/70"
     >
       {/* Image area */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-white">
-        <div className="absolute right-2.5 top-2.5 z-10">
-          <WishlistButton productId={product.id} />
-        </div>
-
+      <div className="relative aspect-square w-full overflow-hidden bg-white">
         {image ? (
-          <img
-            src={image}
-            alt={product.name}
-            className="h-full w-full object-contain p-4 transition-transform duration-500 group-hover:scale-105"
-          />
+          <div className="flex h-full w-full items-center justify-center p-6">
+            <img
+              src={image}
+              alt={product.name}
+              className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105"
+            />
+          </div>
         ) : (
           <div className={`flex h-full w-full items-center justify-center bg-linear-to-br ${gradient}`}>
             <span className="text-6xl font-black text-sky-400/30 select-none">

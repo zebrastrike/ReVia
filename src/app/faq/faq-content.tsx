@@ -15,7 +15,7 @@ const sections: Section[] = [
     items: [
       { q: "What are research peptides?", a: "Research peptides are synthetic amino acid chains used in laboratory research to study biological processes. All ReVia products are labeled 'For Research Use Only' (RUO) and are not intended for human or animal consumption, diagnosis, treatment, or prevention of any disease." },
       { q: "Who can purchase from ReVia?", a: "ReVia sells to qualified researchers, academic institutions, independent labs, and individuals aged 18+ who agree to use products solely for legitimate research purposes." },
-      { q: "How do I create an account?", a: "Click 'Register' in the top navigation, enter your name, email, and a secure password (8+ characters). Your account gives you access to order tracking, wishlists, reviews, and faster checkout." },
+      { q: "How do I create an account?", a: "Click 'Register' in the top navigation, enter your name, email, and a secure password (8+ characters). Your account gives you access to order tracking, reviews, and faster checkout." },
       { q: "How do I place my first order?", a: "Browse our shop by category or search for specific peptides. Add items to your cart, proceed to checkout, enter shipping info, apply any discount codes, and submit. You'll receive an email confirmation." },
     ],
   },

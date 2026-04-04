@@ -7,7 +7,7 @@ import CategoriesSection from "@/components/CategoriesSection";
 import NewsletterBanner from "@/components/NewsletterBanner";
 import HomeFAQ from "@/components/HomeFAQ";
 import FloatingPaths from "@/components/FloatingPaths";
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function HomePage() {
   const tier = await getActiveTier();

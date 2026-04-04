@@ -13,7 +13,6 @@ async function main() {
   console.log("🌱 ReVia seed-v2: clearing old catalog...");
 
   // Clear old product catalog only — preserve users, orders, blog posts
-  await prisma.wishlist.deleteMany();
   await prisma.review.deleteMany();
   await prisma.cartItem.deleteMany();
   await prisma.productVariant.deleteMany();

@@ -24,10 +24,10 @@ model Product {
   category    Category         @relation(fields: [categoryId], references: [id])
   variants    ProductVariant[]
   image       String?
+  coaUrl      String?
   featured    Boolean          @default(false)
   active      Boolean          @default(true)
   tags        String           @default("[]")
-  wishlist    Wishlist[]
   reviews     Review[]
 
   @@index([categoryId])
@@ -42,6 +42,7 @@ model ProductVariant {
   compareAtPrice   Float?
   sku              String  @unique
   inStock          Boolean @default(true)
+  stockStatus      String  @default("in_stock") // "in_stock" | "pre_order" | "out_of_stock"
   retailPrice      Float?
   foundersPrice    Float?
   friendsPrice     Float?
@@ -61,15 +62,18 @@ model CartItem {
 }
 
 model User {
-  id        String     @id @default(cuid())
-  email     String     @unique
-  password  String
-  name      String
-  role      String     @default("customer")
-  createdAt DateTime   @default(now())
-  orders    Order[]
-  wishlist  Wishlist[]
-  reviews   Review[]
+  id                String     @id @default(cuid())
+  email             String     @unique
+  password          String
+  name              String
+  role              String     @default("customer")
+  emailVerified     Boolean    @default(false)
+  verifyToken       String?
+  resetToken        String?
+  resetTokenExpiry  DateTime?
+  createdAt         DateTime   @default(now())
+  orders            Order[]
+  reviews           Review[]
 }
 
 model Order {
@@ -102,18 +106,6 @@ model OrderItem {
   quantity     Int
 
   @@index([orderId])
-}
-
-model Wishlist {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  productId String
-  product   Product  @relation(fields: [productId], references: [id])
-  createdAt DateTime @default(now())
-
-  @@unique([userId, productId])
-  @@index([userId])
 }
 
 model Review {
@@ -170,4 +162,14 @@ model BlogPost {
   published   Boolean  @default(true)
   publishedAt DateTime @default(now())
   createdAt   DateTime @default(now())
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
 }

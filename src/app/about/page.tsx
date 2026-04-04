@@ -5,6 +5,9 @@ import {
   Lightbulb,
   Truck,
   Quote,
+  FlaskConical,
+  Microscope,
+  ShieldCheck,
 } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -154,6 +157,64 @@ export default function AboutPage() {
             your thousandth, we are here to make sure your compounds are the
             last thing you have to worry about.
           </p>
+        </div>
+      </section>
+
+      <ScrollDivider label="Testing" />
+
+      {/* Our Testing Process */}
+      <section className="max-w-5xl mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-sky-500 mb-2">
+            Quality Assurance
+          </p>
+          <h2 className="text-3xl font-bold text-stone-900">
+            Our Testing Process
+          </h2>
+          <div className="mx-auto mt-4 h-px w-10 bg-sky-300/60" />
+          <p className="mt-4 text-stone-500 max-w-2xl mx-auto">
+            We don&apos;t just test the raw material — we test the finished product
+            exactly as it would be used. This level of verification is unmatched
+            in the industry.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="rounded-2xl border border-sky-200/40 bg-white/90 p-6 text-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-100/80 border border-sky-200/50 mx-auto mb-4">
+              <FlaskConical className="h-6 w-6 text-sky-500" strokeWidth={1.75} />
+            </div>
+            <h3 className="text-base font-semibold text-stone-900 mb-2">HPLC Purity Testing</h3>
+            <p className="text-sm text-stone-500 leading-relaxed">
+              Every batch is tested via High-Performance Liquid Chromatography
+              to confirm &gt;99% purity before release. Full COAs are published
+              for every product.
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-sky-200/40 bg-white/90 p-6 text-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-100/80 border border-sky-200/50 mx-auto mb-4">
+              <Microscope className="h-6 w-6 text-sky-500" strokeWidth={1.75} />
+            </div>
+            <h3 className="text-base font-semibold text-stone-900 mb-2">LC-MS After Reconstitution</h3>
+            <p className="text-sm text-stone-500 leading-relaxed">
+              We are adding liquid chromatography–mass spectrometry testing on
+              reconstituted peptides — verifying the molecule exactly as it
+              enters use. No other company currently does this.
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-sky-200/40 bg-white/90 p-6 text-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-100/80 border border-sky-200/50 mx-auto mb-4">
+              <ShieldCheck className="h-6 w-6 text-sky-500" strokeWidth={1.75} />
+            </div>
+            <h3 className="text-base font-semibold text-stone-900 mb-2">Heavy Metal Screening</h3>
+            <p className="text-sm text-stone-500 leading-relaxed">
+              All products are screened for toxic heavy metals including lead,
+              arsenic, mercury, and cadmium — plus sterility and endotoxin
+              testing on every batch.
+            </p>
+          </div>
         </div>
       </section>
 

@@ -12,13 +12,13 @@ interface Product {
   active: boolean;
   featured: boolean;
   category: { name: string };
-  variants: { price: number }[];
+  variants: { price: number; label: string }[];
 }
 
 type SortKey = "name" | "category" | "variants" | "price" | "featured" | "visibility";
 type SortDir = "asc" | "desc" | null;
 
-function getLowestPrice(variants: { price: number }[]) {
+function getLowestPrice(variants: { price: number; label: string }[]) {
   return variants.length > 0 ? Math.min(...variants.map((v) => v.price)) : null;
 }
 
@@ -140,6 +140,11 @@ export default function AdminProductTable({ products }: { products: Product[] })
                       >
                         {product.name}
                       </Link>
+                      {product.variants.length > 0 && (
+                        <p className="text-xs text-stone-400 mt-0.5">
+                          {product.variants.map((v) => v.label).join(" · ")}
+                        </p>
+                      )}
                     </td>
                     <td className="px-6 py-4 text-stone-800/50">{product.category.name}</td>
                     <td className="px-6 py-4 text-stone-800/50">{product.variants.length}</td>

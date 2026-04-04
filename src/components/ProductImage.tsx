@@ -3,6 +3,7 @@
 const categoryGradients: Record<string, [string, string]> = {
   Recovery: ["from-sky-600", "to-blue-500"],
   Metabolic: ["from-amber-600", "to-orange-500"],
+  "Weight Management": ["from-amber-600", "to-orange-500"],
   "Growth Hormone": ["from-blue-600", "to-indigo-500"],
   Nootropic: ["from-violet-600", "to-purple-500"],
   Longevity: ["from-cyan-600", "to-blue-500"],

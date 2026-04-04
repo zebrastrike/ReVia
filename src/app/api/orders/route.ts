@@ -6,6 +6,7 @@ import { getAuthUser } from "@/lib/auth";
 import { sendOrderConfirmation } from "@/lib/email";
 import { rateLimit } from "@/lib/rate-limit";
 import { validateShippingAddress, validateOrderItems, sanitizeString } from "@/lib/validation";
+import { calculateTax } from "@/lib/tax";
 
 /* ------------------------------------------------------------------ */
 /*  POST /api/orders – create a new order                              */
@@ -167,6 +168,10 @@ export async function POST(request: NextRequest) {
       total = Math.max(0, total - discount);
       appliedCouponId = coupon.id;
     }
+
+    // ── Calculate tax based on state ──
+    const tax = calculateTax(sanitizedShipping.state, total);
+    total = total + tax;
 
     // ── Check auth (optional) ──
     const cookieStore = await cookies();

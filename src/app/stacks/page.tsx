@@ -3,7 +3,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getActiveTier, resolvePriceForVariant, getTierSavingsMessage } from "@/lib/pricing";
 import { ArrowRight } from "lucide-react";
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "ReVia Stacks | Precision-Blended Peptide Formulas",

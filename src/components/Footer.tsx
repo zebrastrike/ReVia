@@ -20,8 +20,8 @@ const footerSections = [
     label: "Company",
     links: [
       { title: "About", href: "/about" },
-      { title: "Blog", href: "/blog" },
-      { title: "Research", href: "/research" },
+      { title: "Articles", href: "/learn?tab=articles" },
+      { title: "Research", href: "/learn?tab=research" },
       { title: "Contact", href: "/contact" },
       { title: "FAQ", href: "/faq" },
     ],
@@ -66,7 +66,7 @@ function AnimatedContainer({
       initial={{ y: 20, opacity: 0 }}
       whileInView={{ y: 0, opacity: 1 }}
       viewport={{ once: true, amount: 0.5 }}
-      transition={{ delay, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+      transition={{ delay, duration: 0.5, ease: "easeOut" }}
       className={className}
     >
       {children}

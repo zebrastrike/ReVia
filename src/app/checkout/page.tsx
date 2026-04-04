@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from "@/lib/constants";
+import { calculateTax, getTaxRate } from "@/lib/tax";
 import FloatingOrbs from "@/components/FloatingOrbs";
 
 export default function CheckoutPage() {
@@ -69,7 +70,10 @@ export default function CheckoutPage() {
 
   const subtotal = totalPrice();
   const shippingCost = subtotal >= threshold ? 0 : SHIPPING_COST;
-  const finalTotal = Math.max(0, subtotal - couponDiscount) + shippingCost;
+  const afterDiscount = Math.max(0, subtotal - couponDiscount);
+  const taxAmount = calculateTax(form.state, afterDiscount);
+  const taxRate = getTaxRate(form.state);
+  const finalTotal = afterDiscount + shippingCost + taxAmount;
   const progress = Math.min((subtotal / threshold) * 100, 100);
   const remaining = threshold - subtotal;
   const qualifies = subtotal >= threshold;
@@ -302,15 +306,18 @@ export default function CheckoutPage() {
                   <label className="mb-1.5 block text-xs font-medium text-stone-500">
                     State
                   </label>
-                  <input
+                  <select
                     required
-                    type="text"
-                    placeholder="CA"
                     value={form.state}
-                    onChange={update("state")}
+                    onChange={(e) => setForm((prev) => ({ ...prev, state: e.target.value }))}
                     className={inputClass}
                     disabled={submitting}
-                  />
+                  >
+                    <option value="">Select</option>
+                    {["AL","AK","AZ","AR","CA","CO","CT","DC","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"].map((s) => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="mb-1.5 block text-xs font-medium text-stone-500">
@@ -516,6 +523,20 @@ export default function CheckoutPage() {
                       )}
                     </span>
                   </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-stone-500">
+                      Tax{form.state ? ` (${form.state.toUpperCase()} ${taxRate > 0 ? taxRate.toFixed(2) + "%" : ""})` : ""}
+                    </span>
+                    <span className="text-sm text-stone-700">
+                      {!form.state ? (
+                        <span className="text-stone-400 text-xs">Enter state</span>
+                      ) : taxAmount === 0 ? (
+                        <span className="text-sky-600 font-medium">$0.00</span>
+                      ) : (
+                        `$${(taxAmount / 100).toFixed(2)}`
+                      )}
+                    </span>
+                  </div>
 
                   <div className="flex items-center justify-between pt-3 border-t border-sky-100">
                     <span className="text-sm font-semibold text-stone-700">
@@ -554,7 +575,7 @@ export default function CheckoutPage() {
                     animate={{ width: `${progress}%` }}
                     transition={{
                       duration: 0.6,
-                      ease: [0.25, 0.46, 0.45, 0.94],
+                      ease: "easeOut",
                     }}
                   />
                 </div>

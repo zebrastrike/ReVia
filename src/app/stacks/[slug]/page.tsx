@@ -5,7 +5,7 @@ import { ChevronRight, FlaskConical, ShieldCheck, Zap } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getActiveTier, resolvePriceForVariant, getTierSavingsMessage } from "@/lib/pricing";
 import AddToCart from "@/components/AddToCart";
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -246,6 +246,7 @@ export default async function StackDetailPage({ params }: PageProps) {
                 label: v.label,
                 price: v.price,
                 inStock: v.inStock,
+                stockStatus: (v as { stockStatus?: string }).stockStatus ?? (v.inStock ? "in_stock" : "out_of_stock"),
               }))}
               productName={product.name}
               productSlug={product.slug}

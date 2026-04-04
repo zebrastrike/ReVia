@@ -33,7 +33,7 @@ function Section({
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.5, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
+      transition={{ duration: 0.5, delay, ease: "easeOut" }}
       className={className}
     >
       {children}
@@ -62,11 +62,11 @@ export default function ResearchDetailClient({
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <Section>
             <Link
-              href="/research"
+              href="/learn?tab=research"
               className="group inline-flex items-center gap-1.5 text-sm font-medium text-sky-600 transition hover:text-sky-500"
             >
               <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-              Back to Research Library
+              Back to Learn
             </Link>
           </Section>
 

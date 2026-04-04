@@ -27,6 +27,7 @@ interface ProductData {
   categoryId: string;
   featured: boolean;
   tags: string;
+  coaUrl: string | null;
   variants: Variant[];
   category: Category;
 }
@@ -48,6 +49,7 @@ export default function ProductEditForm({
   const [description, setDescription] = useState(product.description ?? "");
   const [categoryId, setCategoryId] = useState(product.categoryId);
   const [featured, setFeatured] = useState(product.featured);
+  const [coaUrl, setCoaUrl] = useState(product.coaUrl ?? "");
   const [variants, setVariants] = useState<Variant[]>(
     product.variants.map((v) => ({ ...v, isNew: false }))
   );
@@ -64,7 +66,7 @@ export default function ProductEditForm({
       const res = await fetch(`/api/admin/products/${product.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, description, categoryId, featured }),
+        body: JSON.stringify({ name, description, categoryId, featured, coaUrl: coaUrl || null }),
       });
 
       if (!res.ok) {
@@ -202,6 +204,22 @@ export default function ProductEditForm({
             className={`${inputClass} min-h-[100px] resize-y`}
             placeholder="Product description..."
           />
+        </div>
+
+        <div>
+          <label className="mb-1 block text-xs font-medium text-stone-500">
+            COA Link
+          </label>
+          <input
+            type="url"
+            value={coaUrl}
+            onChange={(e) => setCoaUrl(e.target.value)}
+            className={inputClass}
+            placeholder="https://chromate.org/verify?c=... or link to COA PDF"
+          />
+          <p className="mt-1 text-[10px] text-stone-400">
+            Link to the Certificate of Analysis for this product. Visible to customers on the product page.
+          </p>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">

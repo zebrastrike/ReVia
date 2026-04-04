@@ -197,7 +197,7 @@ export default function CartDrawer() {
                       className="h-full rounded-full bg-gradient-to-r from-sky-500 to-sky-400"
                       initial={{ width: 0 }}
                       animate={{ width: `${progress}%` }}
-                      transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+                      transition={{ duration: 0.6, ease: "easeOut" }}
                     />
                   </div>
                 </div>

@@ -27,7 +27,7 @@ export default async function ProductsPage() {
           active: p.active,
           featured: p.featured,
           category: { name: p.category.name },
-          variants: p.variants.map((v) => ({ price: v.price })),
+          variants: p.variants.map((v) => ({ price: v.price, label: v.label })),
         }))}
       />
     </div>
