@@ -11,7 +11,7 @@ export default function DisclaimerPage() {
     <>
       <h1>Disclaimer</h1>
       <p className="text-sm text-gray-500">
-        Last Updated: March 2025
+        Last Updated: April 2026
       </p>
       <p>
         This Disclaimer applies to all products sold by ReVia Research Supply
@@ -36,6 +36,20 @@ export default function DisclaimerPage() {
         professionals in controlled settings. They are not manufactured,
         packaged, or labeled for use as drugs, food additives, dietary
         supplements, cosmetics, or household chemicals.
+      </p>
+
+      <h2>1A. Manufacturing Standards</h2>
+      <p>
+        Our products are manufactured in cGMP-compliant, ISO-certified,
+        FDA-registered facilities in the United States. Certificates of
+        compliance and Safety Data Sheets (SDS) are available upon request at{" "}
+        <a
+          href="mailto:orders@revialife.com"
+          className="text-blue-600 hover:underline"
+        >
+          orders@revialife.com
+        </a>
+        .
       </p>
 
       <h2>2. Not Intended for Human Consumption</h2>
@@ -139,7 +153,21 @@ export default function DisclaimerPage() {
         reserve the right to correct any errors and to update product
         information at any time without notice. Certificates of analysis (COAs)
         are provided for informational purposes and reflect testing at the time
-        of manufacture.
+        of manufacture. Certificates of Analysis are accessible on each product
+        page when available, or by contacting{" "}
+        <a
+          href="mailto:orders@revialife.com"
+          className="text-blue-600 hover:underline"
+        >
+          orders@revialife.com
+        </a>{" "}
+        with your order number.
+      </p>
+      <p>
+        Purity specifications reflect testing at time of manufacture. ReVia does
+        not guarantee product stability beyond the specified shelf life.
+        Products stored outside recommended temperature ranges are used at the
+        buyer&apos;s own risk.
       </p>
 
       <h2>10. Indemnification</h2>

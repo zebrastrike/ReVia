@@ -11,7 +11,7 @@ export default function ShippingPolicyPage() {
     <>
       <h1>Shipping Policy</h1>
       <p className="text-sm text-gray-500">
-        Last Updated: March 2025
+        Last Updated: April 2026
       </p>
       <p>
         ReVia Research Supply LLC (&quot;ReVia&quot;) is committed to delivering
@@ -42,26 +42,27 @@ export default function ShippingPolicyPage() {
           </thead>
           <tbody>
             <tr className="border-b border-gray-100">
-              <td className="px-4 py-3">Standard Shipping</td>
+              <td className="px-4 py-3">Standard Shipping &mdash; $7.95</td>
               <td className="px-4 py-3">5&ndash;7 business days</td>
               <td className="px-4 py-3">USPS or UPS Ground</td>
             </tr>
             <tr className="border-b border-gray-100">
-              <td className="px-4 py-3">Priority Shipping</td>
+              <td className="px-4 py-3">Expedited Shipping &mdash; $14.95</td>
               <td className="px-4 py-3">2&ndash;3 business days</td>
               <td className="px-4 py-3">USPS Priority or UPS 2nd Day Air</td>
             </tr>
             <tr>
-              <td className="px-4 py-3">Overnight Shipping</td>
-              <td className="px-4 py-3">1 business day</td>
+              <td className="px-4 py-3">Overnight Shipping &mdash; $34.95</td>
+              <td className="px-4 py-3">Next business day</td>
               <td className="px-4 py-3">UPS Next Day Air or FedEx Overnight</td>
             </tr>
           </tbody>
         </table>
       </div>
       <p>
-        Estimated delivery times begin from the date of shipment, not the date
-        the order was placed. Delivery times are estimates and are not
+        All orders ship next business day. Discreet packaging. Tracking
+        provided. Insured shipments. Estimated delivery times begin from the
+        date of shipment, not the date the order was placed. Delivery times are estimates and are not
         guaranteed. Delays may occur due to carrier issues, weather, or other
         circumstances beyond our control.
       </p>

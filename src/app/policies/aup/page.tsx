@@ -11,7 +11,7 @@ export default function AcceptableUsePolicyPage() {
     <>
       <h1>Acceptable Use Policy</h1>
       <p className="text-sm text-gray-500">
-        Last Updated: March 2025
+        Last Updated: April 2026
       </p>
       <p>
         This Acceptable Use Policy (&quot;AUP&quot;) governs the purchase and

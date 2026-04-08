@@ -11,7 +11,7 @@ export default function CookiePolicyPage() {
     <>
       <h1>Cookie Policy</h1>
       <p className="text-sm text-gray-500">
-        Last Updated: March 2025
+        Last Updated: April 2026
       </p>
       <p>
         ReVia Research Supply LLC (&quot;ReVia,&quot; &quot;we,&quot;
@@ -102,8 +102,8 @@ export default function CookiePolicyPage() {
           .
         </li>
         <li>
-          <strong>Payment Processors:</strong> Our payment providers (e.g.,
-          Stripe) may set cookies to facilitate secure payment processing and
+          <strong>Payment Processors:</strong> Our payment providers
+          may set cookies to facilitate secure payment processing and
           fraud detection.
         </li>
       </ul>

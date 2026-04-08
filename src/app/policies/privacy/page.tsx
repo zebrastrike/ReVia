@@ -11,7 +11,7 @@ export default function PrivacyPolicyPage() {
     <>
       <h1>Privacy Policy</h1>
       <p className="text-sm text-gray-500">
-        Last Updated: March 2025
+        Last Updated: April 2026
       </p>
       <p>
         ReVia Research Supply LLC (&quot;ReVia,&quot; &quot;we,&quot;
@@ -90,7 +90,7 @@ export default function PrivacyPolicyPage() {
       <ul>
         <li>
           <strong>Payment processors:</strong> To securely process your
-          transactions (e.g., Stripe, Square).
+          transactions.
         </li>
         <li>
           <strong>Shipping carriers:</strong> To deliver your orders (e.g.,

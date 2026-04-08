@@ -11,7 +11,7 @@ export default function CCPANoticePage() {
     <>
       <h1>California Consumer Privacy Act (CCPA) Notice</h1>
       <p className="text-sm text-gray-500">
-        Last Updated: March 2025
+        Last Updated: April 2026
       </p>
       <p>
         This CCPA Notice supplements the information contained in the{" "}
@@ -54,9 +54,7 @@ export default function CCPANoticePage() {
       <h3>1.3 Right to Opt-Out of Sale</h3>
       <p>
         You have the right to opt out of the &quot;sale&quot; of your personal
-        information. ReVia does not sell personal information in the traditional
-        sense. However, certain activities such as targeted advertising may
-        constitute a &quot;sale&quot; under the broad CCPA definition. You may
+        information. ReVia does not sell or share personal information for advertising purposes. You may
         exercise your right to opt out by contacting us or using the &quot;Do
         Not Sell My Personal Information&quot; mechanism described below.
       </p>

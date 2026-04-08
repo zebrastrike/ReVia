@@ -11,7 +11,7 @@ export default function TermsOfServicePage() {
     <>
       <h1>Terms of Service</h1>
       <p className="text-sm text-gray-500">
-        Last Updated: March 2025
+        Last Updated: April 2026
       </p>
       <p>
         Welcome to ReVia Research Supply LLC (&quot;ReVia,&quot; &quot;we,&quot;
@@ -41,6 +41,8 @@ export default function TermsOfServicePage() {
         buyer of research-use-only materials. We reserve the right to request
         verification of your eligibility at any time and to refuse service to
         any individual or entity that does not meet these requirements.
+        ReVia reserves the right to request proof of institutional affiliation
+        or research credentials before processing orders.
       </p>
 
       <h2>3. Account Responsibilities</h2>
@@ -179,7 +181,14 @@ export default function TermsOfServicePage() {
         necessary to make it valid and enforceable.
       </p>
 
-      <h2>12. Modifications to Terms</h2>
+      <h2>12. Export Controls</h2>
+      <p>
+        Products are intended for use within the United States only and are
+        subject to U.S. export control laws. Customers agree not to export,
+        re-export, or resell products to international parties.
+      </p>
+
+      <h2>13. Modifications to Terms</h2>
       <p>
         ReVia reserves the right to update or modify these Terms at any time
         without prior notice. The &quot;Last Updated&quot; date at the top of
@@ -188,7 +197,7 @@ export default function TermsOfServicePage() {
         revised Terms. We encourage you to review these Terms periodically.
       </p>
 
-      <h2>13. Contact Information</h2>
+      <h2>14. Contact Information</h2>
       <p>
         If you have any questions about these Terms of Service, please contact
         us at:

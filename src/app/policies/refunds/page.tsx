@@ -11,7 +11,7 @@ export default function RefundPolicyPage() {
     <>
       <h1>Refund &amp; Return Policy</h1>
       <p className="text-sm text-gray-500">
-        Last Updated: March 2025
+        Last Updated: April 2026
       </p>
       <p>
         ReVia Research Supply LLC (&quot;ReVia&quot;) maintains strict quality
@@ -70,11 +70,20 @@ export default function RefundPolicyPage() {
 
       <h3>2.3 Product Quality Issues</h3>
       <p>
-        If you believe a product has a quality or integrity issue (e.g.,
-        contamination, incorrect concentration, or seal compromise), you must
+        If you believe a product has a quality or integrity issue, you must
         contact us within <strong>seven (7) days</strong> of delivery. Include
         your order number, a description of the issue, and any supporting
-        documentation or photographs. Our quality assurance team will review
+        documentation or photographs. Qualifying quality issues include:
+      </p>
+      <ul>
+        <li>Suspected contamination or discoloration</li>
+        <li>Incorrect peptide concentration (&gt;5% variance from COA)</li>
+        <li>Compromised vial seal or packaging integrity</li>
+        <li>Apparent degradation or precipitation</li>
+        <li>Discrepancies between product received and Certificate of Analysis</li>
+      </ul>
+      <p>
+        Our quality assurance team will review
         your claim and determine an appropriate resolution.
       </p>
 

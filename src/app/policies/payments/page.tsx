@@ -11,7 +11,7 @@ export default function PaymentPolicyPage() {
     <>
       <h1>Payment Policy</h1>
       <p className="text-sm text-gray-500">
-        Last Updated: March 2025
+        Last Updated: April 2026
       </p>
       <p>
         ReVia Research Supply LLC (&quot;ReVia,&quot; &quot;we,&quot;
@@ -27,12 +27,6 @@ export default function PaymentPolicyPage() {
         <li>
           <strong>Credit and Debit Cards:</strong> Visa, Mastercard, American
           Express, and Discover
-        </li>
-        <li>
-          <strong>Cryptocurrency:</strong> We may accept select cryptocurrencies
-          as an alternative payment method. Availability and accepted currencies
-          are subject to change. Contact us for current cryptocurrency payment
-          options.
         </li>
       </ul>
       <p>
