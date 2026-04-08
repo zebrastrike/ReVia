@@ -270,6 +270,54 @@ export async function sendPasswordResetEmail(
 /*  Email Verification                                                 */
 /* ------------------------------------------------------------------ */
 
+/* ------------------------------------------------------------------ */
+/*  Drawing Winner Notification                                        */
+/* ------------------------------------------------------------------ */
+
+export async function sendDrawingWinnerEmail(
+  name: string,
+  email: string,
+  prize: string,
+  couponCode: string,
+  month: string
+) {
+  const baseUrl = process.env.NEXT_PUBLIC_URL || "https://revialife.com";
+  const monthLabel = new Date(month + "-15").toLocaleDateString("en-US", { month: "long", year: "numeric" });
+
+  const html = `
+<div style="${wrapper}">
+  <div style="${card}">
+    <h1 style="${heading}">You're a Winner!</h1>
+    <p style="${subtext}">Congratulations, ${name}! You've been selected as a winner in the ReVia ${monthLabel} Monthly Drawing.</p>
+
+    <div style="background-color:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:12px;padding:24px;text-align:center;margin:24px 0;">
+      <p style="color:#9ca3af;font-size:12px;margin:0 0 4px;text-transform:uppercase;">Your Prize</p>
+      <p style="color:#10b981;font-size:22px;font-weight:700;margin:0 0 16px;">${prize}</p>
+      <p style="color:#9ca3af;font-size:12px;margin:0 0 4px;text-transform:uppercase;">Coupon Code</p>
+      <p style="color:#10b981;font-size:20px;font-weight:700;margin:0;letter-spacing:2px;font-family:monospace;">${couponCode}</p>
+    </div>
+
+    <p style="color:#9ca3af;font-size:13px;margin:0 0 16px;">
+      Apply this code at checkout to redeem your prize. This code expires in 90 days and can be used once.
+    </p>
+
+    <div style="text-align:center;margin:24px 0;">
+      <a href="${baseUrl}/shop" style="${btnStyle}">Shop Now</a>
+    </div>
+
+    <hr style="${divider}"/>
+
+    <p style="color:#9ca3af;font-size:13px;margin:0;">
+      Keep ordering to earn entries for next month&rsquo;s drawing. Every $50 spent = 1 entry.
+    </p>
+
+    <p style="${footer}">&copy; ReVia Research Supply &mdash; For research use only.</p>
+  </div>
+</div>`;
+
+  await send(email, `You Won the ${monthLabel} Drawing — ReVia`, html);
+}
+
 export async function sendVerificationEmail(
   name: string,
   email: string,

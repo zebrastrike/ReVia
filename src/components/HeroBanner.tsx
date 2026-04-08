@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion, useAnimation } from "framer-motion";
+import { motion } from "framer-motion";
 import { FlaskConical, Truck, Package, MapPin, ArrowRight, Atom } from "lucide-react";
 
 function CompoundCounter({ delay }: { delay: number }) {
@@ -41,10 +41,20 @@ function CompoundCounter({ delay }: { delay: number }) {
 
 export default function HeroBanner() {
   return (
-    <section className="relative min-h-[60vh] flex items-center">
-      <div className="relative z-10 mx-auto max-w-7xl px-6 py-12 sm:px-8 lg:px-12">
-        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-          <div>
+    <section className="relative min-h-[40vh] sm:min-h-[60vh] flex items-center">
+      {/* Background hero image */}
+      <div className="absolute inset-x-4 inset-y-0 z-0 overflow-hidden rounded-2xl sm:inset-x-8 sm:rounded-3xl lg:inset-x-12">
+        <img
+          src="/images/hero-vials.png"
+          alt=""
+          className="h-full w-full object-cover object-right"
+        />
+        {/* Solid left fade — more opaque on mobile so text is readable */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#F0EDE5] from-45% via-[#F0EDE5]/85 via-60% to-transparent to-80% sm:from-35% sm:via-50% sm:to-75%" />
+      </div>
+
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-5 py-8 sm:px-8 sm:py-16 lg:px-12">
+        <div className="max-w-xl">
             <motion.div
               initial={{ opacity: 0, scale: 0.8, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -62,7 +72,7 @@ export default function HeroBanner() {
               </span>
             </motion.div>
 
-            <h1 className="mt-8 text-5xl font-extrabold tracking-tight text-stone-800 sm:text-6xl lg:text-7xl leading-[1.1]">
+            <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-stone-800 sm:mt-8 sm:text-6xl lg:text-7xl leading-[1.1]">
               <motion.span
                 className="block"
                 initial={{ opacity: 0, y: 25 }}
@@ -93,21 +103,22 @@ export default function HeroBanner() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 2.9 }}
-              className="mt-6 text-lg text-stone-600 leading-relaxed sm:text-xl max-w-lg"
+              className="mt-3 text-sm text-stone-600 leading-relaxed sm:mt-6 sm:text-lg lg:text-xl max-w-lg"
             >
-              Your trusted source for independently tested, pharmaceutical-grade peptides. Every batch verified to &gt;99% purity with same-day shipping nationwide.
+              <span className="hidden sm:inline">Your trusted source for independently tested, pharmaceutical-grade peptides. Every batch verified to &gt;99% purity with same-day shipping nationwide.</span>
+              <span className="sm:hidden">Independently tested, pharmaceutical-grade peptides. &gt;99% purity verified.</span>
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 3.2 }}
-              className="mt-10 flex flex-col gap-4 sm:flex-row"
+              className="mt-5 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:gap-4"
             >
               {/* Explore — blue flow button */}
               <Link
                 href="/shop"
-                className="group relative flex items-center gap-1 overflow-hidden border-[1.5px] border-sky-400/50 bg-sky-400 rounded-full px-8 py-4 text-base font-bold text-white cursor-pointer hover:text-stone-800 hover:border-stone-300/60 active:scale-[0.95]"
+                className="group relative flex items-center gap-1 overflow-hidden border-[1.5px] border-sky-400/50 bg-sky-400 rounded-full px-6 py-3 text-sm font-bold text-white sm:px-8 sm:py-4 sm:text-base cursor-pointer hover:text-stone-800 hover:border-stone-300/60 active:scale-[0.95]"
               >
                 <ArrowRight className="absolute w-4 h-4 left-[-25%] stroke-white fill-none z-[9] group-hover:left-4 group-hover:stroke-stone-800 transition-all duration-[800ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]" />
                 <span className="relative z-[1] -translate-x-3 group-hover:translate-x-3 transition-all duration-[800ms] ease-out">
@@ -120,7 +131,7 @@ export default function HeroBanner() {
               {/* View Stacks — clean border button */}
               <Link
                 href="/shop?category=stacks"
-                className="group relative flex items-center gap-1 overflow-hidden rounded-full border-2 border-sky-300/60 bg-[#F0EDE5] px-8 py-4 text-base font-bold text-stone-600 cursor-pointer hover:text-white active:scale-[0.95] transition-colors duration-500"
+                className="group relative flex items-center gap-1 overflow-hidden rounded-full border-2 border-sky-300/60 bg-[#F0EDE5] px-6 py-3 text-sm font-bold text-stone-600 sm:px-8 sm:py-4 sm:text-base cursor-pointer hover:text-white active:scale-[0.95] transition-colors duration-500"
               >
                 <ArrowRight className="absolute w-4 h-4 left-[-25%] stroke-stone-600 fill-none z-[9] group-hover:left-4 group-hover:stroke-white transition-all duration-[800ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]" />
                 <span className="relative z-[1] -translate-x-3 group-hover:translate-x-3 transition-all duration-[800ms] ease-out">
@@ -135,7 +146,7 @@ export default function HeroBanner() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 3.5 }}
-              className="mt-14 flex flex-wrap gap-x-8 gap-y-3"
+              className="mt-6 flex flex-wrap gap-x-4 gap-y-2 sm:mt-14 sm:gap-x-8 sm:gap-y-3"
             >
               {[
                 { icon: FlaskConical, text: ">99% Purity" },
@@ -144,28 +155,12 @@ export default function HeroBanner() {
                 { icon: Package, text: "85+ Peptides" },
                 { icon: MapPin, text: "US-Based" },
               ].map((b) => (
-                <div key={b.text} className="flex items-center gap-2.5 text-sm text-stone-500">
+                <div key={b.text} className="flex items-center gap-1.5 text-xs text-stone-500 sm:gap-2.5 sm:text-sm">
                   <b.icon className="h-4 w-4 text-sky-600/70" />
                   {b.text}
                 </div>
               ))}
             </motion.div>
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.93 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.9, ease: "easeOut" }}
-            className="hidden lg:block"
-          >
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-sky-900/10 border border-sky-200/40 bg-white/30 backdrop-blur-sm p-2">
-              <img
-                src="/images/hero-landing.png"
-                alt="ReVia research peptides"
-                className="w-full rounded-2xl object-cover"
-              />
-            </div>
-          </motion.div>
         </div>
       </div>
     </section>

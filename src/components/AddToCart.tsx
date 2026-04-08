@@ -9,6 +9,7 @@ interface AddToCartProps {
   productName: string;
   productSlug: string;
   productImage?: string | null;
+  onVariantChange?: (variantId: string) => void;
 }
 
 export default function AddToCart({
@@ -16,9 +17,13 @@ export default function AddToCart({
   productName,
   productSlug,
   productImage,
+  onVariantChange,
 }: AddToCartProps) {
   const [selectedId, setSelectedId] = useState(
-    () => (variants.find((v) => v.stockStatus !== "out_of_stock") ?? variants[0])?.id ?? ""
+    () => {
+      const initial = (variants.find((v) => v.stockStatus !== "out_of_stock") ?? variants[0])?.id ?? "";
+      return initial;
+    }
   );
   const [added, setAdded] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
@@ -57,7 +62,7 @@ export default function AddToCart({
             return (
               <button
                 key={v.id}
-                onClick={() => setSelectedId(v.id)}
+                onClick={() => { setSelectedId(v.id); onVariantChange?.(v.id); }}
                 disabled={vIsOut}
                 className={`rounded-xl border px-4 py-3 text-sm font-medium transition ${
                   vIsOut

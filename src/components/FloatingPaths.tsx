@@ -28,7 +28,7 @@ function PathGroup({ position }: { position: number }) {
           <motion.path
             key={path.id}
             d={path.d}
-            stroke="rgba(163, 133, 105, 1)"
+            stroke="rgba(91, 175, 224, 1)"
             strokeWidth={path.width}
             strokeOpacity={0.08 + path.id * 0.025}
             initial={{ pathLength: 0.3 }}

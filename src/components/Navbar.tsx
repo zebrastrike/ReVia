@@ -11,6 +11,7 @@ import { useCartStore } from "@/store/cart";
 const navLinks = [
   { href: "/shop", label: "Shop" },
   { href: "/shop?category=stacks", label: "Stacks" },
+  { href: "/why-us", label: "Why Us" },
   { href: "/learn", label: "Learn" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },

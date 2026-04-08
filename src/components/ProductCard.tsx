@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { useCartStore } from "@/store/cart";
-import { getProductImage } from "@/lib/product-images";
+import { getProductImage, getVariantImages } from "@/lib/product-images";
 
 interface Variant {
   id: string;
@@ -47,6 +47,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const catName = product.category?.name ?? "Peptide";
   const gradient = catColors[catName] ?? "from-sky-100 to-blue-200";
   const image = getProductImage(product.slug, product.image);
+  const variantImages = getVariantImages(product.slug, product.variants);
 
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -58,7 +59,7 @@ export default function ProductCard({ product }: { product: Product }) {
       variantLabel: cheapest.label,
       price: cheapest.price,
       slug: product.slug,
-      image: product.image ?? undefined,
+      image: variantImages[cheapest.id] ?? image ?? undefined,
     });
   };
 

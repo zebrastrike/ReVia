@@ -71,6 +71,10 @@ model User {
   verifyToken       String?
   resetToken        String?
   resetTokenExpiry  DateTime?
+  rewardPoints      Int        @default(0)
+  lifetimeSpent     Int        @default(0)
+  referralCode      String?    @unique
+  referredBy        String?
   createdAt         DateTime   @default(now())
   orders            Order[]
   reviews           Review[]
@@ -144,10 +148,16 @@ model Newsletter {
 }
 
 model SiteSettings {
-  id                    String   @id @default("singleton")
-  activePricingTier     String   @default("retail")
-  freeShippingThreshold Int      @default(15000)
-  updatedAt             DateTime @updatedAt
+  id                    String    @id @default("singleton")
+  activePricingTier     String    @default("retail")
+  freeShippingEnabled   Boolean   @default(false)
+  freeShippingThreshold Int       @default(15000)
+  freeShippingExpiry    DateTime?
+  drawingEntryAmount    Int       @default(5000)
+  drawingPrize1         Int       @default(10000)
+  drawingPrize2         Int       @default(5000)
+  drawingPrize3         Int       @default(2500)
+  updatedAt             DateTime  @updatedAt
 }
 
 model BlogPost {
@@ -162,6 +172,25 @@ model BlogPost {
   published   Boolean  @default(true)
   publishedAt DateTime @default(now())
   createdAt   DateTime @default(now())
+}
+
+model DrawingEntry {
+  id        String   @id @default(cuid())
+  userId    String
+  month     String   // "2026-04" format
+  entries   Int      @default(1)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, month])
+  @@index([month])
+}
+
+model DrawingResult {
+  id          String   @id @default(cuid())
+  month       String   @unique // "2026-04"
+  winners     String   // JSON array of { userId, name, email, prize, couponCode }
+  totalEntries Int
+  drawnAt     DateTime @default(now())
 }
 
 model ContactMessage {

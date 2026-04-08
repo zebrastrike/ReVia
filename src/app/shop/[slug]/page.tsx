@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronRight, FileCheck } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getActiveTier, resolvePriceForVariant } from "@/lib/pricing";
 import ProductCard from "@/components/ProductCard";
-import AddToCart from "@/components/AddToCart";
 import ReviewSection from "@/components/ReviewSection";
 import JsonLd from "@/components/JsonLd";
-import { getProductImage } from "@/lib/product-images";
+import { getProductImage, getVariantImages } from "@/lib/product-images";
+import ProductDetailView from "@/components/ProductDetailView";
 export const revalidate = 60;
 
 interface PageProps {
@@ -117,78 +117,22 @@ export default async function ProductDetailPage({ params }: PageProps) {
       </nav>
 
       {/* ── Product layout ── */}
-      <div className="grid gap-12 lg:grid-cols-2">
-        {/* Image */}
-        <div className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
-          {getProductImage(product.slug, product.image) ? (
-            <img
-              src={getProductImage(product.slug, product.image)!}
-              alt={product.name}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <div className="flex aspect-square w-full items-center justify-center bg-linear-to-br from-sky-50 to-sky-100">
-              <span className="text-7xl font-bold text-sky-600/40">
-                {product.name.charAt(0)}
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* Details */}
-        <div className="flex flex-col justify-center">
-          {product.category && (
-            <p className="text-xs font-semibold uppercase tracking-widest text-sky-600">
-              {product.category.name}
-            </p>
-          )}
-
-          <h1 className="mt-2 text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl">
-            {product.name}
-          </h1>
-
-          {product.description && (
-            <p className="mt-4 text-base leading-relaxed text-neutral-500">
-              {product.description}
-            </p>
-          )}
-
-          {/* Variant selector + Add to Cart (client component) */}
-          <div className="mt-8">
-            <AddToCart
-              variants={resolvedVariants.map((v) => ({
-                id: v.id,
-                label: v.label,
-                price: v.price,
-                inStock: v.inStock,
-                stockStatus: (v as { stockStatus?: string }).stockStatus ?? (v.inStock ? "in_stock" : "out_of_stock"),
-              }))}
-              productName={product.name}
-              productSlug={product.slug}
-              productImage={getProductImage(product.slug, product.image)}
-            />
-          </div>
-
-          {/* COA Link */}
-          {product.coaUrl && (
-            <a
-              href={product.coaUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-6 flex items-center gap-2 rounded-xl border border-sky-200/60 bg-sky-50/80 px-4 py-3 text-sm font-medium text-sky-700 transition hover:bg-sky-100 hover:border-sky-300/60"
-            >
-              <FileCheck className="h-4.5 w-4.5 shrink-0" />
-              View Certificate of Analysis (COA)
-              <span className="ml-auto text-xs text-sky-500">Independent Lab Verified</span>
-            </a>
-          )}
-
-          {/* Disclaimer */}
-          <div className="mt-8 rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs leading-relaxed text-stone-500">
-            These statements have not been evaluated by the FDA. This product is not intended to diagnose, treat, cure, or prevent any disease. Consult a healthcare professional before use.
-          </div>
-        </div>
-      </div>
+      <ProductDetailView
+        productName={product.name}
+        productSlug={product.slug}
+        productDescription={product.description}
+        categoryName={product.category?.name}
+        defaultImage={getProductImage(product.slug, product.image)}
+        variantImages={getVariantImages(product.slug, resolvedVariants)}
+        variants={resolvedVariants.map((v) => ({
+          id: v.id,
+          label: v.label,
+          price: v.price,
+          inStock: v.inStock,
+          stockStatus: (v as { stockStatus?: string }).stockStatus ?? (v.inStock ? "in_stock" : "out_of_stock"),
+        }))}
+        coaUrl={product.coaUrl}
+      />
 
       {/* ── Reviews ── */}
       <ReviewSection productId={product.id} />

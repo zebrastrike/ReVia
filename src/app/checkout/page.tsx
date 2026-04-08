@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import {
   ShoppingBag,
   ArrowLeft,
@@ -10,14 +9,13 @@ import {
   Loader2,
   Tag,
   Truck,
-  PartyPopper,
   ShieldCheck,
   Lock,
   BadgeCheck,
   FlaskConical,
 } from "lucide-react";
 import { useCartStore } from "@/store/cart";
-import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from "@/lib/constants";
+import { SHIPPING_METHODS, type ShippingMethod } from "@/lib/constants";
 import { calculateTax, getTaxRate } from "@/lib/tax";
 import FloatingOrbs from "@/components/FloatingOrbs";
 
@@ -41,6 +39,16 @@ export default function CheckoutPage() {
   const [error, setError] = useState<string | null>(null);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
+  // Shipping method
+  const [shippingMethod, setShippingMethod] = useState<ShippingMethod>("standard");
+
+  // Free shipping promo state
+  const [freeShippingPromo, setFreeShippingPromo] = useState<{
+    enabled: boolean;
+    threshold: number;
+    expiry: string | null;
+  } | null>(null);
+
   // Coupon state
   const [couponCode, setCouponCode] = useState("");
   const [couponApplying, setCouponApplying] = useState(false);
@@ -51,17 +59,21 @@ export default function CheckoutPage() {
   } | null>(null);
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
 
-  // Dynamic free shipping threshold
-  const [threshold, setThreshold] = useState(FREE_SHIPPING_THRESHOLD);
-
   useEffect(() => {
     fetch("/api/admin/settings")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (data?.freeShippingThreshold)
-          setThreshold(data.freeShippingThreshold);
+        if (data) {
+          const isActive = data.freeShippingEnabled && (!data.freeShippingExpiry || new Date(data.freeShippingExpiry) > new Date());
+          setFreeShippingPromo({
+            enabled: isActive,
+            threshold: data.freeShippingThreshold ?? 15000,
+            expiry: data.freeShippingExpiry ?? null,
+          });
+        }
       })
       .catch(() => {});
+
   }, []);
 
   const update =
@@ -69,14 +81,15 @@ export default function CheckoutPage() {
       setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
   const subtotal = totalPrice();
-  const shippingCost = subtotal >= threshold ? 0 : SHIPPING_COST;
   const afterDiscount = Math.max(0, subtotal - couponDiscount);
+
+  // Check if free shipping promo applies
+  const promoActive = freeShippingPromo?.enabled && afterDiscount >= (freeShippingPromo?.threshold ?? 0);
+  const shippingCost = promoActive ? 0 : SHIPPING_METHODS[shippingMethod].price;
+
   const taxAmount = calculateTax(form.state, afterDiscount);
   const taxRate = getTaxRate(form.state);
   const finalTotal = afterDiscount + shippingCost + taxAmount;
-  const progress = Math.min((subtotal / threshold) * 100, 100);
-  const remaining = threshold - subtotal;
-  const qualifies = subtotal >= threshold;
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
@@ -140,6 +153,7 @@ export default function CheckoutPage() {
             state: form.state,
             zip: form.zip,
           },
+          shippingMethod,
           couponCode: appliedCoupon || undefined,
         }),
       });
@@ -516,10 +530,10 @@ export default function CheckoutPage() {
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-stone-500">Shipping</span>
                     <span className="text-sm text-stone-700">
-                      {shippingCost === 0 ? (
+                      {promoActive ? (
                         <span className="text-sky-600 font-medium">FREE</span>
                       ) : (
-                        `$${(SHIPPING_COST / 100).toFixed(2)}`
+                        `$${(SHIPPING_METHODS[shippingMethod].price / 100).toFixed(2)}`
                       )}
                     </span>
                   </div>
@@ -549,35 +563,57 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Free shipping progress bar */}
-              <div className="rounded-2xl border border-sky-200/40 bg-white/90 backdrop-blur-sm p-4 space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    {qualifies ? (
-                      <PartyPopper className="h-3.5 w-3.5 text-sky-600" />
-                    ) : (
-                      <Truck className="h-3.5 w-3.5 text-sky-500" />
-                    )}
-                    <span className="text-xs font-medium text-stone-700">
-                      {qualifies
-                        ? "You've unlocked free shipping!"
-                        : `$${(remaining / 100).toFixed(2)} away from free shipping`}
-                    </span>
-                  </div>
-                  <span className="text-[10px] font-medium text-stone-400">
-                    ${(threshold / 100).toFixed(0)}
-                  </span>
+              {/* Shipping method selector */}
+              <div className="rounded-2xl border border-sky-200/40 bg-white/90 backdrop-blur-sm p-4 space-y-3">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <Truck className="h-3.5 w-3.5 text-sky-500" />
+                  <span className="text-xs font-semibold text-stone-700 uppercase tracking-wider">Shipping Method</span>
                 </div>
-                <div className="h-2 w-full rounded-full bg-sky-200/50 overflow-hidden">
-                  <motion.div
-                    className="h-full rounded-full bg-gradient-to-r from-sky-500 to-sky-400"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${progress}%` }}
-                    transition={{
-                      duration: 0.6,
-                      ease: "easeOut",
-                    }}
-                  />
+                {(Object.entries(SHIPPING_METHODS) as [ShippingMethod, typeof SHIPPING_METHODS[ShippingMethod]][]).map(([key, method]) => (
+                  <label
+                    key={key}
+                    className={`flex items-center justify-between rounded-xl border px-4 py-3 cursor-pointer transition ${
+                      shippingMethod === key
+                        ? "border-sky-400 bg-sky-50/80"
+                        : "border-sky-100 bg-white hover:border-sky-200"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="radio"
+                        name="shippingMethod"
+                        value={key}
+                        checked={shippingMethod === key}
+                        onChange={() => setShippingMethod(key)}
+                        className="accent-sky-500"
+                      />
+                      <div>
+                        <p className="text-sm font-medium text-stone-800">{method.label}</p>
+                        <p className="text-xs text-stone-400">{method.estimate}</p>
+                      </div>
+                    </div>
+                    <span className="text-sm font-semibold text-stone-700">
+                      {promoActive ? (
+                        <span className="text-sky-600">FREE</span>
+                      ) : (
+                        `$${(method.price / 100).toFixed(2)}`
+                      )}
+                    </span>
+                  </label>
+                ))}
+                {promoActive && (
+                  <p className="text-xs text-sky-600 text-center font-medium">
+                    Free shipping promo applied on orders over ${((freeShippingPromo?.threshold ?? 0) / 100).toFixed(0)}!
+                  </p>
+                )}
+                <div className="flex flex-wrap gap-3 pt-1 text-[10px] text-stone-400">
+                  <span>Ships next business day</span>
+                  <span>·</span>
+                  <span>Discreet packaging</span>
+                  <span>·</span>
+                  <span>Tracking provided</span>
+                  <span>·</span>
+                  <span>Insured shipments</span>
                 </div>
               </div>
             </div>

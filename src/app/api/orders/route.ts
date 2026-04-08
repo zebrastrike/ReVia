@@ -208,6 +208,31 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    // ── Award reward points, lifetime spend, and drawing entries ──
+    if (user) {
+      const pointsEarned = Math.floor(total / 100); // 1 point per $1
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          rewardPoints: { increment: pointsEarned },
+          lifetimeSpent: { increment: total },
+        },
+      });
+
+      // Award monthly drawing entries based on admin settings
+      const drawingSettings = await prisma.siteSettings.findUnique({ where: { id: "singleton" } });
+      const entryAmount = (drawingSettings as { drawingEntryAmount?: number })?.drawingEntryAmount ?? 5000;
+      const drawingEntries = Math.floor(total / entryAmount);
+      if (drawingEntries > 0) {
+        const currentMonth = new Date().toISOString().slice(0, 7); // "2026-04"
+        await prisma.drawingEntry.upsert({
+          where: { userId_month: { userId: user.id, month: currentMonth } },
+          update: { entries: { increment: drawingEntries } },
+          create: { userId: user.id, month: currentMonth, entries: drawingEntries },
+        });
+      }
+    }
+
     // ── Clear server-side cart if user is logged in ──
     if (user) {
       await prisma.cartItem.deleteMany({

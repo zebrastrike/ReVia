@@ -61,9 +61,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create user with verification token
+    // Create user with verification token and referral code
     const hashedPassword = await hashPassword(password);
     const verifyToken = crypto.randomBytes(32).toString("hex");
+    const referralCode = `REVIA-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
     const user = await prisma.user.create({
       data: {
         email: sanitizedEmail,
@@ -71,6 +72,7 @@ export async function POST(request: NextRequest) {
         password: hashedPassword,
         verifyToken,
         emailVerified: false,
+        referralCode,
       },
       select: { id: true, email: true, name: true, role: true },
     });

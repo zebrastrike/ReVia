@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import {
@@ -8,9 +8,10 @@ import {
   Gift,
   User,
   ArrowRight,
-  Star,
-  Trophy,
-  TrendingUp,
+  Ticket,
+  Clock,
+  PartyPopper,
+  Users,
 } from "lucide-react";
 
 interface OrderItem {
@@ -52,8 +53,6 @@ type TabId = (typeof tabs)[number]["id"];
 export default function AccountTabs({ user, orders, totalSpent }: AccountTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>("orders");
 
-  const rewardPoints = Math.floor(totalSpent);
-
   return (
     <div>
       {/* Tab bar */}
@@ -94,7 +93,7 @@ export default function AccountTabs({ user, orders, totalSpent }: AccountTabsPro
             <OrdersTab orders={orders} totalSpent={totalSpent} />
           )}
           {activeTab === "rewards" && (
-            <RewardsTab points={rewardPoints} orderCount={orders.length} />
+            <RewardsTab />
           )}
           {activeTab === "profile" && <ProfileTab user={user} />}
         </motion.div>
@@ -179,98 +178,141 @@ function OrdersTab({ orders, totalSpent }: { orders: Order[]; totalSpent: number
 }
 
 /* ── Rewards Tab ── */
-function RewardsTab({ points, orderCount }: { points: number; orderCount: number }) {
-  const tier =
-    points >= 1000 ? "Gold" : points >= 500 ? "Silver" : "Bronze";
-  const tierColor =
-    tier === "Gold"
-      ? "text-amber-600 bg-amber-50 border-amber-200/50"
-      : tier === "Silver"
-        ? "text-stone-500 bg-stone-50 border-stone-200/50"
-        : "text-orange-700 bg-orange-50 border-orange-200/50";
-  const nextTier = tier === "Gold" ? null : tier === "Silver" ? "Gold" : "Silver";
-  const nextTierAt = tier === "Silver" ? 1000 : 500;
-  const progress = nextTier ? Math.min((points / nextTierAt) * 100, 100) : 100;
-
+function RewardsTab() {
   return (
     <div className="space-y-6">
-      {/* Points overview */}
+      {/* Header */}
       <div className="rounded-2xl border border-sky-200/40 bg-white/80 p-6 shadow-sm">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-          <div>
-            <h2 className="text-lg font-semibold text-stone-900">ReVia Rewards</h2>
-            <p className="text-sm text-stone-500 mt-1">Earn 1 point for every $1 spent</p>
-          </div>
-          <div className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold ${tierColor}`}>
-            <Trophy className="h-4 w-4" />
-            {tier} Member
-          </div>
-        </div>
+        <h2 className="text-lg font-semibold text-stone-900">ReVia Rewards</h2>
+        <p className="text-sm text-stone-500 mt-1">
+          Every $50 you spend earns you an entry into our monthly drawing for store credit prizes.
+          The more you order, the better your odds.
+        </p>
+      </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="rounded-xl bg-sky-50/60 border border-sky-200/40 p-4 text-center">
-            <Star className="mx-auto h-5 w-5 text-sky-500 mb-2" />
-            <p className="text-2xl font-bold text-stone-800">{points.toLocaleString()}</p>
-            <p className="text-xs text-stone-400 mt-1">Total Points</p>
+      {/* Monthly Drawing */}
+      <MonthlyDrawing />
+
+      {/* Referral */}
+      <div className="rounded-2xl border border-sky-200/40 bg-gradient-to-br from-sky-50/80 to-white p-6 shadow-sm">
+        <div className="flex items-start gap-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-400">
+            <Gift className="h-5 w-5 text-white" />
           </div>
-          <div className="rounded-xl bg-sky-50/60 border border-sky-200/40 p-4 text-center">
-            <Package className="mx-auto h-5 w-5 text-sky-500 mb-2" />
-            <p className="text-2xl font-bold text-stone-800">{orderCount}</p>
-            <p className="text-xs text-stone-400 mt-1">Orders</p>
-          </div>
-          <div className="rounded-xl bg-sky-50/60 border border-sky-200/40 p-4 text-center">
-            <TrendingUp className="mx-auto h-5 w-5 text-sky-500 mb-2" />
-            <p className="text-2xl font-bold text-stone-800">${points.toLocaleString()}</p>
-            <p className="text-xs text-stone-400 mt-1">Lifetime Spent</p>
+          <div>
+            <h3 className="text-sm font-semibold text-stone-800">Refer a Colleague</h3>
+            <p className="text-xs text-stone-500 mt-1 leading-relaxed">
+              Share ReVia with a fellow researcher and you both earn <strong className="text-stone-700">$25 in store credit</strong> when they place their first order. No limit on referrals.
+            </p>
+            <p className="text-xs text-stone-400 mt-2 italic">Referral program coming soon.</p>
           </div>
         </div>
       </div>
 
-      {/* Tier progress */}
-      {nextTier && (
-        <div className="rounded-2xl border border-sky-200/40 bg-white/80 p-6 shadow-sm">
-          <h3 className="text-sm font-semibold text-stone-800 mb-3">
-            Progress to {nextTier}
-          </h3>
-          <div className="h-3 rounded-full bg-sky-100 overflow-hidden mb-2">
-            <motion.div
-              className="h-full rounded-full bg-sky-400"
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            />
-          </div>
-          <p className="text-xs text-stone-400">
-            {points.toLocaleString()} / {nextTierAt.toLocaleString()} points —{" "}
-            <span className="font-medium text-stone-600">
-              ${(nextTierAt - points).toLocaleString()} away
-            </span>
-          </p>
+      {/* Fine print */}
+      <p className="text-[10px] text-stone-400 text-center leading-relaxed">
+        Drawing held at the end of each month. Winners notified via email with a unique coupon code.
+        ReVia reserves the right to modify the rewards program at any time.
+      </p>
+    </div>
+  );
+}
+
+/* ── Monthly Drawing ── */
+function MonthlyDrawing() {
+  const [drawing, setDrawing] = useState<{
+    month: string;
+    userEntries: number;
+    totalParticipants: number;
+    totalEntries: number;
+    daysRemaining: number;
+    drawingCompleted: boolean;
+    userWon: { prize: string; couponCode: string } | null;
+    entryAmount: number;
+    prizes: number[];
+  } | null>(null);
+
+  useEffect(() => {
+    fetch("/api/drawing")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => { if (data) setDrawing(data); })
+      .catch(() => {});
+  }, []);
+
+  if (!drawing) return null;
+
+  const monthLabel = new Date(drawing.month + "-15").toLocaleDateString("en-US", { month: "long", year: "numeric" });
+
+  return (
+    <div className="rounded-2xl border border-amber-200/60 bg-gradient-to-br from-amber-50/80 to-white p-6 shadow-sm">
+      <div className="flex items-start gap-4 mb-5">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-400">
+          <Ticket className="h-5 w-5 text-white" />
         </div>
+        <div>
+          <h3 className="text-base font-semibold text-stone-800">Monthly Drawing</h3>
+          <p className="text-xs text-stone-500 mt-0.5">{monthLabel}</p>
+        </div>
+      </div>
+
+      {drawing.userWon ? (
+        <div className="rounded-xl bg-green-50 border border-green-200/60 p-5 text-center mb-4">
+          <PartyPopper className="mx-auto h-8 w-8 text-green-500 mb-2" />
+          <p className="text-lg font-bold text-green-700">You Won!</p>
+          <p className="text-sm text-green-600 mt-1">{drawing.userWon.prize}</p>
+          <div className="mt-3 rounded-lg bg-white border border-green-200 px-4 py-2 inline-block">
+            <p className="text-xs text-stone-400">Your coupon code</p>
+            <p className="text-base font-mono font-bold text-green-700 tracking-wide">{drawing.userWon.couponCode}</p>
+          </div>
+          <p className="text-xs text-stone-400 mt-2">Apply at checkout. Expires in 90 days.</p>
+        </div>
+      ) : drawing.drawingCompleted ? (
+        <div className="rounded-xl bg-stone-50 border border-stone-200/60 p-4 text-center mb-4">
+          <p className="text-sm text-stone-500">This month&apos;s drawing has been completed.</p>
+          <p className="text-xs text-stone-400 mt-1">Keep ordering to earn entries for next month!</p>
+        </div>
+      ) : (
+        <>
+          {/* Countdown & entries */}
+          <div className="grid grid-cols-3 gap-3 mb-4">
+            <div className="rounded-xl bg-amber-50/60 border border-amber-200/40 p-3 text-center">
+              <Ticket className="mx-auto h-4 w-4 text-amber-500 mb-1" />
+              <p className="text-xl font-bold text-stone-800">{drawing.userEntries}</p>
+              <p className="text-[10px] text-stone-400">Your Entries</p>
+            </div>
+            <div className="rounded-xl bg-amber-50/60 border border-amber-200/40 p-3 text-center">
+              <Users className="mx-auto h-4 w-4 text-amber-500 mb-1" />
+              <p className="text-xl font-bold text-stone-800">{drawing.totalParticipants}</p>
+              <p className="text-[10px] text-stone-400">Participants</p>
+            </div>
+            <div className="rounded-xl bg-amber-50/60 border border-amber-200/40 p-3 text-center">
+              <Clock className="mx-auto h-4 w-4 text-amber-500 mb-1" />
+              <p className="text-xl font-bold text-stone-800">{drawing.daysRemaining}</p>
+              <p className="text-[10px] text-stone-400">Days Left</p>
+            </div>
+          </div>
+        </>
       )}
 
-      {/* How it works */}
-      <div className="rounded-2xl border border-sky-200/40 bg-white/80 p-6 shadow-sm">
-        <h3 className="text-sm font-semibold text-stone-800 mb-4">How It Works</h3>
-        <div className="space-y-3">
-          {[
-            { tier: "Bronze", range: "0 – 499 pts", perk: "Earn 1 pt per $1 spent" },
-            { tier: "Silver", range: "500 – 999 pts", perk: "5% off every order" },
-            { tier: "Gold", range: "1,000+ pts", perk: "10% off + free shipping" },
-          ].map((t) => (
-            <div
-              key={t.tier}
-              className="flex items-center justify-between rounded-xl bg-sky-50/40 border border-sky-100/60 px-4 py-3"
-            >
-              <div>
-                <p className="text-sm font-medium text-stone-700">{t.tier}</p>
-                <p className="text-xs text-stone-400">{t.range}</p>
-              </div>
-              <p className="text-xs font-medium text-stone-600">{t.perk}</p>
-            </div>
-          ))}
-        </div>
+      {/* Prizes */}
+      <div className="space-y-2 mb-4">
+        <p className="text-xs font-semibold text-stone-600 uppercase tracking-wider">Prizes</p>
+        {[
+          { place: "1st", amount: drawing.prizes[0], color: "text-amber-600" },
+          { place: "2nd", amount: drawing.prizes[1], color: "text-stone-500" },
+          { place: "3rd", amount: drawing.prizes[2], color: "text-orange-700" },
+        ].map((p) => (
+          <div key={p.place} className="flex items-center justify-between rounded-lg bg-white/60 border border-amber-100/60 px-3 py-2">
+            <span className={`text-sm font-semibold ${p.color}`}>{p.place} Place</span>
+            <span className="text-xs font-medium text-stone-600">${(p.amount / 100).toFixed(0)} Store Credit</span>
+          </div>
+        ))}
       </div>
+
+      <p className="text-[10px] text-stone-400 leading-relaxed">
+        Every ${(drawing.entryAmount / 100).toFixed(0)} spent = 1 entry. More entries = better odds. Drawing held at the end of each month.
+        Winners receive a unique coupon code via email. No purchase necessary to claim prize.
+      </p>
     </div>
   );
 }

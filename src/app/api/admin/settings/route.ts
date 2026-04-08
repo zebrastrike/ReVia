@@ -7,7 +7,16 @@ import type { PricingTier } from "@/lib/constants";
 
 export async function GET() {
   const settings = await prisma.siteSettings.findUnique({ where: { id: "singleton" } });
-  return NextResponse.json(settings ?? { activePricingTier: "retail", freeShippingThreshold: 15000 });
+  return NextResponse.json(settings ?? {
+    activePricingTier: "retail",
+    freeShippingEnabled: false,
+    freeShippingThreshold: 15000,
+    freeShippingExpiry: null,
+    drawingEntryAmount: 5000,
+    drawingPrize1: 10000,
+    drawingPrize2: 5000,
+    drawingPrize3: 2500,
+  });
 }
 
 export async function PATCH(req: Request) {
@@ -18,9 +27,15 @@ export async function PATCH(req: Request) {
   }
 
   const body = await req.json();
-  const { activePricingTier, freeShippingThreshold } = body as {
+  const { activePricingTier, freeShippingEnabled, freeShippingThreshold, freeShippingExpiry, drawingEntryAmount, drawingPrize1, drawingPrize2, drawingPrize3 } = body as {
     activePricingTier?: PricingTier;
+    freeShippingEnabled?: boolean;
     freeShippingThreshold?: number;
+    freeShippingExpiry?: string | null;
+    drawingEntryAmount?: number;
+    drawingPrize1?: number;
+    drawingPrize2?: number;
+    drawingPrize3?: number;
   };
 
   const update: Record<string, unknown> = {};
@@ -33,12 +48,25 @@ export async function PATCH(req: Request) {
     update.activePricingTier = activePricingTier;
   }
 
+  if (freeShippingEnabled !== undefined) {
+    update.freeShippingEnabled = freeShippingEnabled;
+  }
+
   if (freeShippingThreshold !== undefined) {
     if (typeof freeShippingThreshold !== "number" || freeShippingThreshold < 0) {
       return NextResponse.json({ error: "Invalid threshold" }, { status: 400 });
     }
     update.freeShippingThreshold = freeShippingThreshold;
   }
+
+  if (freeShippingExpiry !== undefined) {
+    update.freeShippingExpiry = freeShippingExpiry ? new Date(freeShippingExpiry) : null;
+  }
+
+  if (drawingEntryAmount !== undefined) update.drawingEntryAmount = drawingEntryAmount;
+  if (drawingPrize1 !== undefined) update.drawingPrize1 = drawingPrize1;
+  if (drawingPrize2 !== undefined) update.drawingPrize2 = drawingPrize2;
+  if (drawingPrize3 !== undefined) update.drawingPrize3 = drawingPrize3;
 
   if (Object.keys(update).length === 0) {
     return NextResponse.json({ error: "No fields to update" }, { status: 400 });

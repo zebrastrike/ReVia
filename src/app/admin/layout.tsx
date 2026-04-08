@@ -14,6 +14,7 @@ import {
   Warehouse,
   Settings,
   FileText,
+  Shield,
 } from "lucide-react";
 
 const navItems = [
@@ -24,6 +25,8 @@ const navItems = [
   { href: "/admin/newsletter", label: "Newsletter", icon: FileText },
   { href: "/admin/coupons", label: "Coupons", icon: Ticket },
   { href: "/admin/customers", label: "Customers", icon: Users },
+  { href: "/admin/drawing", label: "Monthly Drawing", icon: Ticket },
+  { href: "/admin/users", label: "User Management", icon: Shield },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
