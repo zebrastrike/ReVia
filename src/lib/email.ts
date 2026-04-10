@@ -32,7 +32,12 @@ export interface OrderWithItems {
 /*  Resend Client                                                      */
 /* ------------------------------------------------------------------ */
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let _resend: Resend | null = null;
+function getResend() {
+  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY);
+  return _resend;
+}
+
 const FROM = "ReVia Research Supply <orders@revialife.com>";
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "contact@revialife.com";
 
@@ -45,7 +50,7 @@ async function send(to: string, subject: string, html: string) {
     console.log("───────────────────────");
     return;
   }
-  await resend.emails.send({ from: FROM, to, subject, html });
+  await getResend().emails.send({ from: FROM, to, subject, html });
 }
 
 /* ------------------------------------------------------------------ */
@@ -162,7 +167,9 @@ function paymentInstructions(method: string, invoiceNum: string, total: number) 
     return `
       <div style="${infoBox}">
         <p style="color:#10b981;font-size:16px;font-weight:700;margin:0 0 16px;text-align:center;">Zelle Payment Instructions</p>
-        <p style="${labelStyle}">Send payment to</p>
+        <p style="${labelStyle}">Zelle tag</p>
+        <p style="${monoValue}">${ZELLE_INFO.tag}</p>
+        <p style="${labelStyle}">Or send to email</p>
         <p style="${valueStyle}">${ZELLE_INFO.email}</p>
         <p style="${labelStyle}">Recipient name</p>
         <p style="${valueStyle}">${ZELLE_INFO.recipient}</p>
@@ -180,7 +187,7 @@ function paymentInstructions(method: string, invoiceNum: string, total: number) 
   if (method === "wire") {
     return `
       <div style="${infoBox}">
-        <p style="color:#10b981;font-size:16px;font-weight:700;margin:0 0 16px;text-align:center;">Wire Transfer Instructions</p>
+        <p style="color:#10b981;font-size:16px;font-weight:700;margin:0 0 16px;text-align:center;">Wire / ACH Transfer Instructions</p>
         <p style="${labelStyle}">Bank name</p>
         <p style="${valueStyle}">${WIRE_INFO.bankName}</p>
         <p style="${labelStyle}">Account name</p>
@@ -189,17 +196,19 @@ function paymentInstructions(method: string, invoiceNum: string, total: number) 
         <p style="${monoValue}">${WIRE_INFO.routingNumber}</p>
         <p style="${labelStyle}">Account number</p>
         <p style="${monoValue}">${WIRE_INFO.accountNumber}</p>
-        <p style="${labelStyle}">SWIFT code (international)</p>
-        <p style="${valueStyle}">${WIRE_INFO.swiftCode}</p>
+        <p style="${labelStyle}">Account type</p>
+        <p style="${valueStyle}">${WIRE_INFO.accountType}</p>
         <p style="${labelStyle}">Bank address</p>
         <p style="color:#9ca3af;font-size:13px;margin:0 0 12px;">${WIRE_INFO.bankAddress}</p>
+        <p style="${labelStyle}">Company address</p>
+        <p style="color:#9ca3af;font-size:13px;margin:0 0 12px;">${WIRE_INFO.companyAddress}</p>
         <p style="${labelStyle}">Amount</p>
         <p style="${monoValue}">${amount}</p>
         <p style="${labelStyle}">Reference / memo (required)</p>
         <p style="${monoValue}">${invoiceNum}</p>
         <hr style="${divider}"/>
         <p style="color:#f59e0b;font-size:12px;margin:0;text-align:center;">
-          ⚠️ You MUST include your invoice number <strong>${invoiceNum}</strong> in the wire transfer reference/memo field.
+          ⚠️ You MUST include your invoice number <strong>${invoiceNum}</strong> in the wire/ACH transfer reference/memo field.
         </p>
       </div>`;
   }

@@ -45,20 +45,22 @@ export const PAYMENT_METHODS = {
 export type PaymentMethod = keyof typeof PAYMENT_METHODS;
 
 export const ZELLE_INFO = {
-  recipient: "ReVia Research Supply LLC",
-  email: "payments@revialife.com",
+  recipient: "Revia LLC",
+  email: "mss@revialife.com",
+  tag: "revialife",
 };
 
 export const WIRE_INFO = {
-  bankName: "Bank of America",
-  accountName: "ReVia Research Supply LLC",
-  routingNumber: "063100277",
-  accountNumber: "898142637201",
-  swiftCode: "BOFAUS3N",
-  bankAddress: "100 N Tryon St, Charlotte, NC 28255",
+  bankName: "JPMorgan Chase Bank, N.A.",
+  accountName: "Revia LLC",
+  routingNumber: "267084131",
+  accountNumber: "2917059589",
+  accountType: "Checking",
+  bankAddress: "JPMorgan Chase Bank, N.A., 383 Madison Avenue, New York, NY 10179, United States",
+  companyAddress: "15510 Old Wedgewood Ct, Fort Myers, FL 33908",
 };
 
 export const KRAKEN_PAY_INFO = {
-  paymentTag: "reviaresearch",
+  paymentTag: "revialife",
   supportedCurrency: "BTC",
 };
