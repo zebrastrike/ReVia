@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ShoppingBag,
@@ -23,6 +24,7 @@ import { calculateTax, getTaxRate } from "@/lib/tax";
 import FloatingOrbs from "@/components/FloatingOrbs";
 
 export default function CheckoutPage() {
+  const router = useRouter();
   const items = useCartStore((s) => s.items);
   const totalPrice = useCartStore((s) => s.totalPrice);
   const clearCart = useCartStore((s) => s.clearCart);
@@ -173,11 +175,19 @@ export default function CheckoutPage() {
         throw new Error(data.error || "Failed to place order");
       }
 
+      clearCart();
+
+      // Bitcoin orders → redirect to crypto payment page
+      if (paymentMethod === "bitcoin") {
+        router.push(`/checkout/pay/${data.order.id}`);
+        return;
+      }
+
+      // Zelle/Wire → show confirmation with instructions
       setOrderId(data.order.id);
       setOrderInvoice(data.order.invoiceNumber);
       setOrderTotal(data.order.total);
       setOrderPaymentMethod(paymentMethod);
-      clearCart();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {

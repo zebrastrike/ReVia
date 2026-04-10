@@ -81,27 +81,51 @@ model User {
 }
 
 model Order {
-  id            String      @id @default(cuid())
-  invoiceNumber String      @unique
+  id            String         @id @default(cuid())
+  invoiceNumber String         @unique
   email         String
   name          String
   address       String
   city          String
   state         String
   zip           String
-  country       String      @default("US")
-  status        String      @default("pending_payment")
-  paymentMethod String      @default("zelle") // "zelle" | "wire" | "bitcoin"
-  paymentStatus String      @default("awaiting") // "awaiting" | "confirmed" | "failed"
+  country       String         @default("US")
+  status        String         @default("pending_payment")
+  paymentMethod String         @default("zelle") // "zelle" | "wire" | "bitcoin"
+  paymentStatus String         @default("awaiting") // "awaiting" | "confirmed" | "failed"
   tracking      String?
   total         Float
   items         OrderItem[]
+  cryptoPayment CryptoPayment?
   userId        String?
-  user          User?       @relation(fields: [userId], references: [id])
-  createdAt     DateTime    @default(now())
+  user          User?          @relation(fields: [userId], references: [id])
+  createdAt     DateTime       @default(now())
 
   @@index([userId])
   @@index([invoiceNumber])
+}
+
+model CryptoPayment {
+  id             String    @id @default(cuid())
+  orderId        String    @unique
+  order          Order     @relation(fields: [orderId], references: [id])
+  currency       String    @default("BTC") // "BTC" | "USDT"
+  amountCrypto   Float                     // expected crypto amount
+  amountUsd      Float                     // USD amount at time of creation
+  exchangeRate   Float                     // BTC/USD rate at creation
+  walletAddress  String                    // deposit address
+  paymentUri     String                    // bitcoin:addr?amount=X URI
+  status         String    @default("pending") // "pending" | "detecting" | "confirmed" | "expired" | "overpaid" | "underpaid"
+  txHash         String?                   // blockchain tx hash
+  amountReceived Float?                    // actual amount received
+  tolerance      Float     @default(0.0001) // BTC tolerance for matching
+  expiresAt      DateTime                  // 30 min from creation
+  confirmedAt    DateTime?
+  createdAt      DateTime  @default(now())
+
+  @@index([status])
+  @@index([walletAddress])
+  @@index([expiresAt])
 }
 
 model OrderItem {
