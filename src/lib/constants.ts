@@ -19,3 +19,46 @@ export const PRICING_TIERS = {
 } as const;
 
 export type PricingTier = keyof typeof PRICING_TIERS;
+
+/* ------------------------------------------------------------------ */
+/*  Payment Methods                                                    */
+/* ------------------------------------------------------------------ */
+
+export const PAYMENT_METHODS = {
+  zelle: {
+    label: "Zelle",
+    icon: "💳",
+    description: "Send payment via Zelle — instant and fee-free",
+  },
+  wire: {
+    label: "Wire Transfer",
+    icon: "🏦",
+    description: "Domestic or international wire transfer",
+  },
+  bitcoin: {
+    label: "Bitcoin (Kraken Pay)",
+    icon: "₿",
+    description: "Pay with Bitcoin via Kraken Pay",
+  },
+} as const;
+
+export type PaymentMethod = keyof typeof PAYMENT_METHODS;
+
+export const ZELLE_INFO = {
+  recipient: "ReVia Research Supply LLC",
+  email: "payments@revialife.com",
+};
+
+export const WIRE_INFO = {
+  bankName: "Bank of America",
+  accountName: "ReVia Research Supply LLC",
+  routingNumber: "063100277",
+  accountNumber: "898142637201",
+  swiftCode: "BOFAUS3N",
+  bankAddress: "100 N Tryon St, Charlotte, NC 28255",
+};
+
+export const KRAKEN_PAY_INFO = {
+  paymentTag: "reviaresearch",
+  supportedCurrency: "BTC",
+};

@@ -81,23 +81,27 @@ model User {
 }
 
 model Order {
-  id        String      @id @default(cuid())
-  email     String
-  name      String
-  address   String
-  city      String
-  state     String
-  zip       String
-  country   String      @default("US")
-  status    String      @default("pending")
-  tracking  String?
-  total     Float
-  items     OrderItem[]
-  userId    String?
-  user      User?       @relation(fields: [userId], references: [id])
-  createdAt DateTime    @default(now())
+  id            String      @id @default(cuid())
+  invoiceNumber String      @unique
+  email         String
+  name          String
+  address       String
+  city          String
+  state         String
+  zip           String
+  country       String      @default("US")
+  status        String      @default("pending_payment")
+  paymentMethod String      @default("zelle") // "zelle" | "wire" | "bitcoin"
+  paymentStatus String      @default("awaiting") // "awaiting" | "confirmed" | "failed"
+  tracking      String?
+  total         Float
+  items         OrderItem[]
+  userId        String?
+  user          User?       @relation(fields: [userId], references: [id])
+  createdAt     DateTime    @default(now())
 
   @@index([userId])
+  @@index([invoiceNumber])
 }
 
 model OrderItem {

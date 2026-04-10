@@ -37,6 +37,14 @@ export async function POST(request: Request) {
       data: { email: email.toLowerCase().trim() },
     });
 
+    // Send newsletter welcome email
+    try {
+      const { sendNewsletterWelcome } = await import("@/lib/email");
+      await sendNewsletterWelcome(email.toLowerCase().trim());
+    } catch (emailErr) {
+      console.error("Failed to send newsletter welcome:", emailErr);
+    }
+
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json(

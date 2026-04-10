@@ -3,10 +3,22 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
-import { sendOrderConfirmation } from "@/lib/email";
+import { sendOrderConfirmation, sendAdminNewOrderAlert } from "@/lib/email";
 import { rateLimit } from "@/lib/rate-limit";
 import { validateShippingAddress, validateOrderItems, sanitizeString } from "@/lib/validation";
 import { calculateTax } from "@/lib/tax";
+import type { PaymentMethod } from "@/lib/constants";
+
+/* ------------------------------------------------------------------ */
+/*  Invoice number generator: RV-YYYYMMDD-XXXX                        */
+/* ------------------------------------------------------------------ */
+
+function generateInvoiceNumber(): string {
+  const now = new Date();
+  const date = now.toISOString().slice(0, 10).replace(/-/g, "");
+  const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return `RV-${date}-${rand}`;
+}
 
 /* ------------------------------------------------------------------ */
 /*  POST /api/orders – create a new order                              */
@@ -29,6 +41,8 @@ interface ShippingInput {
   zip: string;
 }
 
+const VALID_PAYMENT_METHODS: PaymentMethod[] = ["zelle", "wire", "bitcoin"];
+
 export async function POST(request: NextRequest) {
   try {
     // Rate limit: 20 orders per IP per hour
@@ -45,11 +59,17 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { items, shipping, couponCode } = body as {
+    const { items, shipping, couponCode, paymentMethod } = body as {
       items: OrderItemInput[];
       shipping: ShippingInput;
       couponCode?: string;
+      paymentMethod?: string;
     };
+
+    // ── Validate payment method ──
+    const method = (paymentMethod && VALID_PAYMENT_METHODS.includes(paymentMethod as PaymentMethod))
+      ? paymentMethod as PaymentMethod
+      : "zelle";
 
     // ── Validate order items ──
     const itemValidation = validateOrderItems(items);
@@ -177,9 +197,13 @@ export async function POST(request: NextRequest) {
     const cookieStore = await cookies();
     const user = await getAuthUser(cookieStore);
 
+    // ── Generate invoice number ──
+    const invoiceNumber = generateInvoiceNumber();
+
     // ── Create order ──
     const order = await prisma.order.create({
       data: {
+        invoiceNumber,
         email: sanitizedShipping.email,
         name: sanitizedShipping.name,
         address: sanitizedShipping.address,
@@ -187,6 +211,9 @@ export async function POST(request: NextRequest) {
         state: sanitizedShipping.state,
         zip: sanitizedShipping.zip,
         total,
+        paymentMethod: method,
+        paymentStatus: "awaiting",
+        status: "pending_payment",
         userId: user?.id ?? null,
         items: {
           create: sanitizedItems.map((i) => ({
@@ -240,19 +267,38 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // ── Send confirmation email ──
+    // ── Send confirmation email with payment instructions ──
     try {
-      await sendOrderConfirmation(order, sanitizedShipping.email);
+      const orderForEmail = {
+        ...order,
+        paymentMethod: order.paymentMethod,
+        invoiceNumber: order.invoiceNumber,
+      };
+      await sendOrderConfirmation(orderForEmail, sanitizedShipping.email);
     } catch (emailErr) {
       console.error("Failed to send order confirmation email:", emailErr);
+    }
+
+    // ── Notify admin of new order ──
+    try {
+      const orderForAdmin = {
+        ...order,
+        paymentMethod: order.paymentMethod,
+        invoiceNumber: order.invoiceNumber,
+      };
+      await sendAdminNewOrderAlert(orderForAdmin);
+    } catch (adminEmailErr) {
+      console.error("Failed to send admin order alert:", adminEmailErr);
     }
 
     return NextResponse.json(
       {
         order: {
           id: order.id,
+          invoiceNumber: order.invoiceNumber,
           total: order.total,
           status: order.status,
+          paymentMethod: order.paymentMethod,
         },
       },
       { status: 201 }

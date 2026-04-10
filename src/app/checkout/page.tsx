@@ -13,9 +13,12 @@ import {
   Lock,
   BadgeCheck,
   FlaskConical,
+  Banknote,
+  Building2,
+  Bitcoin,
 } from "lucide-react";
 import { useCartStore } from "@/store/cart";
-import { SHIPPING_METHODS, type ShippingMethod } from "@/lib/constants";
+import { SHIPPING_METHODS, PAYMENT_METHODS, type ShippingMethod, type PaymentMethod } from "@/lib/constants";
 import { calculateTax, getTaxRate } from "@/lib/tax";
 import FloatingOrbs from "@/components/FloatingOrbs";
 
@@ -36,10 +39,14 @@ export default function CheckoutPage() {
 
   const [submitting, setSubmitting] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [orderInvoice, setOrderInvoice] = useState<string | null>(null);
+  const [orderTotal, setOrderTotal] = useState<number>(0);
+  const [orderPaymentMethod, setOrderPaymentMethod] = useState<PaymentMethod>("zelle");
   const [error, setError] = useState<string | null>(null);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
-  // Shipping method
+  // Payment & shipping method
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("zelle");
   const [shippingMethod, setShippingMethod] = useState<ShippingMethod>("standard");
 
   // Free shipping promo state
@@ -155,6 +162,7 @@ export default function CheckoutPage() {
             zip: form.zip,
           },
           shippingMethod,
+          paymentMethod,
           couponCode: appliedCoupon || undefined,
         }),
       });
@@ -166,6 +174,9 @@ export default function CheckoutPage() {
       }
 
       setOrderId(data.order.id);
+      setOrderInvoice(data.order.invoiceNumber);
+      setOrderTotal(data.order.total);
+      setOrderPaymentMethod(paymentMethod);
       clearCart();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
@@ -175,23 +186,58 @@ export default function CheckoutPage() {
   };
 
   if (orderId) {
+    const paymentLabels: Record<PaymentMethod, string> = {
+      zelle: "Zelle",
+      wire: "Wire Transfer",
+      bitcoin: "Bitcoin (Kraken Pay)",
+    };
+
     return (
-      <section className="relative mx-auto flex max-w-xl flex-col items-center px-4 py-32 text-center">
+      <section className="relative mx-auto flex max-w-2xl flex-col items-center px-4 py-20 text-center">
         <FloatingOrbs />
-        <div className="relative z-10">
+        <div className="relative z-10 w-full">
           <div className="flex h-16 w-16 mx-auto items-center justify-center rounded-full bg-sky-100">
             <ShoppingBag className="h-8 w-8 text-sky-600" />
           </div>
           <h1 className="mt-6 text-2xl font-bold text-stone-900">
-            Thank you for your order!
+            Order Placed — Payment Required
           </h1>
           <p className="mt-2 text-stone-500">
-            Your order{" "}
-            <span className="font-semibold text-sky-600">
-              #{orderId.slice(-8).toUpperCase()}
+            Invoice{" "}
+            <span className="font-semibold text-sky-600 font-mono">
+              {orderInvoice}
             </span>{" "}
-            has been received. We will send a confirmation to your email.
+            has been created. Check your email for detailed payment instructions.
           </p>
+
+          {/* Payment summary card */}
+          <div className="mt-8 rounded-2xl border border-sky-200/40 bg-white/90 backdrop-blur-sm p-6 text-left shadow-sm">
+            <h2 className="text-lg font-semibold text-stone-900 mb-4">Payment Details</h2>
+            <div className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-sm text-stone-500">Payment Method</span>
+                <span className="text-sm font-medium text-stone-800">{paymentLabels[orderPaymentMethod]}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-stone-500">Amount Due</span>
+                <span className="text-lg font-bold text-stone-900">${(orderTotal / 100).toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-stone-500">Invoice Number</span>
+                <span className="text-sm font-mono font-semibold text-sky-600">{orderInvoice}</span>
+              </div>
+            </div>
+
+            <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+              <p className="text-xs text-amber-800 font-medium">
+                ⚠️ Include your invoice number <span className="font-mono font-bold">{orderInvoice}</span> in your payment note/memo so we can match your payment.
+              </p>
+              <p className="text-xs text-amber-700 mt-1">
+                Orders without payment within 48 hours may be cancelled.
+              </p>
+            </div>
+          </div>
+
           <Link
             href="/shop"
             className="mt-8 inline-block rounded-xl bg-sky-400 px-6 py-3 text-sm font-semibold text-white transition hover:bg-sky-500"
@@ -349,6 +395,51 @@ export default function CheckoutPage() {
                   />
                 </div>
               </div>
+            </div>
+
+            {/* Payment Method Selection */}
+            <div className="rounded-2xl border border-sky-200/40 bg-white/80 backdrop-blur-sm p-6 sm:p-8 space-y-4">
+              <h2 className="text-xl font-semibold text-stone-900">
+                Payment Method
+              </h2>
+              <p className="text-xs text-stone-500">
+                We accept Zelle, wire transfer, and Bitcoin. Payment instructions will be emailed after you place your order.
+              </p>
+              <div className="space-y-3">
+                {([
+                  { key: "zelle" as PaymentMethod, icon: Banknote, label: "Zelle", desc: "Instant, fee-free payment via Zelle" },
+                  { key: "wire" as PaymentMethod, icon: Building2, label: "Wire Transfer", desc: "Domestic or international wire transfer" },
+                  { key: "bitcoin" as PaymentMethod, icon: Bitcoin, label: "Bitcoin (Kraken Pay)", desc: "Pay with BTC via Kraken Pay" },
+                ]).map((method) => (
+                  <label
+                    key={method.key}
+                    className={`flex items-center gap-4 rounded-xl border px-4 py-3.5 cursor-pointer transition ${
+                      paymentMethod === method.key
+                        ? "border-sky-400 bg-sky-50/80 shadow-sm"
+                        : "border-sky-100 bg-white hover:border-sky-200"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value={method.key}
+                      checked={paymentMethod === method.key}
+                      onChange={() => setPaymentMethod(method.key)}
+                      className="accent-sky-500"
+                      disabled={submitting}
+                    />
+                    <method.icon className={`h-5 w-5 shrink-0 ${paymentMethod === method.key ? "text-sky-500" : "text-stone-400"}`} />
+                    <div>
+                      <p className="text-sm font-medium text-stone-800">{method.label}</p>
+                      <p className="text-xs text-stone-400">{method.desc}</p>
+                    </div>
+                  </label>
+                ))}
+              </div>
+              <p className="text-[10px] text-stone-400 text-center">
+                All sales are final. No refunds or returns. See our{" "}
+                <a href="/policies/refunds" target="_blank" className="text-sky-500 hover:underline">refund policy</a>.
+              </p>
             </div>
 
             {/* RUO Agreement Checkbox */}

@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { sendContactAutoReply } from "@/lib/email";
 
 export async function POST(req: Request) {
   try {
@@ -14,6 +15,13 @@ export async function POST(req: Request) {
     const contact = await prisma.contactMessage.create({
       data: { name, email, subject, message },
     });
+
+    // Send auto-reply
+    try {
+      await sendContactAutoReply(name, email, subject);
+    } catch (emailErr) {
+      console.error("Failed to send contact auto-reply:", emailErr);
+    }
 
     return NextResponse.json({ success: true, id: contact.id });
   } catch {
