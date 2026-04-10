@@ -20,10 +20,27 @@ export default async function ShopPage({
   const PRODUCTS_PER_PAGE = 12;
   const currentPage = Math.max(1, parseInt(pageParam || "1", 10));
 
-  /* ── Fetch categories for sidebar ── */
-  const categories = await prisma.category.findMany({
+  /* ── Fetch categories for sidebar (with product counts including tag matches) ── */
+  const allCategories = await prisma.category.findMany({
     orderBy: { name: "asc" },
   });
+
+  // Count products per category: primary category OR tags containing the slug
+  const activeProducts = await prisma.product.findMany({
+    where: { active: true },
+    select: { categoryId: true, tags: true },
+  });
+
+  const categoryCounts = new Map<string, number>();
+  for (const cat of allCategories) {
+    const count = activeProducts.filter(
+      (p) => p.categoryId === cat.id || (p.tags && p.tags.includes(cat.slug))
+    ).length;
+    categoryCounts.set(cat.id, count);
+  }
+
+  // Only show categories with at least 1 product
+  const categories = allCategories.filter((c) => (categoryCounts.get(c.id) ?? 0) > 0);
 
   const tier = await getActiveTier();
 
@@ -31,15 +48,26 @@ export default async function ShopPage({
   const where: Record<string, unknown> = { active: true };
 
   if (category) {
-    where.category = { slug: category };
+    // Multi-category: match primary categoryId OR tags containing the category slug
+    where.OR = [
+      { category: { slug: category } },
+      { tags: { contains: category } },
+    ];
   }
 
   if (q) {
-    where.OR = [
+    const searchFilter = [
       { name: { contains: q, mode: "insensitive" } },
       { description: { contains: q, mode: "insensitive" } },
       { category: { name: { contains: q, mode: "insensitive" } } },
     ];
+    if (category) {
+      // Combine category filter with search
+      where.AND = [{ OR: where.OR }, { OR: searchFilter }];
+      delete where.OR;
+    } else {
+      where.OR = searchFilter;
+    }
   }
 
   /* ── Sort ── */

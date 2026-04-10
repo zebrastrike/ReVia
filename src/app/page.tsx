@@ -23,10 +23,28 @@ export default async function HomePage() {
     variants: p.variants.map((v) => ({ ...v, price: resolvePriceForVariant(v, tier) })),
   }));
 
-  const categories = await prisma.category.findMany({
-    include: { _count: { select: { products: true } } },
+  const allCategories = await prisma.category.findMany({
     orderBy: { name: "asc" },
   });
+
+  // Count products per category including tag-based matches
+  const allActiveProducts = await prisma.product.findMany({
+    where: { active: true },
+    select: { categoryId: true, tags: true },
+  });
+
+  const catCounts = new Map<string, number>();
+  for (const cat of allCategories) {
+    catCounts.set(
+      cat.id,
+      allActiveProducts.filter(
+        (p) => p.categoryId === cat.id || (p.tags && p.tags.includes(cat.slug))
+      ).length
+    );
+  }
+
+  // Only show categories with products
+  const categories = allCategories.filter((c) => (catCounts.get(c.id) ?? 0) > 0);
 
   return (
     <div className="relative">
@@ -82,7 +100,7 @@ export default async function HomePage() {
               id: c.id,
               name: c.name,
               slug: c.slug,
-              productCount: c._count.products,
+              productCount: catCounts.get(c.id) ?? 0,
             }))}
           />
         </div>

@@ -98,7 +98,7 @@ async function main() {
   await createProduct({
     name: "REbalance", slug: "rebalance",
     description: "Cognitive and longevity oral capsule blend — Glutathione, Anserine, Cerluten+",
-    categorySlug: "capsules", active: true, tags: ["oral", "cognitive", "longevity"],
+    categorySlug: "capsules", active: true, tags: ["capsules", "nootropic", "longevity", "antioxidant"],
     variants: [
       { label: "120 Capsules", sku: "RV-OCS-REB-120-ORA", retailPrice: 12999, foundersPrice: 10499, friendsPrice: 9199, quantity: 0, reorderThreshold: 30 },
     ],
@@ -107,7 +107,7 @@ async function main() {
   await createProduct({
     name: "REcover", slug: "recover",
     description: "Recovery and repair oral capsule blend — BPC-157, GHK-Cu, Carnosine",
-    categorySlug: "capsules", active: true, tags: ["oral", "recovery"],
+    categorySlug: "capsules", active: true, tags: ["capsules", "recovery", "anti-inflammatory", "copper-peptide-cosmetic"],
     variants: [
       { label: "60 Capsules", sku: "RV-OCS-REC-60-ORA", retailPrice: 10999, foundersPrice: 8999, friendsPrice: 7199, quantity: 0, reorderThreshold: 20 },
     ],
@@ -116,7 +116,7 @@ async function main() {
   await createProduct({
     name: "REvive", slug: "revive",
     description: "Energy and metabolic support oral capsule blend — NAD+, SLU-PP-332, 5-Amino-1MQ",
-    categorySlug: "capsules", active: true, tags: ["oral", "energy", "metabolic"],
+    categorySlug: "capsules", active: true, tags: ["capsules", "mitochondrial", "weight-management"],
     variants: [
       { label: "60 Capsules", sku: "RV-OCS-REV-60-ORA", retailPrice: 11999, foundersPrice: 9499, friendsPrice: 8499, quantity: 0, reorderThreshold: 20 },
     ],
