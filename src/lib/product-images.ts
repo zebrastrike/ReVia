@@ -93,8 +93,8 @@ const productImages: Record<string, string> = {
   "klow": "/images/products/klow-80mgblend.png",
   "revia-lean": "/images/products/lean-15mgblend.png",
   "revia-lean-pro-plus": "/images/products/leanpro-25mgblend.png",
-  "revia-renew": "/images/products/renew-220mgblend.png",
-  "revia-sculpt-glow": "/images/products/sculptglow-145mgblend.png",
+  "revia-renew": "/images/products/renew-120mgblend.png",
+  "revia-sculpt-glow": "/images/products/sculptglow-125mgblend.png",
 
   // Capsules
   "rebalance": "/images/products/rebalance-capsules.png",
@@ -269,8 +269,8 @@ const variantImageMap: Record<string, string> = {
   "klow::50/10/10/10mg": "klow-80mgblend.png",
   "revia-lean::15mg Blended Vial": "lean-15mgblend.png",
   "revia-lean-pro-plus::25mg Blended Vial": "leanpro-25mgblend.png",
-  "revia-renew::220mg Blended Vial": "renew-220mgblend.png",
-  "revia-sculpt-glow::145mg Blended Vial": "sculptglow-145mgblend.png",
+  "revia-renew::120mg Blended Vial": "renew-120mgblend.png",
+  "revia-sculpt-glow::125mg Blended Vial": "sculptglow-125mgblend.png",
   // L-Carnitine
   "l-carnitine::600mg (liquid)": "l-carnitine-600mg.png",
   // Tirzepatide higher doses

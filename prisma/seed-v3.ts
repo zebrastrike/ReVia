@@ -364,17 +364,17 @@ async function main() {
     categorySlug: "stacks", active: true, featured: true,
     tags: ["hero-stack", "recovery", "blend", "featured"],
     variants: [
-      { label: "220mg Blended Vial", sku: "RV-SBL-REN-220-SC", retailPrice: 18000, foundersPrice: null, friendsPrice: null, quantity: 0, reorderThreshold: 0 },
+      { label: "120mg Blended Vial", sku: "RV-SBL-REN-120-SC", retailPrice: 18000, foundersPrice: null, friendsPrice: null, quantity: 0, reorderThreshold: 0 },
     ],
   });
 
   await createProduct({
     name: "ReVia SCULPT & GLOW", slug: "revia-sculpt-glow",
-    description: "Ultimate body composition and aesthetics blend — Ipamorelin 10mg + Tirzepatide 10mg + Cagrilintide 5mg + BPC-157 10mg + TB-500 10mg + GHK-Cu 100mg. Six-peptide formula combining metabolic, recovery, and skin-health signaling.",
+    description: "Ultimate body composition and aesthetics blend — Ipamorelin 10mg + Tirzepatide 10mg + Cagrilintide 5mg + BPC-157 10mg + TB-500 10mg + GHK-Cu 80mg. Six-peptide formula combining metabolic, recovery, and skin-health signaling.",
     categorySlug: "stacks", active: true, featured: true,
     tags: ["hero-stack", "weight-management", "recovery", "aesthetics", "blend", "featured"],
     variants: [
-      { label: "145mg Blended Vial", sku: "RV-SBL-SGL-145-SC", retailPrice: 35000, foundersPrice: null, friendsPrice: null, quantity: 0, reorderThreshold: 0 },
+      { label: "125mg Blended Vial", sku: "RV-SBL-SGL-125-SC", retailPrice: 35000, foundersPrice: null, friendsPrice: null, quantity: 0, reorderThreshold: 0 },
     ],
   });
 
