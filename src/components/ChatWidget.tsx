@@ -1,15 +1,26 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send, Loader2, Bot, User } from "lucide-react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { MessageCircle, X, Send, Loader2, Minimize2, FlaskConical, User } from "lucide-react";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
 
+function getSessionId(): string {
+  if (typeof window === "undefined") return "";
+  let id = sessionStorage.getItem("revia-chat-session");
+  if (!id) {
+    id = crypto.randomUUID();
+    sessionStorage.setItem("revia-chat-session", id);
+  }
+  return id;
+}
+
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
+  const [minimized, setMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,16 +32,16 @@ export default function ChatWidget() {
   }, [messages]);
 
   useEffect(() => {
-    if (open && inputRef.current) {
+    if (open && !minimized && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [open]);
+  }, [open, minimized]);
 
-  const sendMessage = async () => {
-    const text = input.trim();
-    if (!text || loading) return;
+  const sendMessage = useCallback(async (text?: string) => {
+    const msg = (text ?? input).trim();
+    if (!msg || loading) return;
 
-    const userMessage: Message = { role: "user", content: text };
+    const userMessage: Message = { role: "user", content: msg };
     const updated = [...messages, userMessage];
     setMessages(updated);
     setInput("");
@@ -40,22 +51,14 @@ export default function ChatWidget() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: updated }),
+        body: JSON.stringify({ messages: updated, sessionId: getSessionId() }),
       });
 
       const data = await res.json();
-
-      if (data.message) {
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: data.message },
-        ]);
-      } else {
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: data.error || "Sorry, I couldn't process that. Please try again." },
-        ]);
-      }
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: data.message || data.error || "Sorry, please try again." },
+      ]);
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -64,7 +67,7 @@ export default function ChatWidget() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [input, loading, messages]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -73,145 +76,199 @@ export default function ChatWidget() {
     }
   };
 
+  const quickAsk = (q: string) => {
+    setMessages((prev) => [...prev, { role: "user", content: q }]);
+    setLoading(true);
+    fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: [...messages, { role: "user", content: q }],
+        sessionId: getSessionId(),
+      }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: data.message || data.error || "Please try again." },
+        ]);
+      })
+      .catch(() => {
+        setMessages((prev) => [...prev, { role: "assistant", content: "Connection error." }]);
+      })
+      .finally(() => setLoading(false));
+  };
+
+  // Not open — show floating bubble
+  if (!open) {
+    return (
+      <button
+        onClick={() => { setOpen(true); setMinimized(false); }}
+        className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-stone-800 pl-4 pr-5 py-3 text-white shadow-lg shadow-stone-900/20 transition hover:bg-stone-700 hover:shadow-xl active:scale-95 group"
+        aria-label="Open chat"
+      >
+        <FlaskConical className="h-5 w-5 text-sky-400 group-hover:rotate-12 transition-transform" />
+        <span className="text-sm font-medium">Ask a Researcher</span>
+      </button>
+    );
+  }
+
+  // Minimized — show small bar
+  if (minimized) {
+    return (
+      <button
+        onClick={() => setMinimized(false)}
+        className="fixed bottom-5 right-5 z-50 flex items-center gap-2.5 rounded-full bg-stone-800 px-4 py-2.5 text-white shadow-lg transition hover:bg-stone-700 active:scale-95"
+      >
+        <MessageCircle className="h-4 w-4 text-sky-400" />
+        <span className="text-xs font-medium">Resume Chat</span>
+        {messages.length > 0 && (
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-sky-500 text-[10px] font-bold">
+            {messages.filter((m) => m.role === "assistant").length}
+          </span>
+        )}
+      </button>
+    );
+  }
+
+  // Full chat panel
   return (
-    <>
-      {/* Chat bubble */}
-      {!open && (
-        <button
-          onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-sky-500 text-white shadow-lg shadow-sky-500/30 transition hover:bg-sky-600 hover:shadow-xl hover:shadow-sky-500/40 active:scale-95"
-          aria-label="Open chat"
-        >
-          <MessageCircle className="h-6 w-6" />
-        </button>
-      )}
-
-      {/* Chat panel */}
-      {open && (
-        <div className="fixed bottom-6 right-6 z-50 flex w-[380px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-sky-200/60 bg-white shadow-2xl shadow-stone-900/10 sm:bottom-6 sm:right-6">
-          {/* Header */}
-          <div className="flex items-center justify-between bg-sky-500 px-4 py-3">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20">
-                <Bot className="h-4 w-4 text-white" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-white">ReVia Research Assistant</p>
-                <p className="text-[10px] text-sky-100">Ask about products, research, or ordering</p>
-              </div>
-            </div>
-            <button
-              onClick={() => setOpen(false)}
-              className="rounded-lg p-1 text-white/70 transition hover:bg-white/10 hover:text-white"
-            >
-              <X className="h-5 w-5" />
-            </button>
+    <div className="fixed bottom-5 right-5 z-50 flex w-[370px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-stone-200 bg-[#FAF9F7] shadow-2xl shadow-stone-900/15">
+      {/* Header */}
+      <div className="flex items-center justify-between bg-stone-800 px-4 py-3">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sky-500/20">
+            <FlaskConical className="h-4 w-4 text-sky-400" />
           </div>
-
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4" style={{ maxHeight: "400px", minHeight: "300px" }}>
-            {messages.length === 0 && (
-              <div className="text-center py-8">
-                <Bot className="mx-auto h-10 w-10 text-sky-200 mb-3" />
-                <p className="text-sm font-medium text-stone-700">Hi! I&apos;m your ReVia Research Assistant.</p>
-                <p className="text-xs text-stone-400 mt-1 max-w-[260px] mx-auto">
-                  Ask me about our peptides, what they&apos;ve been studied for, product recommendations, or how to order.
-                </p>
-                <div className="mt-4 flex flex-wrap justify-center gap-1.5">
-                  {[
-                    "What peptides do you carry?",
-                    "Tell me about BPC-157",
-                    "Weight management options?",
-                    "How do I place an order?",
-                  ].map((q) => (
-                    <button
-                      key={q}
-                      onClick={() => {
-                        setInput(q);
-                        setTimeout(() => sendMessage(), 0);
-                        setInput(q);
-                      }}
-                      className="rounded-lg bg-sky-50 border border-sky-200/50 px-2.5 py-1.5 text-[11px] text-sky-700 transition hover:bg-sky-100"
-                    >
-                      {q}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {messages.map((msg, i) => (
-              <div
-                key={i}
-                className={`flex gap-2.5 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                {msg.role === "assistant" && (
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sky-100 mt-0.5">
-                    <Bot className="h-3.5 w-3.5 text-sky-600" />
-                  </div>
-                )}
-                <div
-                  className={`max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
-                    msg.role === "user"
-                      ? "bg-sky-500 text-white rounded-br-md"
-                      : "bg-stone-100 text-stone-800 rounded-bl-md"
-                  }`}
-                >
-                  {msg.content.split("\n").map((line, j) => (
-                    <p key={j} className={j > 0 ? "mt-2" : ""}>
-                      {line}
-                    </p>
-                  ))}
-                </div>
-                {msg.role === "user" && (
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sky-500 mt-0.5">
-                    <User className="h-3.5 w-3.5 text-white" />
-                  </div>
-                )}
-              </div>
-            ))}
-
-            {loading && (
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sky-100">
-                  <Bot className="h-3.5 w-3.5 text-sky-600" />
-                </div>
-                <div className="rounded-2xl rounded-bl-md bg-stone-100 px-4 py-3">
-                  <Loader2 className="h-4 w-4 animate-spin text-stone-400" />
-                </div>
-              </div>
-            )}
-
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Input */}
-          <div className="border-t border-stone-100 px-3 py-3">
-            <div className="flex items-center gap-2">
-              <input
-                ref={inputRef}
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Ask about our peptides..."
-                disabled={loading}
-                className="flex-1 rounded-xl border border-stone-200 bg-stone-50 px-3.5 py-2.5 text-sm text-stone-800 placeholder-stone-400 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20 disabled:opacity-60"
-              />
-              <button
-                onClick={sendMessage}
-                disabled={!input.trim() || loading}
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-500 text-white transition hover:bg-sky-600 disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                <Send className="h-4 w-4" />
-              </button>
-            </div>
-            <p className="mt-1.5 text-center text-[9px] text-stone-300">
-              All products are for research use only. Not intended for human consumption.
-            </p>
+          <div>
+            <p className="text-sm font-semibold text-white">Research Assistant</p>
+            <p className="text-[10px] text-stone-400">ReVia Research Supply</p>
           </div>
         </div>
-      )}
-    </>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setMinimized(true)}
+            className="rounded-lg p-1.5 text-stone-400 transition hover:bg-stone-700 hover:text-white"
+            title="Minimize"
+          >
+            <Minimize2 className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => setOpen(false)}
+            className="rounded-lg p-1.5 text-stone-400 transition hover:bg-stone-700 hover:text-white"
+            title="Close"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3" style={{ maxHeight: "380px", minHeight: "280px" }}>
+        {messages.length === 0 && (
+          <div className="text-center py-6">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-sky-50 border border-sky-200/50 mx-auto mb-3">
+              <FlaskConical className="h-6 w-6 text-sky-500" />
+            </div>
+            <p className="text-sm font-semibold text-stone-700">How can I help with your research?</p>
+            <p className="text-xs text-stone-400 mt-1 max-w-[260px] mx-auto leading-relaxed">
+              Ask about peptides, mechanisms of action, available products, or how to order.
+            </p>
+            <div className="mt-4 flex flex-col gap-1.5">
+              {[
+                "What weight management peptides do you carry?",
+                "Tell me about BPC-157 research",
+                "What recovery peptides are available?",
+                "How do I place an order?",
+              ].map((q) => (
+                <button
+                  key={q}
+                  onClick={() => quickAsk(q)}
+                  disabled={loading}
+                  className="rounded-xl bg-white border border-stone-200/80 px-3 py-2 text-xs text-stone-600 text-left transition hover:bg-sky-50 hover:border-sky-200 hover:text-sky-700 disabled:opacity-50"
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {messages.map((msg, i) => (
+          <div
+            key={i}
+            className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+          >
+            {msg.role === "assistant" && (
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-stone-800 mt-1">
+                <FlaskConical className="h-3 w-3 text-sky-400" />
+              </div>
+            )}
+            <div
+              className={`max-w-[82%] rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed ${
+                msg.role === "user"
+                  ? "bg-stone-800 text-white rounded-br-sm"
+                  : "bg-white border border-stone-200/80 text-stone-700 rounded-bl-sm"
+              }`}
+            >
+              {msg.content.split("\n").map((line, j) => (
+                <p key={j} className={j > 0 ? "mt-1.5" : ""}>
+                  {line}
+                </p>
+              ))}
+            </div>
+            {msg.role === "user" && (
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sky-500 mt-1">
+                <User className="h-3 w-3 text-white" />
+              </div>
+            )}
+          </div>
+        ))}
+
+        {loading && (
+          <div className="flex items-center gap-2">
+            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-stone-800">
+              <FlaskConical className="h-3 w-3 text-sky-400" />
+            </div>
+            <div className="rounded-2xl rounded-bl-sm bg-white border border-stone-200/80 px-4 py-3">
+              <div className="flex gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-stone-300 animate-bounce" style={{ animationDelay: "0ms" }} />
+                <span className="h-1.5 w-1.5 rounded-full bg-stone-300 animate-bounce" style={{ animationDelay: "150ms" }} />
+                <span className="h-1.5 w-1.5 rounded-full bg-stone-300 animate-bounce" style={{ animationDelay: "300ms" }} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Input */}
+      <div className="border-t border-stone-200/80 bg-white px-3 py-2.5">
+        <div className="flex items-center gap-2">
+          <input
+            ref={inputRef}
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Ask about our peptides..."
+            disabled={loading}
+            className="flex-1 rounded-xl border border-stone-200 bg-stone-50 px-3.5 py-2 text-sm text-stone-800 placeholder-stone-400 outline-none transition focus:border-sky-400 focus:bg-white disabled:opacity-60"
+          />
+          <button
+            onClick={() => sendMessage()}
+            disabled={!input.trim() || loading}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-stone-800 text-white transition hover:bg-stone-700 disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            <Send className="h-4 w-4" />
+          </button>
+        </div>
+        <p className="mt-1.5 text-center text-[8px] text-stone-300 tracking-wide">
+          FOR RESEARCH USE ONLY — NOT INTENDED FOR HUMAN CONSUMPTION
+        </p>
+      </div>
+    </div>
   );
 }

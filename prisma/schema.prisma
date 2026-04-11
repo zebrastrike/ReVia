@@ -225,6 +225,22 @@ model DrawingResult {
   drawnAt     DateTime @default(now())
 }
 
+model ChatLead {
+  id              String   @id @default(cuid())
+  sessionId       String
+  email           String?
+  productsAsked   String   @default("[]") // JSON array of product names/slugs mentioned
+  messages        String   @default("[]") // JSON array of {role, content, timestamp}
+  messageCount    Int      @default(0)
+  ip              String?
+  userId          String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([sessionId])
+  @@index([createdAt])
+}
+
 model ContactMessage {
   id        String   @id @default(cuid())
   name      String
