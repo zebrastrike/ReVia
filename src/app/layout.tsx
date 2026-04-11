@@ -5,6 +5,7 @@ import CartDrawer from "@/components/CartDrawer";
 import Toast from "@/components/Toast";
 import JsonLd from "@/components/JsonLd";
 import LayoutShell from "@/components/LayoutShell";
+import ChatWidget from "@/components/ChatWidget";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-geist-sans",
@@ -119,6 +120,7 @@ export default function RootLayout({
         <CartDrawer />
         <Toast />
         <LayoutShell>{children}</LayoutShell>
+        <ChatWidget />
       </body>
     </html>
   );
