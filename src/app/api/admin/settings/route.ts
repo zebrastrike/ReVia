@@ -7,15 +7,21 @@ import type { PricingTier } from "@/lib/constants";
 
 export async function GET() {
   const settings = await prisma.siteSettings.findUnique({ where: { id: "singleton" } });
-  return NextResponse.json(settings ?? {
+  const defaultRates = [
+    { label: "Standard Shipping", price: 795, estimate: "5-7 business days", minOrder: 0 },
+    { label: "Priority Shipping", price: 1295, estimate: "3-5 business days", minOrder: 20000 },
+  ];
+  return NextResponse.json({
     activePricingTier: "retail",
     freeShippingEnabled: false,
     freeShippingThreshold: 15000,
     freeShippingExpiry: null,
+    shippingRates: JSON.stringify(defaultRates),
     drawingEntryAmount: 5000,
     drawingPrize1: 10000,
     drawingPrize2: 5000,
     drawingPrize3: 2500,
+    ...settings,
   });
 }
 
@@ -27,11 +33,12 @@ export async function PATCH(req: Request) {
   }
 
   const body = await req.json();
-  const { activePricingTier, freeShippingEnabled, freeShippingThreshold, freeShippingExpiry, drawingEntryAmount, drawingPrize1, drawingPrize2, drawingPrize3 } = body as {
+  const { activePricingTier, freeShippingEnabled, freeShippingThreshold, freeShippingExpiry, shippingRates, drawingEntryAmount, drawingPrize1, drawingPrize2, drawingPrize3 } = body as {
     activePricingTier?: PricingTier;
     freeShippingEnabled?: boolean;
     freeShippingThreshold?: number;
     freeShippingExpiry?: string | null;
+    shippingRates?: string;
     drawingEntryAmount?: number;
     drawingPrize1?: number;
     drawingPrize2?: number;
@@ -61,6 +68,22 @@ export async function PATCH(req: Request) {
 
   if (freeShippingExpiry !== undefined) {
     update.freeShippingExpiry = freeShippingExpiry ? new Date(freeShippingExpiry) : null;
+  }
+
+  if (shippingRates !== undefined) {
+    // Validate JSON structure
+    try {
+      const parsed = JSON.parse(shippingRates);
+      if (!Array.isArray(parsed)) throw new Error("Must be array");
+      for (const r of parsed) {
+        if (!r.label || typeof r.price !== "number" || !r.estimate) {
+          throw new Error("Each rate needs label, price (cents), and estimate");
+        }
+      }
+      update.shippingRates = shippingRates;
+    } catch (e) {
+      return NextResponse.json({ error: `Invalid shipping rates: ${(e as Error).message}` }, { status: 400 });
+    }
   }
 
   if (drawingEntryAmount !== undefined) update.drawingEntryAmount = drawingEntryAmount;

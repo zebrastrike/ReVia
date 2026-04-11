@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { useAuth } from "@/lib/useAuth";
-import { SHIPPING_METHODS, PAYMENT_METHODS, type ShippingMethod, type PaymentMethod } from "@/lib/constants";
+import { PAYMENT_METHODS, type PaymentMethod } from "@/lib/constants";
 import { calculateTax, getTaxRate } from "@/lib/tax";
 import FloatingOrbs from "@/components/FloatingOrbs";
 
@@ -54,7 +54,10 @@ export default function CheckoutPage() {
 
   // Payment & shipping method
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("zelle");
-  const [shippingMethod, setShippingMethod] = useState<ShippingMethod>("standard");
+  const [selectedShippingIndex, setSelectedShippingIndex] = useState(0);
+  const [shippingRates, setShippingRates] = useState<Array<{ label: string; price: number; estimate: string; minOrder: number }>>([
+    { label: "Standard Shipping", price: 795, estimate: "5-7 business days", minOrder: 0 },
+  ]);
 
   // Free shipping promo state
   const [freeShippingPromo, setFreeShippingPromo] = useState<{
@@ -84,10 +87,19 @@ export default function CheckoutPage() {
             threshold: data.freeShippingThreshold ?? 15000,
             expiry: data.freeShippingExpiry ?? null,
           });
+
+          // Load shipping rates from admin settings
+          if (data.shippingRates) {
+            try {
+              const rates = typeof data.shippingRates === "string" ? JSON.parse(data.shippingRates) : data.shippingRates;
+              if (Array.isArray(rates) && rates.length > 0) {
+                setShippingRates(rates);
+              }
+            } catch { /* use defaults */ }
+          }
         }
       })
       .catch(() => {});
-
   }, []);
 
   const update =
@@ -98,9 +110,13 @@ export default function CheckoutPage() {
   const hasPreOrderItems = items.some((i) => i.isPreOrder);
   const afterDiscount = Math.max(0, subtotal - couponDiscount);
 
+  // Filter shipping rates by min order and get selected rate
+  const availableRates = shippingRates.filter((r) => afterDiscount >= (r.minOrder ?? 0));
+  const selectedRate = availableRates[selectedShippingIndex] ?? availableRates[0] ?? shippingRates[0];
+
   // Check if free shipping promo applies
   const promoActive = freeShippingPromo?.enabled && afterDiscount >= (freeShippingPromo?.threshold ?? 0);
-  const shippingCost = promoActive ? 0 : SHIPPING_METHODS[shippingMethod].price;
+  const shippingCost = promoActive ? 0 : (selectedRate?.price ?? 795);
 
   const taxAmount = calculateTax(form.state, afterDiscount);
   const taxRate = getTaxRate(form.state);
@@ -168,7 +184,7 @@ export default function CheckoutPage() {
             state: form.state,
             zip: form.zip,
           },
-          shippingMethod,
+          shippingMethod: selectedRate?.label ?? "Standard Shipping",
           paymentMethod,
           couponCode: appliedCoupon || undefined,
           turnstileToken: turnstileToken || undefined,
@@ -675,7 +691,7 @@ export default function CheckoutPage() {
                       {promoActive ? (
                         <span className="text-sky-600 font-medium">FREE</span>
                       ) : (
-                        `$${(SHIPPING_METHODS[shippingMethod].price / 100).toFixed(2)}`
+                        `$${(shippingCost / 100).toFixed(2)}`
                       )}
                     </span>
                   </div>
@@ -711,11 +727,11 @@ export default function CheckoutPage() {
                   <Truck className="h-3.5 w-3.5 text-sky-500" />
                   <span className="text-xs font-semibold text-stone-700 uppercase tracking-wider">Shipping Method</span>
                 </div>
-                {(Object.entries(SHIPPING_METHODS) as [ShippingMethod, typeof SHIPPING_METHODS[ShippingMethod]][]).map(([key, method]) => (
+                {availableRates.map((rate, idx) => (
                   <label
-                    key={key}
+                    key={idx}
                     className={`flex items-center justify-between rounded-xl border px-4 py-3 cursor-pointer transition ${
-                      shippingMethod === key
+                      selectedShippingIndex === idx
                         ? "border-sky-400 bg-sky-50/80"
                         : "border-sky-100 bg-white hover:border-sky-200"
                     }`}
@@ -724,21 +740,20 @@ export default function CheckoutPage() {
                       <input
                         type="radio"
                         name="shippingMethod"
-                        value={key}
-                        checked={shippingMethod === key}
-                        onChange={() => setShippingMethod(key)}
+                        checked={selectedShippingIndex === idx}
+                        onChange={() => setSelectedShippingIndex(idx)}
                         className="accent-sky-500"
                       />
                       <div>
-                        <p className="text-sm font-medium text-stone-800">{method.label}</p>
-                        <p className="text-xs text-stone-400">{method.estimate}</p>
+                        <p className="text-sm font-medium text-stone-800">{rate.label}</p>
+                        <p className="text-xs text-stone-400">{rate.estimate}</p>
                       </div>
                     </div>
                     <span className="text-sm font-semibold text-stone-700">
                       {promoActive ? (
                         <span className="text-sky-600">FREE</span>
                       ) : (
-                        `$${(method.price / 100).toFixed(2)}`
+                        `$${(rate.price / 100).toFixed(2)}`
                       )}
                     </span>
                   </label>

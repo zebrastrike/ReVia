@@ -185,6 +185,7 @@ model SiteSettings {
   freeShippingEnabled   Boolean   @default(false)
   freeShippingThreshold Int       @default(15000)
   freeShippingExpiry    DateTime?
+  shippingRates         String    @default("[{\"label\":\"Standard Shipping\",\"price\":795,\"estimate\":\"5-7 business days\",\"minOrder\":0},{\"label\":\"Priority Shipping\",\"price\":1295,\"estimate\":\"3-5 business days\",\"minOrder\":20000}]")
   drawingEntryAmount    Int       @default(5000)
   drawingPrize1         Int       @default(10000)
   drawingPrize2         Int       @default(5000)
