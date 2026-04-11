@@ -24,6 +24,7 @@ function getLowestPrice(variants: { price: number; label: string }[]) {
 
 export default function AdminProductTable({ products }: { products: Product[] }) {
   const [search, setSearch] = useState("");
+  const [visFilter, setVisFilter] = useState<"all" | "active" | "hidden">("all");
   const [sortKey, setSortKey] = useState<SortKey | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>(null);
 
@@ -40,6 +41,8 @@ export default function AdminProductTable({ products }: { products: Product[] })
   }
 
   const filtered = products.filter((p) => {
+    if (visFilter === "active" && !p.active) return false;
+    if (visFilter === "hidden" && p.active) return false;
     if (!search) return true;
     const q = search.toLowerCase();
     return p.name.toLowerCase().includes(q) || p.category.name.toLowerCase().includes(q);
@@ -92,16 +95,37 @@ export default function AdminProductTable({ products }: { products: Product[] })
 
   return (
     <>
-      {/* Search */}
-      <div className="relative mb-4">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by name or category..."
-          className="w-full max-w-md bg-white/50 border border-sky-200/40 rounded-xl pl-9 pr-4 py-2.5 text-stone-800 text-sm placeholder:text-stone-400 focus:outline-none focus:border-sky-500/50 transition-colors"
-        />
+      {/* Filters + Search */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by name or category..."
+            className="w-full max-w-md bg-white/50 border border-sky-200/40 rounded-xl pl-9 pr-4 py-2.5 text-stone-800 text-sm placeholder:text-stone-400 focus:outline-none focus:border-sky-500/50 transition-colors"
+          />
+        </div>
+        <div className="flex gap-1.5">
+          {([
+            { key: "all" as const, label: `All (${products.length})` },
+            { key: "active" as const, label: `Active (${products.filter(p => p.active).length})` },
+            { key: "hidden" as const, label: `Hidden (${products.filter(p => !p.active).length})` },
+          ]).map((f) => (
+            <button
+              key={f.key}
+              onClick={() => setVisFilter(f.key)}
+              className={`rounded-lg px-3.5 py-2 text-xs font-medium transition ${
+                visFilter === f.key
+                  ? "bg-sky-500 text-white"
+                  : "bg-white/50 border border-sky-200/40 text-stone-600 hover:bg-sky-50"
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
       </div>
 
     <div className="bg-white/50 backdrop-blur border border-sky-200/40 rounded-2xl overflow-hidden">

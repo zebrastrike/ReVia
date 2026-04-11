@@ -172,6 +172,23 @@ export default function AdminInventoryPage() {
           <h2 className="text-2xl font-bold text-neutral-900">Inventory</h2>
           <p className="text-sm text-neutral-500 mt-1">{variants.length} variants across all products</p>
         </div>
+        <div className="flex items-center gap-3">
+          {Object.keys(edits).length > 0 && (
+            <button
+              onClick={async () => {
+                for (const variantId of Object.keys(edits)) {
+                  await save(variantId);
+                }
+              }}
+              className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-500 transition"
+            >
+              Save All ({Object.keys(edits).length} changed)
+            </button>
+          )}
+        </div>
+      </div>
+      <div className="flex items-center justify-between">
+        <div />
         <div className="flex gap-2">
           {([
             { key: "all", label: "All" },
