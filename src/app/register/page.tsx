@@ -14,6 +14,7 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState("");
   const handleTurnstile = useCallback((token: string) => setTurnstileToken(token), []);
 
@@ -148,11 +149,41 @@ export default function RegisterPage() {
             />
           </div>
 
+          {/* Terms & RUO Agreement */}
+          <div className="rounded-xl border border-sky-200/40 bg-sky-50/40 p-4">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={agreedToTerms}
+                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 rounded border-sky-300 text-sky-500 accent-sky-500 cursor-pointer"
+              />
+              <span className="text-xs leading-relaxed text-neutral-600">
+                I acknowledge that all products sold by ReVia Research Supply are for{" "}
+                <strong className="text-neutral-700">laboratory research use only</strong> and are{" "}
+                <strong className="text-neutral-700">not intended for human or animal consumption</strong>.
+                I accept full responsibility for my research activities and agree to the{" "}
+                <a href="/policies/terms" target="_blank" className="text-sky-600 hover:text-sky-500 underline">
+                  Terms of Service
+                </a>,{" "}
+                <a href="/policies/aup" target="_blank" className="text-sky-600 hover:text-sky-500 underline">
+                  Acceptable Use Policy
+                </a>,{" "}
+                <a href="/policies/privacy" target="_blank" className="text-sky-600 hover:text-sky-500 underline">
+                  Privacy Policy
+                </a>, and{" "}
+                <a href="/policies/disclaimer" target="_blank" className="text-sky-600 hover:text-sky-500 underline">
+                  Disclaimer
+                </a>.
+              </span>
+            </label>
+          </div>
+
           <Turnstile onVerify={handleTurnstile} />
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !agreedToTerms}
             className="w-full rounded-lg bg-sky-400 px-4 py-3 font-semibold text-white transition-colors hover:bg-sky-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Creating account..." : "Create Account"}
