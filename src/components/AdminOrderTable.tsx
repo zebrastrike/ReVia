@@ -6,11 +6,14 @@ import { ChevronUp, ChevronDown, ChevronsUpDown, Search } from "lucide-react";
 
 interface Order {
   id: string;
+  invoiceNumber: string;
   name: string;
   email: string;
   itemCount: number;
   total: number;
   status: string;
+  paymentMethod: string;
+  paymentStatus: string;
   createdAt: string;
 }
 
@@ -18,22 +21,38 @@ type SortKey = "id" | "customer" | "email" | "items" | "total" | "status" | "dat
 type SortDir = "asc" | "desc" | null;
 
 const statusColors: Record<string, string> = {
-  pending: "bg-yellow-500/20 text-yellow-400",
-  processing: "bg-blue-500/20 text-blue-400",
-  shipped: "bg-purple-500/20 text-purple-400",
-  delivered: "bg-sky-500/20 text-sky-400",
-  cancelled: "bg-red-500/20 text-red-400",
+  pending_payment: "bg-amber-100 text-amber-700",
+  processing: "bg-blue-100 text-blue-700",
+  shipped: "bg-purple-100 text-purple-700",
+  delivered: "bg-emerald-100 text-emerald-700",
+  cancelled: "bg-red-100 text-red-600",
+  expired: "bg-neutral-100 text-neutral-500",
+  on_hold: "bg-orange-100 text-orange-700",
+};
+
+const paymentStatusColors: Record<string, string> = {
+  awaiting: "bg-amber-100 text-amber-700",
+  confirmed: "bg-emerald-100 text-emerald-700",
+  failed: "bg-red-100 text-red-600",
+};
+
+const paymentMethodLabels: Record<string, string> = {
+  zelle: "Zelle",
+  wire: "Wire/ACH",
+  bitcoin: "Bitcoin",
 };
 
 const statusRank: Record<string, number> = {
-  pending: 0,
+  pending_payment: 0,
   processing: 1,
   shipped: 2,
   delivered: 3,
-  cancelled: 4,
+  on_hold: 4,
+  cancelled: 5,
+  expired: 6,
 };
 
-const allStatuses = ["pending", "processing", "shipped", "delivered", "cancelled"];
+const allStatuses = ["pending_payment", "processing", "shipped", "delivered", "cancelled", "expired"];
 
 function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {
   if (!active) return <ChevronsUpDown className="inline h-3.5 w-3.5 ml-1 text-stone-300" />;
@@ -99,10 +118,8 @@ export default function AdminOrderTable({ orders }: { orders: Order[] }) {
   });
 
   const columns: { key: SortKey; label: string }[] = [
-    { key: "id", label: "Order ID" },
+    { key: "id", label: "Invoice" },
     { key: "customer", label: "Customer" },
-    { key: "email", label: "Email" },
-    { key: "items", label: "Items" },
     { key: "total", label: "Total" },
     { key: "status", label: "Status" },
     { key: "date", label: "Date" },
@@ -181,25 +198,35 @@ export default function AdminOrderTable({ orders }: { orders: Order[] }) {
                     <td className="px-6 py-4">
                       <Link
                         href={`/admin/orders/${order.id}`}
-                        className="text-sky-400 hover:underline font-mono text-xs"
+                        className="text-sky-600 hover:underline font-mono text-xs font-semibold"
                       >
-                        {order.id.slice(0, 8)}...
+                        {order.invoiceNumber || order.id.slice(0, 8)}
                       </Link>
                     </td>
-                    <td className="px-6 py-4 text-stone-800/80">{order.name}</td>
-                    <td className="px-6 py-4 text-stone-800/50">{order.email}</td>
-                    <td className="px-6 py-4 text-stone-800/50">{order.itemCount}</td>
-                    <td className="px-6 py-4 text-stone-800 font-medium">
-                      ${order.total.toFixed(2)}
+                    <td className="px-6 py-4">
+                      <p className="text-neutral-800 text-sm">{order.name}</p>
+                      <p className="text-neutral-400 text-xs">{order.email}</p>
                     </td>
                     <td className="px-6 py-4">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${statusColors[order.status] ?? "bg-gray-500/20 text-stone-500"}`}
-                      >
-                        {order.status}
-                      </span>
+                      <p className="text-neutral-800 font-semibold">${(order.total / 100).toFixed(2)}</p>
+                      <p className="text-neutral-400 text-xs">{order.itemCount} item{order.itemCount !== 1 ? "s" : ""}</p>
                     </td>
-                    <td className="px-6 py-4 text-stone-800/50">
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col gap-1">
+                        <span className={`inline-block w-fit px-2 py-0.5 rounded-full text-[10px] font-semibold ${statusColors[order.status] ?? "bg-neutral-100 text-neutral-500"}`}>
+                          {order.status.replace("_", " ")}
+                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span className={`inline-block px-1.5 py-0.5 rounded text-[9px] font-medium ${paymentStatusColors[order.paymentStatus] ?? "bg-neutral-100 text-neutral-400"}`}>
+                            {order.paymentStatus}
+                          </span>
+                          <span className="text-[9px] text-neutral-400">
+                            {paymentMethodLabels[order.paymentMethod] ?? order.paymentMethod}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-neutral-400 text-xs">
                       {new Date(order.createdAt).toLocaleDateString()}
                     </td>
                   </tr>

@@ -70,11 +70,14 @@ export default async function OrdersPage() {
       <AdminOrderTable
         orders={orders.map((o) => ({
           id: o.id,
+          invoiceNumber: o.invoiceNumber ?? "",
           name: o.name,
           email: o.email,
           itemCount: o.items.length,
           total: o.total,
           status: o.status,
+          paymentMethod: o.paymentMethod ?? "zelle",
+          paymentStatus: o.paymentStatus ?? "awaiting",
           createdAt: o.createdAt.toISOString(),
         }))}
       />

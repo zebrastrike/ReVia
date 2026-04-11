@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
-import { sendShippingNotification } from "@/lib/email";
+import { sendShippingNotification, sendPaymentConfirmation, sendOrderCancellation } from "@/lib/email";
 
 /* ------------------------------------------------------------------ */
 /*  GET /api/orders/[id] – get a single order                         */
@@ -47,7 +47,8 @@ export async function GET(
 /*  PATCH /api/orders/[id] – update order status (admin only)          */
 /* ------------------------------------------------------------------ */
 
-const VALID_STATUSES = ["pending", "processing", "shipped", "delivered", "cancelled"] as const;
+const VALID_STATUSES = ["pending_payment", "processing", "shipped", "delivered", "cancelled", "expired", "on_hold"] as const;
+const VALID_PAYMENT_STATUSES = ["awaiting", "confirmed", "failed"] as const;
 
 export async function PATCH(
   request: NextRequest,
@@ -64,19 +65,24 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const { status, trackingNumber } = body as {
-      status: string;
+    const { status, trackingNumber, paymentStatus } = body as {
+      status?: string;
       trackingNumber?: string;
+      paymentStatus?: string;
     };
 
-    if (!status || !VALID_STATUSES.includes(status as (typeof VALID_STATUSES)[number])) {
+    if (status && !VALID_STATUSES.includes(status as (typeof VALID_STATUSES)[number])) {
       return NextResponse.json(
         { error: `Invalid status. Must be one of: ${VALID_STATUSES.join(", ")}` },
         { status: 400 }
       );
     }
 
-    const updateData: Record<string, string> = { status };
+    const updateData: Record<string, string> = {};
+    if (status) updateData.status = status;
+    if (paymentStatus && VALID_PAYMENT_STATUSES.includes(paymentStatus as (typeof VALID_PAYMENT_STATUSES)[number])) {
+      updateData.paymentStatus = paymentStatus;
+    }
     if (status === "shipped" && trackingNumber) {
       updateData.tracking = trackingNumber;
     }
@@ -87,16 +93,30 @@ export async function PATCH(
       include: { items: true },
     });
 
+    // Send payment confirmation email
+    if (paymentStatus === "confirmed") {
+      try {
+        await sendPaymentConfirmation(order, order.email);
+      } catch (emailErr) {
+        console.error("Failed to send payment confirmation:", emailErr);
+      }
+    }
+
     // Send shipping notification when status changes to "shipped"
     if (status === "shipped") {
       try {
-        await sendShippingNotification(
-          order,
-          order.email,
-          trackingNumber || "N/A"
-        );
+        await sendShippingNotification(order, order.email, trackingNumber || "N/A");
       } catch (emailErr) {
         console.error("Failed to send shipping notification:", emailErr);
+      }
+    }
+
+    // Send cancellation email
+    if (status === "cancelled") {
+      try {
+        await sendOrderCancellation(order, order.email, "Order cancelled by admin.");
+      } catch (emailErr) {
+        console.error("Failed to send cancellation email:", emailErr);
       }
     }
 

@@ -4,11 +4,13 @@ import { useState } from "react";
 import { Loader2, CheckCircle, AlertCircle } from "lucide-react";
 
 const statuses = [
-  "pending",
+  "pending_payment",
   "processing",
   "shipped",
   "delivered",
   "cancelled",
+  "expired",
+  "on_hold",
 ];
 
 export default function OrderStatusForm({
