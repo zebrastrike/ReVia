@@ -35,13 +35,15 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { code, type, value, minOrder, maxUses, expiresAt } = body as {
+    const { code, type, value, minOrder, maxUses, expiresAt, allowedEmails, blockedEmails } = body as {
       code: string;
       type?: string;
       value: number;
       minOrder?: number;
       maxUses?: number;
       expiresAt?: string;
+      allowedEmails?: string;
+      blockedEmails?: string;
     };
 
     if (!code || value === undefined) {
@@ -68,6 +70,8 @@ export async function POST(request: NextRequest) {
         value,
         minOrder: minOrder ?? 0,
         maxUses: maxUses ?? 0,
+        allowedEmails: allowedEmails ?? "",
+        blockedEmails: blockedEmails ?? "",
         expiresAt: expiresAt ? new Date(expiresAt) : null,
       },
     });

@@ -15,13 +15,17 @@ import {
   Settings,
   FileText,
   Shield,
+  BarChart3,
+  ClipboardList,
 } from "lucide-react";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/kpi", label: "KPI & P&L", icon: BarChart3 },
   { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
   { href: "/admin/products", label: "Products", icon: Package },
   { href: "/admin/inventory", label: "Inventory", icon: Warehouse },
+  { href: "/admin/wholesale", label: "Wholesale Order", icon: ClipboardList },
   { href: "/admin/newsletter", label: "Newsletter", icon: FileText },
   { href: "/admin/coupons", label: "Coupons", icon: Ticket },
   { href: "/admin/customers", label: "Customers", icon: Users },

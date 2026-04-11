@@ -12,6 +12,11 @@ type VariantRow = {
   reorderThreshold: number;
   inStock: boolean;
   stockStatus: string;
+  price: number;
+  retailPrice: number | null;
+  foundersPrice: number | null;
+  friendsPrice: number | null;
+  costPrice: number | null;
   product: { name: string; active: boolean };
 };
 
@@ -63,7 +68,7 @@ export default function AdminInventoryPage() {
   const [variants, setVariants] = useState<VariantRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
-  const [edits, setEdits] = useState<Record<string, { quantity?: string; reorderThreshold?: string; stockStatus?: string }>>({});
+  const [edits, setEdits] = useState<Record<string, { quantity?: string; reorderThreshold?: string; stockStatus?: string; retailPrice?: string; foundersPrice?: string; friendsPrice?: string; costPrice?: string }>>({});
   const [filter, setFilter] = useState<"all" | "pre_order" | "out">("all");
   const [search, setSearch] = useState("");
   const [sortKey, setSortKey] = useState<SortKey | null>(null);
@@ -95,6 +100,10 @@ export default function AdminInventoryPage() {
     if (edit.quantity !== undefined) body.quantity = Number(edit.quantity);
     if (edit.reorderThreshold !== undefined) body.reorderThreshold = Number(edit.reorderThreshold);
     if (edit.stockStatus !== undefined) body.stockStatus = edit.stockStatus;
+    if (edit.retailPrice !== undefined) body.retailPrice = Number(edit.retailPrice);
+    if (edit.foundersPrice !== undefined) body.foundersPrice = Number(edit.foundersPrice);
+    if (edit.friendsPrice !== undefined) body.friendsPrice = Number(edit.friendsPrice);
+    if (edit.costPrice !== undefined) body.costPrice = Number(edit.costPrice);
     const res = await fetch("/api/admin/inventory", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -153,7 +162,7 @@ export default function AdminInventoryPage() {
     { key: "sku", label: "SKU" },
     { key: "status", label: "Status" },
     { key: "qty", label: "Qty", align: "right" },
-    { key: "reorder", label: "Reorder At", align: "right" },
+    { key: "reorder", label: "Reorder", align: "right" },
   ];
 
   return (
@@ -209,6 +218,10 @@ export default function AdminInventoryPage() {
                 </th>
               ))}
               <th className="px-4 py-3 text-left font-medium text-neutral-600">Availability</th>
+              <th className="px-4 py-3 text-right font-medium text-neutral-600">Retail</th>
+              <th className="px-4 py-3 text-right font-medium text-neutral-600">Founders</th>
+              <th className="px-4 py-3 text-right font-medium text-neutral-600">F&F</th>
+              <th className="px-4 py-3 text-right font-medium text-neutral-600">Cost</th>
               <th className="px-4 py-3" />
             </tr>
           </thead>
@@ -265,6 +278,26 @@ export default function AdminInventoryPage() {
                     </select>
                   </td>
                   <td className="px-4 py-3 text-right">
+                    <input type="number" min="0" value={edit.retailPrice ?? String(v.retailPrice ?? v.price ?? 0)}
+                      onChange={(e) => setEdits((prev) => ({ ...prev, [v.id]: { ...prev[v.id], retailPrice: e.target.value } }))}
+                      className="w-20 rounded-lg border border-neutral-200 px-2 py-1 text-right text-xs focus:border-sky-500 focus:outline-none" />
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <input type="number" min="0" value={edit.foundersPrice ?? String(v.foundersPrice ?? 0)}
+                      onChange={(e) => setEdits((prev) => ({ ...prev, [v.id]: { ...prev[v.id], foundersPrice: e.target.value } }))}
+                      className="w-20 rounded-lg border border-neutral-200 px-2 py-1 text-right text-xs focus:border-sky-500 focus:outline-none" />
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <input type="number" min="0" value={edit.friendsPrice ?? String(v.friendsPrice ?? 0)}
+                      onChange={(e) => setEdits((prev) => ({ ...prev, [v.id]: { ...prev[v.id], friendsPrice: e.target.value } }))}
+                      className="w-20 rounded-lg border border-neutral-200 px-2 py-1 text-right text-xs focus:border-sky-500 focus:outline-none" />
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <input type="number" min="0" value={edit.costPrice ?? String(v.costPrice ?? 0)}
+                      onChange={(e) => setEdits((prev) => ({ ...prev, [v.id]: { ...prev[v.id], costPrice: e.target.value } }))}
+                      className="w-20 rounded-lg border border-neutral-200 px-2 py-1 text-right text-xs focus:border-sky-500 focus:outline-none" />
+                  </td>
+                  <td className="px-4 py-3 text-right">
                     {isDirty && (
                       <button
                         onClick={() => save(v.id)}
@@ -281,7 +314,7 @@ export default function AdminInventoryPage() {
             })}
             {sorted.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-neutral-400">
+                <td colSpan={11} className="px-4 py-8 text-center text-neutral-400">
                   No variants match this filter.
                 </td>
               </tr>

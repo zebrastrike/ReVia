@@ -46,6 +46,7 @@ model ProductVariant {
   retailPrice      Float?
   foundersPrice    Float?
   friendsPrice     Float?
+  costPrice        Float?  // wholesale cost in cents (for P&L)
   quantity         Int     @default(0)
   reorderThreshold Int     @default(0)
 
@@ -157,16 +158,18 @@ model Review {
 }
 
 model Coupon {
-  id        String    @id @default(cuid())
-  code      String    @unique
-  type      String    @default("percentage")
-  value     Float
-  minOrder  Float     @default(0)
-  maxUses   Int       @default(0)
-  usedCount Int       @default(0)
-  active    Boolean   @default(true)
-  expiresAt DateTime?
-  createdAt DateTime  @default(now())
+  id             String    @id @default(cuid())
+  code           String    @unique
+  type           String    @default("percentage")
+  value          Float
+  minOrder       Float     @default(0)
+  maxUses        Int       @default(0)
+  usedCount      Int       @default(0)
+  active         Boolean   @default(true)
+  allowedEmails  String    @default("") // comma-separated emails (empty = anyone can use)
+  blockedEmails  String    @default("") // comma-separated emails blocked from using this code
+  expiresAt      DateTime?
+  createdAt      DateTime  @default(now())
 }
 
 model Newsletter {

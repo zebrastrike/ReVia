@@ -10,6 +10,8 @@ export default async function AdminCouponsPage() {
   // Serialize dates to strings for client component
   const serialized = coupons.map((c) => ({
     ...c,
+    allowedEmails: c.allowedEmails ?? "",
+    blockedEmails: c.blockedEmails ?? "",
     expiresAt: c.expiresAt ? c.expiresAt.toISOString() : null,
     createdAt: c.createdAt.toISOString(),
   }));

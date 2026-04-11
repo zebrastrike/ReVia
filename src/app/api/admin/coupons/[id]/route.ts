@@ -17,7 +17,7 @@ export async function PATCH(
 
     const { id } = await params;
     const body = await request.json();
-    const { code, type, value, minOrder, maxUses, active, expiresAt } = body as {
+    const { code, type, value, minOrder, maxUses, active, expiresAt, allowedEmails, blockedEmails } = body as {
       code?: string;
       type?: string;
       value?: number;
@@ -25,6 +25,8 @@ export async function PATCH(
       maxUses?: number;
       active?: boolean;
       expiresAt?: string | null;
+      allowedEmails?: string;
+      blockedEmails?: string;
     };
 
     const data: Record<string, unknown> = {};
@@ -34,6 +36,8 @@ export async function PATCH(
     if (minOrder !== undefined) data.minOrder = minOrder;
     if (maxUses !== undefined) data.maxUses = maxUses;
     if (active !== undefined) data.active = active;
+    if (allowedEmails !== undefined) data.allowedEmails = allowedEmails;
+    if (blockedEmails !== undefined) data.blockedEmails = blockedEmails;
     if (expiresAt !== undefined) {
       data.expiresAt = expiresAt ? new Date(expiresAt) : null;
     }

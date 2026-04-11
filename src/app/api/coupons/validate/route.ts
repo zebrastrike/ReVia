@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { code, subtotal } = body as { code: string; subtotal: number };
+    const { code, subtotal, email } = body as { code: string; subtotal: number; email?: string };
 
     if (!code) {
       return NextResponse.json(
@@ -44,6 +44,27 @@ export async function POST(request: NextRequest) {
         valid: false,
         message: "This coupon has reached its usage limit",
       });
+    }
+
+    // Check per-user restrictions
+    const userEmail = email?.toLowerCase().trim();
+    if (userEmail && coupon.blockedEmails) {
+      const blocked = coupon.blockedEmails.split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
+      if (blocked.includes(userEmail)) {
+        return NextResponse.json({
+          valid: false,
+          message: "This coupon is not available for your account",
+        });
+      }
+    }
+    if (coupon.allowedEmails) {
+      const allowed = coupon.allowedEmails.split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
+      if (allowed.length > 0 && userEmail && !allowed.includes(userEmail)) {
+        return NextResponse.json({
+          valid: false,
+          message: "This coupon is not available for your account",
+        });
+      }
     }
 
     if (subtotal < coupon.minOrder) {

@@ -12,18 +12,31 @@ export async function PATCH(req: Request) {
   }
 
   const body = await req.json();
-  const { variantId, quantity, reorderThreshold, stockStatus } = body as {
+  const { variantId, quantity, reorderThreshold, stockStatus, retailPrice, foundersPrice, friendsPrice, costPrice } = body as {
     variantId: string;
     quantity?: number;
     reorderThreshold?: number;
     stockStatus?: string;
+    retailPrice?: number;
+    foundersPrice?: number;
+    friendsPrice?: number;
+    costPrice?: number;
   };
 
   if (!variantId) {
     return NextResponse.json({ error: "variantId required" }, { status: 400 });
   }
 
-  const data: { quantity?: number; reorderThreshold?: number; inStock?: boolean; stockStatus?: string } = {};
+  const data: Record<string, unknown> = {};
+
+  // Pricing updates
+  if (typeof retailPrice === "number") {
+    data.price = retailPrice;
+    data.retailPrice = retailPrice;
+  }
+  if (typeof foundersPrice === "number") data.foundersPrice = foundersPrice;
+  if (typeof friendsPrice === "number") data.friendsPrice = friendsPrice;
+  if (typeof costPrice === "number") data.costPrice = costPrice;
 
   if (typeof reorderThreshold === "number") {
     data.reorderThreshold = reorderThreshold;
