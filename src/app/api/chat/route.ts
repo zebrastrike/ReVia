@@ -1,11 +1,12 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
+import { verifyTurnstile } from "@/lib/turnstile";
 
 /* ------------------------------------------------------------------ */
-/*  POST /api/chat — ReVia Research Assistant (Claude Haiku)           */
+/*  POST /api/chat — ReVia Research Assistant (OpenAI GPT)             */
 /* ------------------------------------------------------------------ */
 
 const SYSTEM_PROMPT = `You are ReVia's Research Assistant — a knowledgeable peptide research specialist for ReVia Research Supply (revialife.com).
@@ -26,37 +27,58 @@ NEVER say: "treats", "cures", "heals", "helps with", "you should take", "dosage"
 If asked about dosing or human use, say exactly:
 "Our products are for laboratory research only. I can share what concentrations have been referenced in published studies, but I cannot provide guidance on human administration. Please consult published literature and your institutional protocols."
 
-If asked about anything illegal or clearly non-research, decline politely.
+## SCOPE CONTROL
+You ONLY discuss:
+- ReVia products, peptides, and research compounds
+- Ordering, shipping, payment methods, and account questions
+- Published research on peptides (mechanisms, studies, applications)
+- Product comparisons and recommendations for research needs
 
-## PRODUCT KNOWLEDGE
-When discussing peptides, reference:
-- What the compound has been STUDIED FOR in published research
-- The mechanism of action (receptor targets, pathways)
-- Available sizes and approximate pricing from our catalog
-- Related products they might also be interested in
+You DO NOT discuss:
+- Anything unrelated to peptides, research, or ReVia
+- Politics, news, entertainment, coding, general knowledge
+- Other vendors or competitor products
 
-Example good response about BPC-157:
-"BPC-157 is a pentadecapeptide that has been extensively studied in preclinical models for its role in tissue repair signaling, particularly involving the nitric oxide and growth factor pathways. Research has investigated its effects on tendon, ligament, and gut mucosal integrity in laboratory settings. We carry it in 5mg ($49.99) and 10mg ($81.99) vials. If you're researching recovery pathways, you might also look at our BPC-157/TB-500 blend."
+If asked something off-topic, say: "I'm specialized in peptide research — I can help with product questions, research applications, or ordering. Is there a specific peptide or research area I can assist with?"
 
 ## COMPANY INFO
 - Payment: Zelle, Wire/ACH, Bitcoin (Kraken Pay) — no credit cards
-- Shipping: Flat $25/order, ships next business day, discreet packaging
+- Shipping: Standard $7.95 (all orders), Priority $12.95 (orders $200+)
 - All sales final (replacement only for damaged/wrong items within 48h)
 - Free account required to order
-- Monthly rewards drawing: every $50 spent = 1 entry for store credit prizes
+- Monthly rewards drawing: every $50 spent = 1 entry for store credit
 - Contact: contact@revialife.com
-- Based in Florida, USA
 - >99% purity, cGMP certified, LC-MS verified, COA available
 
 ## LEAD CAPTURE
-If the conversation is going well, naturally ask for their email so you can "send them relevant research updates or let them know when new products arrive." Don't be pushy. Only ask once per conversation.
+If the conversation is going well, naturally ask for their email so you can "send them relevant research updates." Don't be pushy. Only ask once.
 
-## WHAT NOT TO DO
-- Don't make up product names or prices — only reference what's in the catalog
-- Don't claim products are FDA approved
-- Don't recommend stacking/combining for specific conditions
-- Don't provide medical advice of any kind
-- Don't be long-winded — researchers are busy, be concise`;
+## STYLE
+- Concise: 2-3 short paragraphs max
+- Warm but professional
+- Don't make up products or prices — only reference the catalog provided`;
+
+// ── Server-side off-topic blocklist ──
+const OFF_TOPIC_PATTERNS = [
+  /write (me |a )?(poem|essay|story|code|script|song)/i,
+  /what('s| is) the (weather|time|date|news)/i,
+  /tell me a joke/i,
+  /who (is|was) (the president|trump|biden|obama)/i,
+  /(translate|convert) .+ (to|into) /i,
+  /play .+ game/i,
+  /(bitcoin|crypto|stock) price/i,
+  /how (do|can) I (hack|crack|break)/i,
+  /ignore (your|previous|all) (instructions|prompt|rules)/i,
+  /you are now/i,
+  /pretend (you're|to be)/i,
+  /act as/i,
+];
+
+const OFF_TOPIC_RESPONSE = "I'm specialized in peptide research and ReVia products. I can help with product questions, research applications, ordering, or shipping. What peptide research area are you interested in?";
+
+function isOffTopic(message: string): boolean {
+  return OFF_TOPIC_PATTERNS.some((p) => p.test(message));
+}
 
 async function getProductCatalog(): Promise<string> {
   try {
@@ -82,17 +104,14 @@ async function getProductCatalog(): Promise<string> {
   }
 }
 
-// Extract product names mentioned in a message
+// Extract product names mentioned in conversation
 function extractProducts(text: string, catalog: string): string[] {
   const productNames = catalog.match(/- ([^[]+) \[/g)?.map(m => m.slice(2, -2).trim()) ?? [];
   const mentioned: string[] = [];
   const lower = text.toLowerCase();
   for (const name of productNames) {
-    if (lower.includes(name.toLowerCase())) {
-      mentioned.push(name);
-    }
+    if (lower.includes(name.toLowerCase())) mentioned.push(name);
   }
-  // Also check common shorthand
   const shortcuts: Record<string, string> = {
     "bpc": "BPC-157", "tb500": "TB-500", "tb-500": "TB-500",
     "tirz": "Tirzepatide", "sema": "Semaglutide", "reta": "Retatrutide",
@@ -101,9 +120,7 @@ function extractProducts(text: string, catalog: string): string[] {
     "melanotan": "Melanotan", "selank": "Selank", "semax": "Semax",
   };
   for (const [short, full] of Object.entries(shortcuts)) {
-    if (lower.includes(short) && !mentioned.includes(full)) {
-      mentioned.push(full);
-    }
+    if (lower.includes(short) && !mentioned.includes(full)) mentioned.push(full);
   }
   return mentioned;
 }
@@ -114,64 +131,92 @@ export async function POST(request: NextRequest) {
       request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
       request.headers.get("x-real-ip") ||
       "unknown";
-    const { success } = rateLimit(`chat:${ip}`, 30, 10 * 60 * 1000);
+
+    // ── Rate limit: 15 messages per IP per 10 minutes ──
+    const { success } = rateLimit(`chat:${ip}`, 15, 10 * 60 * 1000);
     if (!success) {
       return NextResponse.json(
-        { error: "Too many messages. Please wait a moment and try again." },
+        { error: "You've sent too many messages. Please wait a few minutes and try again." },
         { status: 429 }
       );
     }
 
-    const apiKey = process.env.ANTHROPIC_API_KEY;
+    const apiKey = process.env.OpenAi_chatbot_Key;
     if (!apiKey) {
       return NextResponse.json(
-        { error: "Our research assistant is being set up. Please check back soon or email contact@revialife.com." },
+        { error: "Our research assistant is being set up. Please email contact@revialife.com for help." },
         { status: 503 }
       );
     }
 
-    const { messages, sessionId } = await request.json() as {
+    const { messages, sessionId, turnstileToken } = await request.json() as {
       messages: Array<{ role: "user" | "assistant"; content: string }>;
       sessionId?: string;
+      turnstileToken?: string;
     };
 
     if (!messages || messages.length === 0) {
       return NextResponse.json({ error: "No messages provided" }, { status: 400 });
     }
 
-    const recentMessages = messages.slice(-16);
+    // ── Turnstile verification on first message ──
+    if (messages.length <= 1 && turnstileToken) {
+      const valid = await verifyTurnstile(turnstileToken);
+      if (!valid) {
+        return NextResponse.json(
+          { error: "Verification failed. Please refresh and try again." },
+          { status: 400 }
+        );
+      }
+    }
+
+    const lastUserMessage = messages.filter(m => m.role === "user").pop()?.content ?? "";
+
+    // ── Server-side off-topic check (no API call) ──
+    if (isOffTopic(lastUserMessage)) {
+      // Still track the lead, just don't call the API
+      if (sessionId) {
+        try {
+          const existing = await prisma.chatLead.findFirst({ where: { sessionId } });
+          if (existing) {
+            await prisma.chatLead.update({
+              where: { id: existing.id },
+              data: { messageCount: { increment: 2 } },
+            });
+          }
+        } catch { /* ignore */ }
+      }
+
+      return NextResponse.json({ message: OFF_TOPIC_RESPONSE });
+    }
+
+    const recentMessages = messages.slice(-12);
     const catalog = await getProductCatalog();
 
-    const client = new Anthropic({ apiKey });
+    const client = new OpenAI({ apiKey });
 
-    const response = await client.messages.create({
-      model: "claude-haiku-4-5-20251001",
+    const response = await client.chat.completions.create({
+      model: "gpt-4o-mini",
       max_tokens: 400,
-      system: `${SYSTEM_PROMPT}\n\n## CURRENT PRODUCT CATALOG\n${catalog}`,
-      messages: recentMessages.map((m) => ({
-        role: m.role,
-        content: m.content,
-      })),
+      messages: [
+        { role: "system", content: `${SYSTEM_PROMPT}\n\n## CURRENT PRODUCT CATALOG\n${catalog}` },
+        ...recentMessages.map((m) => ({
+          role: m.role as "user" | "assistant",
+          content: m.content,
+        })),
+      ],
     });
 
-    const text = response.content
-      .filter((c) => c.type === "text")
-      .map((c) => c.text)
-      .join("");
+    const text = response.choices[0]?.message?.content ?? "I'm sorry, I couldn't process that. Please try again.";
 
     // ── Track lead data ──
     if (sessionId) {
       try {
-        const lastUserMessage = recentMessages.filter(m => m.role === "user").pop()?.content ?? "";
         const allText = recentMessages.map(m => m.content).join(" ") + " " + text;
         const productsAsked = extractProducts(allText, catalog);
-
-        // Extract email if user shared one
         const emailMatch = allText.match(/[\w.-]+@[\w.-]+\.\w{2,}/);
 
-        const existing = await prisma.chatLead.findFirst({
-          where: { sessionId },
-        });
+        const existing = await prisma.chatLead.findFirst({ where: { sessionId } });
 
         if (existing) {
           const existingProducts: string[] = JSON.parse(existing.productsAsked || "[]");
@@ -181,13 +226,13 @@ export async function POST(request: NextRequest) {
             where: { id: existing.id },
             data: {
               productsAsked: JSON.stringify(mergedProducts),
-              messageCount: { increment: 2 }, // user + assistant
+              messageCount: { increment: 2 },
               email: emailMatch ? emailMatch[0] : existing.email,
               messages: JSON.stringify([
                 ...JSON.parse(existing.messages || "[]"),
                 { role: "user", content: lastUserMessage, ts: Date.now() },
                 { role: "assistant", content: text, ts: Date.now() },
-              ].slice(-40)), // keep last 40 messages
+              ].slice(-40)),
             },
           });
         } else {

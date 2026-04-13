@@ -2,11 +2,45 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { MessageCircle, X, Send, Loader2, Minimize2, FlaskConical, User } from "lucide-react";
+import Turnstile from "@/components/Turnstile";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
+
+// Client-side topic keywords — if message contains NONE of these, deflect without API call
+const TOPIC_KEYWORDS = [
+  "peptide", "bpc", "tb-500", "tb500", "ghk", "tirz", "sema", "reta", "mots",
+  "ipamor", "cjc", "sermor", "tesam", "ghrp", "igf", "foxo", "fox-04", "epitalon",
+  "humanin", "nad", "ss-31", "slu", "selank", "semax", "dihexa", "pinealon",
+  "cerebrolysin", "kisspeptin", "pt-141", "pt141", "dsip", "melanotan", "oxytocin",
+  "thymalin", "thymosin", "kpv", "ll-37", "vip", "ara-290", "follistatin",
+  "hexarellin", "aicar", "aod", "adipotide", "mazdutide", "survodutide",
+  "cagrilintide", "retatrutide", "tirzepatide", "semaglutide",
+  "capsule", "rebalance", "recover", "revive", "glow", "klow", "lean", "renew", "sculpt",
+  "stack", "blend", "oral", "liquid", "serum", "snap-8", "privive", "glutathione",
+  "l-carnitine", "bac water", "syringe", "supply",
+  "order", "ship", "shipping", "price", "cost", "buy", "purchase", "cart", "checkout",
+  "pay", "zelle", "wire", "bitcoin", "btc", "crypto", "account", "login", "sign",
+  "reward", "drawing", "coupon", "discount", "code",
+  "revia", "research", "purity", "coa", "certificate", "cgmp", "lab", "quality",
+  "weight", "fat", "metabol", "growth", "hormone", "recovery", "heal", "repair",
+  "immune", "neuro", "brain", "cognit", "longev", "anti-aging", "aging",
+  "skin", "cosmetic", "tanning", "sleep", "sexual", "reproduct",
+  "what do you", "what peptide", "tell me about", "do you carry", "do you have",
+  "how do i", "how much", "recommend", "suggest", "compare", "difference",
+  "hello", "hi", "hey", "help", "thanks", "thank you",
+];
+
+function isOnTopic(message: string): boolean {
+  const lower = message.toLowerCase();
+  // Short messages (greetings) are always on-topic
+  if (lower.length < 20) return true;
+  return TOPIC_KEYWORDS.some((kw) => lower.includes(kw));
+}
+
+const CLIENT_DEFLECT = "I'm ReVia's peptide research assistant — I can help with product questions, research applications, pricing, or ordering. What research area are you interested in?";
 
 function getSessionId(): string {
   if (typeof window === "undefined") return "";
@@ -24,6 +58,8 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const handleTurnstile = useCallback((token: string) => setTurnstileToken(token), []);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -45,13 +81,24 @@ export default function ChatWidget() {
     const updated = [...messages, userMessage];
     setMessages(updated);
     setInput("");
+
+    // Client-side topic filter — no API call for off-topic
+    if (!isOnTopic(msg)) {
+      setMessages((prev) => [...prev, { role: "assistant", content: CLIENT_DEFLECT }]);
+      return;
+    }
+
     setLoading(true);
 
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: updated, sessionId: getSessionId() }),
+        body: JSON.stringify({
+          messages: updated,
+          sessionId: getSessionId(),
+          turnstileToken: updated.length <= 1 ? turnstileToken : undefined,
+        }),
       });
 
       const data = await res.json();
@@ -67,7 +114,7 @@ export default function ChatWidget() {
     } finally {
       setLoading(false);
     }
-  }, [input, loading, messages]);
+  }, [input, loading, messages, turnstileToken]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -265,6 +312,7 @@ export default function ChatWidget() {
             <Send className="h-4 w-4" />
           </button>
         </div>
+        <Turnstile onVerify={handleTurnstile} />
         <p className="mt-1.5 text-center text-[8px] text-stone-300 tracking-wide">
           FOR RESEARCH USE ONLY — NOT INTENDED FOR HUMAN CONSUMPTION
         </p>
