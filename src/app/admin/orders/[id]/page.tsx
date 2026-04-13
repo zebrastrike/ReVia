@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import OrderStatusForm from "@/components/OrderStatusForm";
 import OrderPaymentActions from "@/components/OrderPaymentActions";
+import ShipOrderButton from "@/components/ShipOrderButton";
 export const dynamic = "force-dynamic";
 
 const statusColors: Record<string, string> = {
@@ -127,16 +128,35 @@ export default async function OrderDetailPage({
       <div className="rounded-2xl border border-neutral-200 bg-white p-5">
         <h2 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">Shipping & Tracking</h2>
         {order.tracking ? (
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-neutral-500">Tracking:</span>
-            <span className="font-mono text-sm font-semibold text-neutral-900">{order.tracking}</span>
+          <div className="space-y-3">
+            <div className="grid sm:grid-cols-3 gap-3">
+              <div>
+                <p className="text-xs text-neutral-500">Tracking</p>
+                <p className="font-mono text-sm font-semibold text-neutral-900">{order.tracking}</p>
+              </div>
+              {order.carrier && (
+                <div>
+                  <p className="text-xs text-neutral-500">Carrier</p>
+                  <p className="text-sm text-neutral-800">{order.carrier} {order.serviceLevel}</p>
+                </div>
+              )}
+              {order.labelUrl && (
+                <div>
+                  <a href={order.labelUrl} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-sky-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-sky-400 transition">
+                    Download Label
+                  </a>
+                </div>
+              )}
+            </div>
           </div>
+        ) : order.paymentStatus === "confirmed" && order.status === "processing" ? (
+          <ShipOrderButton orderId={order.id} invoiceNumber={order.invoiceNumber} hasEasypostKey={!!process.env.EASYPOST_API_KEY || !!process.env.EASYPOST_API_TEST_KEY} />
         ) : (
-          <p className="text-sm text-neutral-400">No tracking number yet. Set status to &quot;shipped&quot; below to add tracking.</p>
+          <p className="text-sm text-neutral-400">
+            {order.paymentStatus !== "confirmed" ? "Payment must be confirmed before shipping." : "Set status to \"processing\" to enable shipping."}
+          </p>
         )}
-        <p className="text-xs text-neutral-400 mt-2">
-          Shipping API integration ready — add EASYPOST_API_KEY or PIRATESHIP_API_KEY to .env when provider is selected.
-        </p>
       </div>
 
       {/* Order Items */}

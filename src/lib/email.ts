@@ -366,19 +366,27 @@ export async function sendPaymentConfirmation(
 export async function sendShippingNotification(
   order: OrderWithItems,
   email: string,
-  trackingNumber: string
+  trackingNumber: string,
+  carrier?: string,
+  trackingUrl?: string
 ) {
   const inv = invoiceDisplay(order);
+  const carrierLabel = carrier ? ` via ${carrier}` : "";
+  const trackingLink = trackingUrl
+    ? `<a href="${trackingUrl}" style="color:#10b981;text-decoration:underline;">${trackingNumber}</a>`
+    : trackingNumber;
 
   const html = `
 <div style="${wrapper}">
   <div style="${card}">
     <h1 style="${heading}">Your Order Has Shipped!</h1>
-    <p style="${subtext}">Great news, ${order.name}! Invoice <strong style="color:#10b981;">${inv}</strong> is on its way.</p>
+    <p style="${subtext}">Great news, ${order.name}! Invoice <strong style="color:#10b981;">${inv}</strong> is on its way${carrierLabel}.</p>
 
     <div style="${infoBox}text-align:center;">
+      ${carrier ? `<p style="${labelStyle}">Carrier</p><p style="color:#e5e5e5;font-size:14px;font-weight:600;margin:0 0 12px;">${carrier}</p>` : ""}
       <p style="${labelStyle}">Tracking Number</p>
-      <p style="color:#10b981;font-size:18px;font-weight:700;margin:0;letter-spacing:1px;">${trackingNumber}</p>
+      <p style="color:#10b981;font-size:18px;font-weight:700;margin:0;letter-spacing:1px;">${trackingLink}</p>
+      ${trackingUrl ? `<p style="margin-top:12px;"><a href="${trackingUrl}" style="${btnStyle}">Track Your Package</a></p>` : ""}
     </div>
 
     <hr style="${divider}"/>
@@ -389,7 +397,7 @@ export async function sendShippingNotification(
   </div>
 </div>`;
 
-  await send(email, `Order Shipped — Invoice ${inv}`, html);
+  await send(email, `Order Shipped${carrierLabel} — Invoice ${inv}`, html);
 }
 
 /* ------------------------------------------------------------------ */

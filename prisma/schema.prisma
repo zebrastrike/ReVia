@@ -95,8 +95,12 @@ model Order {
   status        String         @default("pending_payment")
   paymentMethod String         @default("zelle") // "zelle" | "wire" | "bitcoin"
   paymentStatus String         @default("awaiting") // "awaiting" | "confirmed" | "failed"
-  tracking      String?
-  total         Float
+  tracking           String?
+  easypostShipmentId String?
+  carrier            String?  // "USPS", "UPS", "FedEx"
+  serviceLevel       String?  // "Priority", "First", "Express"
+  labelUrl           String?  // EasyPost label PDF URL
+  total              Float
   items         OrderItem[]
   cryptoPayment CryptoPayment?
   userId        String?
