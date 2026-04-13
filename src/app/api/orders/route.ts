@@ -60,11 +60,12 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { items, shipping, couponCode, paymentMethod, turnstileToken } = body as {
+    const { items, shipping, couponCode, paymentMethod, shippingCost: clientShippingCost, turnstileToken } = body as {
       items: OrderItemInput[];
       shipping: ShippingInput;
       couponCode?: string;
       paymentMethod?: string;
+      shippingCost?: number;
       turnstileToken?: string;
     };
 
@@ -205,6 +206,12 @@ export async function POST(request: NextRequest) {
     // ── Calculate tax based on state ──
     const tax = calculateTax(sanitizedShipping.state, total);
     total = total + tax;
+
+    // ── Add shipping cost ──
+    const shipping_fee = typeof clientShippingCost === "number" && clientShippingCost >= 0
+      ? clientShippingCost
+      : 795; // default $7.95 if not provided
+    total = total + shipping_fee;
 
     // ── Check auth (optional) ──
     const cookieStore = await cookies();

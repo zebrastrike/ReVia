@@ -23,7 +23,22 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "User not found" }, { status: 401 });
   }
 
-  return NextResponse.json({ user });
+  // Get last shipping address from most recent order
+  const lastOrder = await prisma.order.findFirst({
+    where: { userId: payload.id },
+    orderBy: { createdAt: "desc" },
+    select: { address: true, city: true, state: true, zip: true },
+  });
+
+  return NextResponse.json({
+    user,
+    lastAddress: lastOrder ? {
+      address: lastOrder.address,
+      city: lastOrder.city,
+      state: lastOrder.state,
+      zip: lastOrder.zip,
+    } : null,
+  });
 }
 
 export async function PATCH(request: NextRequest) {

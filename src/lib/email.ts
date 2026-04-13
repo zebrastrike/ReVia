@@ -275,6 +275,14 @@ export async function sendOrderConfirmation(
 
     <table style="width:100%;">
       <tr>
+        <td style="color:#9ca3af;font-size:14px;">Subtotal</td>
+        <td style="text-align:right;color:#e5e5e5;font-size:14px;">${formatCents(order.items.reduce((s, i) => s + i.price * i.quantity, 0))}</td>
+      </tr>
+      <tr>
+        <td style="color:#9ca3af;font-size:14px;">Shipping</td>
+        <td style="text-align:right;color:#e5e5e5;font-size:14px;">Included</td>
+      </tr>
+      <tr>
         <td style="color:#9ca3af;font-size:14px;">Payment Method</td>
         <td style="text-align:right;color:#e5e5e5;font-size:14px;font-weight:600;">${paymentLabel}</td>
       </tr>

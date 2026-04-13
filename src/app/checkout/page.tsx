@@ -57,6 +57,7 @@ export default function CheckoutPage() {
   const [selectedShippingIndex, setSelectedShippingIndex] = useState(0);
   const [shippingRates, setShippingRates] = useState<Array<{ label: string; price: number; estimate: string; minOrder: number }>>([
     { label: "Standard Shipping", price: 795, estimate: "5-7 business days", minOrder: 0 },
+    { label: "Priority Shipping", price: 1295, estimate: "3-5 business days", minOrder: 20000 },
   ]);
 
   // Free shipping promo state
@@ -97,6 +98,28 @@ export default function CheckoutPage() {
               }
             } catch { /* use defaults */ }
           }
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Auto-populate user info from auth + last order address
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.user) {
+          setForm((prev) => ({
+            ...prev,
+            name: prev.name || data.user.name || "",
+            email: prev.email || data.user.email || "",
+            ...(data.lastAddress && !prev.address ? {
+              address: data.lastAddress.address || "",
+              city: data.lastAddress.city || "",
+              state: data.lastAddress.state || "",
+              zip: data.lastAddress.zip || "",
+            } : {}),
+          }));
         }
       })
       .catch(() => {});
@@ -185,6 +208,7 @@ export default function CheckoutPage() {
             zip: form.zip,
           },
           shippingMethod: selectedRate?.label ?? "Standard Shipping",
+          shippingCost,
           paymentMethod,
           couponCode: appliedCoupon || undefined,
           turnstileToken: turnstileToken || undefined,
