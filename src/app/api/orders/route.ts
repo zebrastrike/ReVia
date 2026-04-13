@@ -271,6 +271,7 @@ export async function POST(request: NextRequest) {
         ...order,
         paymentMethod: order.paymentMethod,
         invoiceNumber: order.invoiceNumber,
+        shippingCost: shipping_fee,
       };
       await sendOrderConfirmation(orderForEmail, sanitizedShipping.email);
     } catch (emailErr) {
@@ -283,6 +284,7 @@ export async function POST(request: NextRequest) {
         ...order,
         paymentMethod: order.paymentMethod,
         invoiceNumber: order.invoiceNumber,
+        shippingCost: shipping_fee,
       };
       await sendAdminNewOrderAlert(orderForAdmin);
     } catch (adminEmailErr) {

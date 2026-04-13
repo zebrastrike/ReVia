@@ -24,6 +24,7 @@ export interface OrderWithItems {
   total: number;
   status: string;
   paymentMethod: string;
+  shippingCost?: number; // cents
   items: OrderItemForEmail[];
   createdAt: Date | string;
 }
@@ -280,14 +281,14 @@ export async function sendOrderConfirmation(
       </tr>
       <tr>
         <td style="color:#9ca3af;font-size:14px;">Shipping</td>
-        <td style="text-align:right;color:#e5e5e5;font-size:14px;">Included</td>
+        <td style="text-align:right;color:#e5e5e5;font-size:14px;">${order.shippingCost ? formatCents(order.shippingCost) : "Included"}</td>
       </tr>
       <tr>
         <td style="color:#9ca3af;font-size:14px;">Payment Method</td>
         <td style="text-align:right;color:#e5e5e5;font-size:14px;font-weight:600;">${paymentLabel}</td>
       </tr>
       <tr>
-        <td style="color:#9ca3af;font-size:14px;">Total Due</td>
+        <td style="color:#9ca3af;font-size:14px;font-weight:700;">Total Due</td>
         <td style="text-align:right;color:#ffffff;font-size:18px;font-weight:700;">${formatCents(order.total)}</td>
       </tr>
     </table>
