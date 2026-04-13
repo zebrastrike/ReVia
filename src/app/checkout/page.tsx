@@ -57,7 +57,11 @@ export default function CheckoutPage() {
   const [selectedShippingIndex, setSelectedShippingIndex] = useState(0);
   const [shippingRates, setShippingRates] = useState<Array<{ label: string; price: number; estimate: string; minOrder: number }>>([
     { label: "Standard Shipping", price: 795, estimate: "5-7 business days", minOrder: 0 },
-    { label: "Priority Shipping", price: 1295, estimate: "3-5 business days", minOrder: 20000 },
+    { label: "Priority Shipping", price: 1295, estimate: "2-3 business days", minOrder: 0 },
+    { label: "Overnight Shipping", price: 4995, estimate: "Next business day", minOrder: 0 },
+    { label: "FREE Standard Shipping", price: 0, estimate: "5-7 business days", minOrder: 20000 },
+    { label: "Priority Shipping", price: 995, estimate: "2-3 business days", minOrder: 20000 },
+    { label: "Overnight Shipping", price: 4995, estimate: "Next business day", minOrder: 20000 },
   ]);
 
   // Free shipping promo state
@@ -133,8 +137,11 @@ export default function CheckoutPage() {
   const hasPreOrderItems = items.some((i) => i.isPreOrder);
   const afterDiscount = Math.max(0, subtotal - couponDiscount);
 
-  // Filter shipping rates by min order and get selected rate
-  const availableRates = shippingRates.filter((r) => afterDiscount >= (r.minOrder ?? 0));
+  // Filter shipping rates — show only the highest qualifying tier
+  // Rates with higher minOrder replace rates with lower minOrder for the same label type
+  const qualifyingRates = shippingRates.filter((r) => afterDiscount >= (r.minOrder ?? 0));
+  const highestTier = Math.max(...qualifyingRates.map((r) => r.minOrder ?? 0));
+  const availableRates = qualifyingRates.filter((r) => (r.minOrder ?? 0) === highestTier);
   const selectedRate = availableRates[selectedShippingIndex] ?? availableRates[0] ?? shippingRates[0];
 
   // Check if free shipping promo applies

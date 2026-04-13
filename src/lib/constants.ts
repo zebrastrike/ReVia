@@ -1,7 +1,10 @@
 // All monetary values in CENTS (divide by 100 to display as dollars)
 
+// Fallback only — live rates come from SiteSettings DB
 export const SHIPPING_METHODS = {
   standard: { label: "Standard Shipping", price: 795, estimate: "5-7 business days" },
+  priority: { label: "Priority Shipping", price: 1295, estimate: "2-3 business days" },
+  overnight: { label: "Overnight Shipping", price: 4995, estimate: "Next business day" },
 } as const;
 
 export type ShippingMethod = keyof typeof SHIPPING_METHODS;
