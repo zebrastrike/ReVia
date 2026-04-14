@@ -59,6 +59,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // ── Check auth FIRST (required — checkout requires login) ──
+    const cookieStore = await cookies();
+    const user = await getAuthUser(cookieStore);
+    if (!user) {
+      return NextResponse.json(
+        { error: "You must be logged in to place an order" },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const { items, shipping, couponCode, paymentMethod, shippingCost: clientShippingCost, turnstileToken } = body as {
       items: OrderItemInput[];
@@ -215,16 +225,6 @@ export async function POST(request: NextRequest) {
       ? clientShippingCost
       : 795; // default to standard $7.95 if invalid
     total = total + shipping_fee;
-
-    // ── Check auth (required — checkout requires login) ──
-    const cookieStore = await cookies();
-    const user = await getAuthUser(cookieStore);
-    if (!user) {
-      return NextResponse.json(
-        { error: "You must be logged in to place an order" },
-        { status: 401 }
-      );
-    }
 
     // ── Generate invoice number ──
     const invoiceNumber = generateInvoiceNumber();
