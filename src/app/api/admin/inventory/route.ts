@@ -5,6 +5,7 @@ import { getAuthUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function PATCH(req: Request) {
+  try {
   const cookieStore = await cookies();
   const user = await getAuthUser(cookieStore);
   if (!user || user.role !== "admin") {
@@ -76,4 +77,8 @@ export async function PATCH(req: Request) {
   });
 
   return NextResponse.json(variant);
+  } catch (err) {
+    console.error("PATCH /api/admin/inventory error:", err);
+    return NextResponse.json({ error: "Failed to update inventory" }, { status: 500 });
+  }
 }

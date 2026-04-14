@@ -207,15 +207,24 @@ export async function POST(request: NextRequest) {
     const tax = calculateTax(sanitizedShipping.state, total);
     total = total + tax;
 
-    // ── Add shipping cost ──
-    const shipping_fee = typeof clientShippingCost === "number" && clientShippingCost >= 0
+    // ── Validate and add shipping cost ──
+    const VALID_SHIPPING_COSTS = [0, 795, 995, 1295, 4995]; // all possible shipping rates in cents
+    const shipping_fee = typeof clientShippingCost === "number"
+      && clientShippingCost >= 0
+      && VALID_SHIPPING_COSTS.includes(clientShippingCost)
       ? clientShippingCost
-      : 795; // default $7.95 if not provided
+      : 795; // default to standard $7.95 if invalid
     total = total + shipping_fee;
 
-    // ── Check auth (optional) ──
+    // ── Check auth (required — checkout requires login) ──
     const cookieStore = await cookies();
     const user = await getAuthUser(cookieStore);
+    if (!user) {
+      return NextResponse.json(
+        { error: "You must be logged in to place an order" },
+        { status: 401 }
+      );
+    }
 
     // ── Generate invoice number ──
     const invoiceNumber = generateInvoiceNumber();
@@ -234,7 +243,7 @@ export async function POST(request: NextRequest) {
         paymentMethod: method,
         paymentStatus: "awaiting",
         status: "pending_payment",
-        userId: user?.id ?? null,
+        userId: user.id,
         items: {
           create: sanitizedItems.map((i) => ({
             productName: i.productName,

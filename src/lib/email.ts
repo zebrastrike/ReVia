@@ -274,15 +274,23 @@ export async function sendOrderConfirmation(
 
     <hr style="${divider}"/>
 
-    <table style="width:100%;">
+    ${(() => {
+      const subtotal = order.items.reduce((s, i) => s + i.price * i.quantity, 0);
+      const ship = order.shippingCost ?? 0;
+      const tax = Math.max(0, order.total - subtotal - ship);
+      return `<table style="width:100%;">
       <tr>
         <td style="color:#9ca3af;font-size:14px;">Subtotal</td>
-        <td style="text-align:right;color:#e5e5e5;font-size:14px;">${formatCents(order.items.reduce((s, i) => s + i.price * i.quantity, 0))}</td>
+        <td style="text-align:right;color:#e5e5e5;font-size:14px;">${formatCents(subtotal)}</td>
       </tr>
       <tr>
         <td style="color:#9ca3af;font-size:14px;">Shipping</td>
-        <td style="text-align:right;color:#e5e5e5;font-size:14px;">${order.shippingCost ? formatCents(order.shippingCost) : "Included"}</td>
+        <td style="text-align:right;color:#e5e5e5;font-size:14px;">${ship > 0 ? formatCents(ship) : "FREE"}</td>
       </tr>
+      ${tax > 0 ? `<tr>
+        <td style="color:#9ca3af;font-size:14px;">Tax</td>
+        <td style="text-align:right;color:#e5e5e5;font-size:14px;">${formatCents(tax)}</td>
+      </tr>` : ""}
       <tr>
         <td style="color:#9ca3af;font-size:14px;">Payment Method</td>
         <td style="text-align:right;color:#e5e5e5;font-size:14px;font-weight:600;">${paymentLabel}</td>
@@ -291,7 +299,8 @@ export async function sendOrderConfirmation(
         <td style="color:#9ca3af;font-size:14px;font-weight:700;">Total Due</td>
         <td style="text-align:right;color:#ffffff;font-size:18px;font-weight:700;">${formatCents(order.total)}</td>
       </tr>
-    </table>
+    </table>`;
+    })()}
 
     <hr style="${divider}"/>
 

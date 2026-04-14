@@ -78,6 +78,12 @@ export async function PATCH(
       );
     }
 
+    // Get current order state BEFORE updating (for duplicate prevention)
+    const currentOrder = await prisma.order.findUnique({
+      where: { id },
+      select: { paymentStatus: true },
+    });
+
     const updateData: Record<string, string> = {};
     if (status) updateData.status = status;
     if (paymentStatus && VALID_PAYMENT_STATUSES.includes(paymentStatus as (typeof VALID_PAYMENT_STATUSES)[number])) {
@@ -94,7 +100,8 @@ export async function PATCH(
     });
 
     // On payment confirmation: award rewards + send email
-    if (paymentStatus === "confirmed") {
+    // Only if transitioning FROM non-confirmed (prevent double rewards)
+    if (paymentStatus === "confirmed" && currentOrder?.paymentStatus !== "confirmed") {
       // Award reward points, lifetime spend, and drawing entries
       if (order.userId) {
         try {
