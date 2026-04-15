@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -329,9 +329,9 @@ function MonthlyDrawing() {
     entryAmount: number; prizes: number[];
   } | null>(null);
 
-  useState(() => {
+  useEffect(() => {
     fetch("/api/drawing").then(r => r.ok ? r.json() : null).then(d => { if (d) setDrawing(d); }).catch(() => {});
-  });
+  }, []);
 
   if (!drawing) return null;
   const monthLabel = new Date(drawing.month + "-15").toLocaleDateString("en-US", { month: "long", year: "numeric" });
