@@ -17,6 +17,43 @@ export async function PATCH(
 
     const { id } = await params;
     const body = await request.json();
+
+    // Handle new variant creation
+    if (body.newVariant) {
+      const { label, price, sku } = body.newVariant;
+      if (!label || !sku) {
+        return NextResponse.json({ error: "Variant label and SKU required" }, { status: 400 });
+      }
+      const variant = await prisma.productVariant.create({
+        data: {
+          productId: id,
+          label,
+          price: price || 0,
+          retailPrice: price || 0,
+          sku,
+          inStock: false,
+          quantity: 0,
+        },
+      });
+      return NextResponse.json({ variant });
+    }
+
+    // Handle variant updates (label, price changes for existing variants)
+    if (body.variants && Array.isArray(body.variants)) {
+      for (const v of body.variants) {
+        if (v.id && !v.id.startsWith("new-")) {
+          await prisma.productVariant.update({
+            where: { id: v.id },
+            data: {
+              label: v.label,
+              price: v.price,
+              retailPrice: v.price,
+            },
+          });
+        }
+      }
+    }
+
     const { name, description, featured, active, categoryId, image, coaUrl } = body as {
       name?: string;
       description?: string;
@@ -36,11 +73,20 @@ export async function PATCH(
     if (image !== undefined) data.image = image;
     if (coaUrl !== undefined) data.coaUrl = coaUrl;
 
-    const product = await prisma.product.update({
-      where: { id },
-      data,
-      include: { variants: true, category: true },
-    });
+    if (Object.keys(data).length === 0 && !body.variants) {
+      return NextResponse.json({ error: "Nothing to update" }, { status: 400 });
+    }
+
+    const product = Object.keys(data).length > 0
+      ? await prisma.product.update({
+          where: { id },
+          data,
+          include: { variants: true, category: true },
+        })
+      : await prisma.product.findUnique({
+          where: { id },
+          include: { variants: true, category: true },
+        });
 
     return NextResponse.json({ product });
   } catch (err) {

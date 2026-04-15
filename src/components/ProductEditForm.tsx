@@ -62,11 +62,19 @@ export default function ProductEditForm({
     setMessage(null);
 
     try {
-      // Update product fields
+      // Update product fields + existing variant labels/prices
+      const existingVariants = variants.filter(v => !v.isNew);
       const res = await fetch(`/api/admin/products/${product.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, description, categoryId, featured, coaUrl: coaUrl || null }),
+        body: JSON.stringify({
+          name,
+          description,
+          categoryId,
+          featured,
+          coaUrl: coaUrl || null,
+          variants: existingVariants.map(v => ({ id: v.id, label: v.label, price: v.price })),
+        }),
       });
 
       if (!res.ok) {
@@ -76,7 +84,7 @@ export default function ProductEditForm({
 
       // Handle new variants - create them via separate API calls
       for (const v of variants) {
-        if (v.isNew) {
+        if (v.isNew && v.label && v.sku) {
           const varRes = await fetch(`/api/admin/products/${product.id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
