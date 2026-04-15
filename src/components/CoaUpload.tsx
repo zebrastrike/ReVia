@@ -23,8 +23,9 @@ export default function CoaUpload({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.name.endsWith(".pdf")) {
-      setMessage({ type: "error", text: "Only PDF files accepted" });
+    const ext = file.name.split(".").pop()?.toLowerCase();
+    if (!ext || !["pdf", "png", "jpg", "jpeg"].includes(ext)) {
+      setMessage({ type: "error", text: "Only PDF, PNG, or JPG files accepted" });
       return;
     }
 
@@ -128,13 +129,13 @@ export default function CoaUpload({
             <input
               ref={fileRef}
               type="file"
-              accept=".pdf"
+              accept=".pdf,.png,.jpg,.jpeg"
               onChange={handleUpload}
               className="hidden"
               disabled={uploading}
             />
           </label>
-          <p className="text-xs text-neutral-400 mt-2">PDF only, max 10MB</p>
+          <p className="text-xs text-neutral-400 mt-2">PDF, PNG, or JPG — max 10MB</p>
         </div>
       )}
     </div>

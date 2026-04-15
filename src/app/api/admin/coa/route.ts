@@ -26,8 +26,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "File and productId required" }, { status: 400 });
     }
 
-    if (!file.name.endsWith(".pdf")) {
-      return NextResponse.json({ error: "Only PDF files accepted" }, { status: 400 });
+    const ext = file.name.split(".").pop()?.toLowerCase();
+    if (!ext || !["pdf", "png", "jpg", "jpeg"].includes(ext)) {
+      return NextResponse.json({ error: "Only PDF, PNG, or JPG files accepted" }, { status: 400 });
     }
 
     if (file.size > 10 * 1024 * 1024) {
@@ -48,7 +49,8 @@ export async function POST(request: NextRequest) {
     const coaDir = path.join(process.cwd(), "public", "coa");
     await mkdir(coaDir, { recursive: true });
 
-    const filename = `${product.slug}-coa.pdf`;
+    const fileExt = file.name.split(".").pop()?.toLowerCase() || "pdf";
+    const filename = `${product.slug}-coa.${fileExt}`;
     const filepath = path.join(coaDir, filename);
     const buffer = Buffer.from(await file.arrayBuffer());
     await writeFile(filepath, buffer);
