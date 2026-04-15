@@ -168,7 +168,7 @@ export default async function AdminDashboard() {
           )}
         </Link>
         <Link
-          href="/admin/orders/export"
+          href="/api/admin/orders/export"
           className="flex items-center gap-3 rounded-xl border border-sky-200/40 bg-white/50 px-4 py-3 text-sm font-medium text-stone-700 hover:bg-sky-50 transition-colors"
         >
           <Download size={16} className="text-sky-500" />
