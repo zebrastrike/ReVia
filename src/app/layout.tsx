@@ -118,6 +118,14 @@ export default function RootLayout({
       lang="en"
       className={`${jakarta.variable} ${mono.variable} ${fraunces.variable} ${spaceGrotesk.variable} ${cormorant.variable} ${jost.variable} h-full antialiased`}
     >
+      <head>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-WDJGY6R2PS" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-WDJGY6R2PS');`,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col text-[#453834]">
         <JsonLd data={organizationLd} />
         <CartDrawer />
