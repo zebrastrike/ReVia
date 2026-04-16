@@ -8,6 +8,7 @@ import LayoutShell from "@/components/LayoutShell";
 import ChatWidget from "@/components/ChatWidget";
 import CookieConsent from "@/components/CookieConsent";
 import AffiliateTracker from "@/components/AffiliateTracker";
+import RuoBanner from "@/components/RuoBanner";
 import { Suspense } from "react";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -127,6 +128,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col text-[#453834]">
+        <RuoBanner />
         <JsonLd data={organizationLd} />
         <CartDrawer />
         <Toast />

@@ -138,7 +138,7 @@ export default function Footer() {
         {/* Copyright */}
         <AnimatedContainer delay={0.6} className="mt-4 border-t border-sky-200/30 pt-3 text-center space-y-1.5">
           <p className="text-[10px] text-stone-400 leading-relaxed max-w-6xl mx-auto">
-            All products sold by ReVia carry a Research Use Only (RUO) designation as required by current US regulations and are intended for laboratory research use only. They are not intended for human or animal consumption, or for use in the diagnosis, treatment, cure, or prevention of any disease. This designation is standard practice for compounds awaiting formal FDA classification and does not reflect the quality, purity, or manufacturing standard. Our formulations meet pharmaceutical-grade specifications and are manufactured to physician-use (PUD) standards throughout.
+            All products sold by ReVia carry a Research Use Only (RUO) designation as required by current US regulations and are intended for laboratory research use only. They are not intended for human or animal consumption, or for use in the diagnosis, treatment, cure, or prevention of any disease. This designation is standard practice for compounds awaiting formal FDA classification and does not reflect the quality, purity, or manufacturing standard. Our formulations meet research-grade specifications and are manufactured to physician-use (PUD) standards throughout.
           </p>
           <p className="text-[10px] text-stone-400">
             &copy; 2024&ndash;{new Date().getFullYear()} ReVia LLC. All rights reserved.

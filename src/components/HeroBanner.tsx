@@ -95,8 +95,8 @@ export default function HeroBanner() {
               transition={{ duration: 0.6, delay: 2.9 }}
               className="mt-2 text-sm text-stone-600 leading-relaxed sm:mt-3 sm:text-base max-w-lg"
             >
-              <span className="hidden sm:inline">Your trusted source for independently tested, pharmaceutical-grade peptides. Every batch verified to &gt;99% purity with same-day shipping nationwide.</span>
-              <span className="sm:hidden">Independently tested, pharmaceutical-grade peptides. &gt;99% purity verified.</span>
+              <span className="hidden sm:inline">A trusted laboratory supply source for independently tested, research-grade peptides. Every batch verified to &gt;99% purity. For research use only.</span>
+              <span className="sm:hidden">Research-grade peptides. &gt;99% purity. For research use only.</span>
             </motion.p>
 
             <motion.div
@@ -141,7 +141,7 @@ export default function HeroBanner() {
               {[
                 { icon: FlaskConical, text: ">99% Purity" },
                 { icon: Atom, text: "LC-MS Verified" },
-                { icon: Truck, text: "Same-Day Shipping" },
+                { icon: Truck, text: "Same-Day Dispatch" },
                 { icon: Package, text: "85+ Peptides" },
                 { icon: MapPin, text: "US-Based" },
               ].map((b) => (

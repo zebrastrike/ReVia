@@ -16,7 +16,7 @@ const faqs = [
   },
   {
     q: "What purity level are your peptides?",
-    a: "All products meet a >99% purity standard (pharmaceutical grade, USP/NF/BP). Each batch is screened for sterility, endotoxins, heavy metals, and synthesis byproducts.",
+    a: "All products meet a >99% purity standard (research-grade, USP/NF/BP). Each batch is screened for sterility, endotoxins, heavy metals, and synthesis byproducts.",
   },
   {
     q: "How fast do you ship?",

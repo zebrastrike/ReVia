@@ -20,7 +20,7 @@ const STACK_META: Record<
     tagline: string;
     benefitTitle: string;
     benefits: { icon: React.ComponentType<{ size: number; className?: string }>; title: string; body: string }[];
-    ingredients: { name: string; dose: string; role: string; slug?: string }[];
+    ingredients: { name: string; concentration: string; role: string; slug?: string }[];
   }
 > = {
   "revia-lean": {
@@ -30,26 +30,26 @@ const STACK_META: Record<
     benefits: [
       { icon: Zap, title: "Dual Mechanism", body: "Combines GLP-1/GIP agonism with amylin analogue signaling for complementary metabolic pathways." },
       { icon: FlaskConical, title: "Single Vial Convenience", body: "Pre-blended by Lance's lab — no separate reconstitution or mixing required." },
-      { icon: ShieldCheck, title: "Pharmaceutical-Grade Purity", body: "Lyophilized, third-party tested, produced in a certified facility." },
+      { icon: ShieldCheck, title: "research-grade Purity", body: "Lyophilized, third-party tested, produced in a certified facility." },
     ],
     ingredients: [
-      { name: "Tirzepatide", dose: "10mg", role: "Dual GLP-1/GIP receptor agonist — studied for insulin secretion, appetite regulation, and fat oxidation.", slug: "tirzepatide" },
-      { name: "Cagrilintide", dose: "5mg", role: "Long-acting amylin analogue — studied for satiety signaling and complementary metabolic regulation.", slug: "cagrilintide" },
+      { name: "Tirzepatide", concentration: "10mg", role: "Dual GLP-1/GIP receptor agonist — studied for insulin secretion, appetite regulation, and fat oxidation.", slug: "tirzepatide" },
+      { name: "Cagrilintide", concentration: "5mg", role: "Long-acting amylin analogue — studied for satiety signaling and complementary metabolic regulation.", slug: "cagrilintide" },
     ],
   },
   "revia-lean-pro-plus": {
     gradient: "from-violet-500 to-purple-600",
-    tagline: "Triple-compound advanced weight management and body composition",
+    tagline: "Triple-compound advanced metabolic optimization and body composition",
     benefitTitle: "Why ReVia LEAN PRO+?",
     benefits: [
       { icon: Zap, title: "Triple Synergy", body: "Adds growth hormone secretagogue signaling to dual GLP-1/amylin action for enhanced body composition research." },
       { icon: FlaskConical, title: "Single Vial Convenience", body: "All three compounds precision-blended — research-ready from day one." },
-      { icon: ShieldCheck, title: "Pharmaceutical-Grade Purity", body: "Lyophilized, third-party tested, produced in a certified facility." },
+      { icon: ShieldCheck, title: "research-grade Purity", body: "Lyophilized, third-party tested, produced in a certified facility." },
     ],
     ingredients: [
-      { name: "Tirzepatide", dose: "10mg", role: "Dual GLP-1/GIP receptor agonist — studied for insulin secretion, appetite regulation, and fat oxidation.", slug: "tirzepatide" },
-      { name: "Cagrilintide", dose: "5mg", role: "Long-acting amylin analogue — studied for satiety signaling and complementary metabolic regulation.", slug: "cagrilintide" },
-      { name: "Ipamorelin", dose: "10mg", role: "Selective GH secretagogue — studied for pulsatile GH release and body composition support.", slug: "ipamorelin" },
+      { name: "Tirzepatide", concentration: "10mg", role: "Dual GLP-1/GIP receptor agonist — studied for insulin secretion, appetite regulation, and fat oxidation.", slug: "tirzepatide" },
+      { name: "Cagrilintide", concentration: "5mg", role: "Long-acting amylin analogue — studied for satiety signaling and complementary metabolic regulation.", slug: "cagrilintide" },
+      { name: "Ipamorelin", concentration: "10mg", role: "Selective GH secretagogue — studied for pulsatile GH release and body composition support.", slug: "ipamorelin" },
     ],
   },
   "revia-renew": {
@@ -59,12 +59,12 @@ const STACK_META: Record<
     benefits: [
       { icon: Zap, title: "Systemic Recovery", body: "BPC-157 and TB-500 operate through complementary repair mechanisms for localized and systemic healing." },
       { icon: FlaskConical, title: "Regenerative Triad", body: "GHK-Cu adds copper peptide signaling for anti-inflammatory and skin/tissue regeneration support." },
-      { icon: ShieldCheck, title: "Pharmaceutical-Grade Purity", body: "Lyophilized, third-party tested, produced in a certified facility." },
+      { icon: ShieldCheck, title: "research-grade Purity", body: "Lyophilized, third-party tested, produced in a certified facility." },
     ],
     ingredients: [
-      { name: "BPC-157", dose: "10mg", role: "Body protective compound — studied for gut lining repair, tendon healing, and systemic anti-inflammatory effects.", slug: "bpc-157-tb-500" },
-      { name: "TB-500", dose: "10mg", role: "Thymosin Beta-4 fragment — studied for systemic tissue repair, angiogenesis, and injury recovery.", slug: "bpc-157-tb-500" },
-      { name: "GHK-Cu", dose: "100mg", role: "Copper peptide — studied for anti-inflammatory activity, collagen synthesis, and tissue regeneration.", slug: "ghk-cu" },
+      { name: "BPC-157", concentration: "10mg", role: "Body protective compound — studied for gut lining repair, tendon healing, and systemic anti-inflammatory effects.", slug: "bpc-157-tb-500" },
+      { name: "TB-500", concentration: "10mg", role: "Thymosin Beta-4 fragment — studied for systemic tissue repair, angiogenesis, and injury recovery.", slug: "bpc-157-tb-500" },
+      { name: "GHK-Cu", concentration: "100mg", role: "Copper peptide — studied for anti-inflammatory activity, collagen synthesis, and tissue regeneration.", slug: "ghk-cu" },
     ],
   },
   "revia-sculpt-glow": {
@@ -74,15 +74,15 @@ const STACK_META: Record<
     benefits: [
       { icon: Zap, title: "Six-Peptide Formula", body: "Covers metabolic support, GH secretagogue, recovery, and skin health signaling in a single research formulation." },
       { icon: FlaskConical, title: "Comprehensive Research Protocol", body: "Designed for studies examining the intersection of body composition, tissue repair, and aesthetic outcomes." },
-      { icon: ShieldCheck, title: "Pharmaceutical-Grade Purity", body: "Lyophilized, third-party tested, produced in a certified facility." },
+      { icon: ShieldCheck, title: "research-grade Purity", body: "Lyophilized, third-party tested, produced in a certified facility." },
     ],
     ingredients: [
-      { name: "Tirzepatide", dose: "10mg", role: "Dual GLP-1/GIP receptor agonist — metabolic and appetite regulation research.", slug: "tirzepatide" },
-      { name: "Cagrilintide", dose: "5mg", role: "Amylin analogue — complementary satiety and metabolic signaling.", slug: "cagrilintide" },
-      { name: "Ipamorelin", dose: "10mg", role: "Selective GH secretagogue — body composition and GH axis research.", slug: "ipamorelin" },
-      { name: "BPC-157", dose: "10mg", role: "Body protective compound — gut and tissue repair, anti-inflammatory.", slug: "bpc-157-tb-500" },
-      { name: "TB-500", dose: "10mg", role: "Thymosin Beta-4 fragment — systemic recovery and angiogenesis.", slug: "bpc-157-tb-500" },
-      { name: "GHK-Cu", dose: "100mg", role: "Copper peptide — anti-inflammatory, collagen synthesis, skin regeneration.", slug: "ghk-cu" },
+      { name: "Tirzepatide", concentration: "10mg", role: "Dual GLP-1/GIP receptor agonist — metabolic and appetite regulation research.", slug: "tirzepatide" },
+      { name: "Cagrilintide", concentration: "5mg", role: "Amylin analogue — complementary satiety and metabolic signaling.", slug: "cagrilintide" },
+      { name: "Ipamorelin", concentration: "10mg", role: "Selective GH secretagogue — body composition and GH axis research.", slug: "ipamorelin" },
+      { name: "BPC-157", concentration: "10mg", role: "Body protective compound — gut and tissue repair, anti-inflammatory.", slug: "bpc-157-tb-500" },
+      { name: "TB-500", concentration: "10mg", role: "Thymosin Beta-4 fragment — systemic recovery and angiogenesis.", slug: "bpc-157-tb-500" },
+      { name: "GHK-Cu", concentration: "100mg", role: "Copper peptide — anti-inflammatory, collagen synthesis, skin regeneration.", slug: "ghk-cu" },
     ],
   },
 };
@@ -187,7 +187,7 @@ export default async function StackDetailPage({ params }: PageProps) {
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold text-neutral-900">{ing.name}</h3>
                   <span className="text-xs font-mono font-medium bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded-full">
-                    {ing.dose}
+                    {ing.concentration}
                   </span>
                 </div>
                 <p className="text-sm text-neutral-500">{ing.role}</p>

@@ -24,7 +24,7 @@ const sections: Section[] = [
     icon: <FlaskConical className="h-5 w-5" />,
     items: [
       { q: "Are your peptides third-party tested?", a: "Yes. Every batch undergoes independent HPLC purity analysis and mass spectrometry identity confirmation. This dual-testing ensures both purity and correct composition." },
-      { q: "What purity level are your peptides?", a: "All products meet a >99% purity standard (pharmaceutical grade, USP/NF/BP), verified by HPLC. This quality level is essential for reproducible research." },
+      { q: "What purity level are your peptides?", a: "All products meet a >99% purity standard (research-grade, USP/NF/BP), verified by HPLC. This quality level is essential for reproducible research." },
       { q: "How should I store my peptides?", a: "Store lyophilized peptides at 2-8°C, protected from light and moisture. Once reconstituted, use within 30 days and keep refrigerated. For long-term storage, -20°C is recommended." },
       { q: "What is the shelf life?", a: "Lyophilized peptides remain stable 18-24 months when stored properly. Reconstituted peptides should be used within 30 days." },
       { q: "Do you offer Certificates of Analysis?", a: "Yes. Batch-specific COAs are available for every product. When available, COA links are displayed directly on the product page. You can also email orders@revialife.com with your order number and we'll provide documentation within 24 hours." },
@@ -35,7 +35,7 @@ const sections: Section[] = [
     title: "Stacks & Bundles",
     icon: <Layers className="h-5 w-5" />,
     items: [
-      { q: "What are peptide stacks?", a: "Stacks are curated multi-peptide blends in a single vial, designed for specific research goals. Our blends include LEAN (weight management), LEAN PRO+ (advanced weight management), RENEW (recovery), SCULPT & GLOW (body composition + aesthetics), GLOW (skin health), and KLOW (aesthetics + hormonal support)." },
+      { q: "What are peptide stacks?", a: "Stacks are curated multi-peptide blends in a single vial, designed for specific research goals. Our blends include LEAN (metabolic optimization), LEAN PRO+ (advanced metabolic optimization), RENEW (recovery), SCULPT & GLOW (body composition + aesthetics), GLOW (skin health), and KLOW (aesthetics + hormonal support)." },
       { q: "What's the most popular stack?", a: "ReVia LEAN (Tirzepatide + Cagrilintide) and ReVia RENEW (BPC-157 + TB-500 + GHK-Cu) are our top sellers. SCULPT & GLOW is popular for researchers studying multiple pathways simultaneously." },
       { q: "Are stacks discounted?", a: "Yes — our blended vials are priced below what the individual components would cost separately." },
     ],

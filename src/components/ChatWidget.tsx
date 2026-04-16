@@ -224,7 +224,7 @@ export default function ChatWidget() {
             </p>
             <div className="mt-4 flex flex-col gap-1.5">
               {[
-                "What weight management peptides do you carry?",
+                "What metabolic research peptides do you carry?",
                 "Tell me about BPC-157 research",
                 "What recovery peptides are available?",
                 "How do I place an order?",

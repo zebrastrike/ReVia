@@ -4,7 +4,7 @@
  * These take priority over the database `image` field.
  */
 const productImages: Record<string, string> = {
-  // Weight Management
+  // metabolic optimization
   "retatrutide": "/images/products/retatrutide-5mg.png",
   "tirzepatide": "/images/products/tirzepatide-5mg.png",
   "cagrilintide": "/images/products/cagrilintide-5mg.png",

@@ -43,7 +43,7 @@ export default function WhyReVia() {
           </motion.h1>
           <motion.p {...anim(0.2)} className="mt-6 text-lg text-stone-500 max-w-2xl mx-auto leading-relaxed">
             Most vendors resell unverified powder from overseas factories. We built a fully US-manufactured,
-            third-party tested supply chain with pharmaceutical-grade standards on every batch.
+            third-party tested supply chain with research-grade standards on every batch.
           </motion.p>
         </div>
 
@@ -73,7 +73,7 @@ export default function WhyReVia() {
             {
               icon: FlaskConical,
               title: ">99% Purity",
-              description: "Pharmaceutical grade (USP/NF/BP standard) with less than 0.1% contamination — in line with human-grade standards.",
+              description: "Research-grade (USP/NF/BP standard) with less than 0.1% contamination — verified for laboratory research applications.",
             },
             {
               icon: Atom,

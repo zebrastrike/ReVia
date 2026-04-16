@@ -8,7 +8,7 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   title: "ReVia Stacks | Precision-Blended Peptide Formulas",
   description:
-    "ReVia's flagship blended vials — precision-formulated peptide stacks for weight management, recovery, and aesthetics.",
+    "ReVia's flagship blended vials — precision-formulated peptide stacks for metabolic optimization, recovery, and aesthetics.",
 };
 
 const STACK_GRADIENTS: Record<string, string> = {
@@ -20,7 +20,7 @@ const STACK_GRADIENTS: Record<string, string> = {
 
 const STACK_TAGLINES: Record<string, string> = {
   "revia-lean": "Dual-action metabolic support in one vial",
-  "revia-lean-pro-plus": "Triple-compound advanced weight management",
+  "revia-lean-pro-plus": "Triple-compound advanced metabolic optimization",
   "revia-renew": "Full-spectrum recovery and regeneration",
   "revia-sculpt-glow": "Six-peptide body composition and aesthetics",
 };

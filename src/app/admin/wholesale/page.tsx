@@ -14,7 +14,7 @@ const WHOLESALE_CATALOG = [
     { name: "REvive Bottle", variant: "60 Capsules", sku: "RV-OCS-REV-60-ORA", price: 6300 },
     { name: "REvive Sample", variant: "10 Capsules", sku: "RV-OCS-REV-10-ORA", price: 550 },
   ]},
-  { category: "METABOLIC & WEIGHT MANAGEMENT", items: [
+  { category: "METABOLIC & metabolic optimization", items: [
     { name: "5-Amino-1MQ", variant: "5mg", sku: "RV-MWM-5AM-5-SC", price: 2250 },
     { name: "5-Amino-1MQ", variant: "10mg", sku: "RV-MWM-5AM-10-SC", price: 3375 },
     { name: "AOD-9604", variant: "5mg", sku: "RV-MWM-AOD-5-SC", price: 3275 },

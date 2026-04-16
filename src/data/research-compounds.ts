@@ -18,7 +18,7 @@ export interface ResearchCompound {
 }
 
 export const CATEGORIES = [
-  "Weight Management & Metabolic",
+  "metabolic optimization & Metabolic",
   "Growth Hormone & Performance",
   "Healing, Recovery & Immune",
   "Cognitive & Longevity",
@@ -30,12 +30,12 @@ export type CompoundCategory = (typeof CATEGORIES)[number];
 
 export const researchCompounds: ResearchCompound[] = [
   /* ─────────────────────────────────────────────────
-     Weight Management & Metabolic
+     metabolic optimization & Metabolic
      ───────────────────────────────────────────────── */
   {
     slug: "5-amino-1mq",
     name: "5-Amino-1MQ",
-    category: "Weight Management & Metabolic",
+    category: "metabolic optimization & Metabolic",
     type: "Small Molecule",
     description:
       "A selective inhibitor of nicotinamide N-methyltransferase (NNMT), an enzyme involved in cellular energy metabolism and NAD+ homeostasis. Preclinical studies have investigated its role in modulating adipose tissue metabolism in diet-induced obesity models.",
@@ -70,7 +70,7 @@ export const researchCompounds: ResearchCompound[] = [
   {
     slug: "adipotide",
     name: "Adipotide (FTPP)",
-    category: "Weight Management & Metabolic",
+    category: "metabolic optimization & Metabolic",
     type: "Peptide",
     description:
       "A pro-apoptotic peptidomimetic that targets the vascular supply of white adipose tissue. Primate studies have investigated selective ablation of adipose vasculature and its effects on adipose tissue metabolism.",
@@ -100,7 +100,7 @@ export const researchCompounds: ResearchCompound[] = [
   {
     slug: "aod-9604",
     name: "AOD-9604",
-    category: "Weight Management & Metabolic",
+    category: "metabolic optimization & Metabolic",
     type: "Peptide",
     description:
       "A modified fragment (amino acids 177-191) of human growth hormone with a tyrosine substitution. Studies have investigated its lipolytic properties without the growth-promoting or diabetogenic effects associated with full-length hGH.",
@@ -136,7 +136,7 @@ export const researchCompounds: ResearchCompound[] = [
   {
     slug: "cagrilintide",
     name: "Cagrilintide",
-    category: "Weight Management & Metabolic",
+    category: "metabolic optimization & Metabolic",
     type: "Peptide",
     description:
       "A long-acting acylated amylin analog designed for once-weekly subcutaneous administration. Studies have investigated its effects on amylin receptor-mediated satiety signaling pathways and metabolic parameters.",
@@ -151,13 +151,13 @@ export const researchCompounds: ResearchCompound[] = [
     keyStudies: [
       {
         citation:
-          "Lau DCW, et al. Once-weekly cagrilintide for weight management in people with overweight and obesity: a multicentre, randomised, double-blind, placebo-controlled and active-controlled, dose-finding phase 2 trial. Lancet. 2021;398(10317):2160-2172.",
+          "Lau DCW, et al. Once-weekly cagrilintide for metabolic optimization in people with overweight and obesity: a multicentre, randomised, double-blind, placebo-controlled and active-controlled, dose-finding phase 2 trial. Lancet. 2021;398(10317):2160-2172.",
         finding:
           "Research investigated cagrilintide-mediated amylin receptor activation and its dose-dependent effects on metabolic signaling pathways, with a dose-response relationship observed across all study groups.",
       },
       {
         citation:
-          "Enebo LB, et al. Safety, tolerability, pharmacokinetics, and pharmacodynamics of concomitant administration of multiple doses of cagrilintide with semaglutide 2.4 mg for weight management. Lancet. 2021;397(10286):1736-1748.",
+          "Enebo LB, et al. Safety, tolerability, pharmacokinetics, and pharmacodynamics of concomitant administration of multiple doses of cagrilintide with semaglutide 2.4 mg for metabolic optimization. Lancet. 2021;397(10286):1736-1748.",
         finding:
           "Research examined the pharmacodynamic interaction of combined amylin and GLP-1 receptor activation, suggesting complementary mechanisms of action on metabolic signaling pathways.",
       },
@@ -170,7 +170,7 @@ export const researchCompounds: ResearchCompound[] = [
   {
     slug: "retatrutide",
     name: "Retatrutide",
-    category: "Weight Management & Metabolic",
+    category: "metabolic optimization & Metabolic",
     type: "Peptide",
     description:
       "A triple-hormone receptor agonist targeting GIP, GLP-1, and glucagon receptors simultaneously. Studies have investigated its multi-receptor pharmacology and effects on metabolic signaling pathways.",
@@ -200,7 +200,7 @@ export const researchCompounds: ResearchCompound[] = [
   {
     slug: "semaglutide",
     name: "Semaglutide",
-    category: "Weight Management & Metabolic",
+    category: "metabolic optimization & Metabolic",
     type: "Peptide",
     description:
       "An extensively studied GLP-1 receptor agonist with a long half-life enabling once-weekly dosing. Research has investigated its GLP-1 receptor-mediated effects on metabolic signaling pathways and incretin pharmacology.",
@@ -234,7 +234,7 @@ export const researchCompounds: ResearchCompound[] = [
   {
     slug: "tirzepatide",
     name: "Tirzepatide",
-    category: "Weight Management & Metabolic",
+    category: "metabolic optimization & Metabolic",
     type: "Peptide",
     description:
       "An extensively studied dual GIP/GLP-1 receptor agonist with a novel mechanism engaging two incretin pathways simultaneously. Research has investigated its dual receptor pharmacology and effects on metabolic signaling.",
