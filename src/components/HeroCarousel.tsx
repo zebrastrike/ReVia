@@ -32,8 +32,8 @@ const slides = [
 
 export default function HeroCarousel() {
   return (
-    <div className="mx-auto max-w-7xl px-4 pt-6 pb-6 sm:pt-2 sm:px-8 lg:px-12">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-3">
+    <div className="mx-auto max-w-7xl px-4 pt-2 pb-8 sm:pt-0 sm:px-8 lg:px-12">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-5 lg:gap-6">
         {slides.map((slide, i) => (
           <Link
             key={i}
