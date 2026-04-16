@@ -107,8 +107,6 @@ export default function ProductDetailView({
           </a>
         )}
 
-        {/* Disclaimer */}
-        <div className="mt-8 rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs leading-relaxed text-stone-500">
       </div>
     </div>
   );
