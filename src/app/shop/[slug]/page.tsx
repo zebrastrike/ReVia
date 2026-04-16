@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
-import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import { getAuthUser } from "@/lib/auth";
 import { getActiveTier, resolvePriceForVariant } from "@/lib/pricing";
 import ProductCard from "@/components/ProductCard";
 import ReviewSection from "@/components/ReviewSection";
@@ -39,9 +37,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function ProductDetailPage({ params }: PageProps) {
-  const cookieStore = await cookies();
-  const user = await getAuthUser(cookieStore);
-  if (!user) redirect("/login");
 
   const { slug } = await params;
 

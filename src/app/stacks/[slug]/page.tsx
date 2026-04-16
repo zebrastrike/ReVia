@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
-import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 import { ChevronRight, FlaskConical, ShieldCheck, Zap } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import { getAuthUser } from "@/lib/auth";
 import { getActiveTier, resolvePriceForVariant, getTierSavingsMessage } from "@/lib/pricing";
 import AddToCart from "@/components/AddToCart";
 export const revalidate = 60;
@@ -103,9 +101,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function StackDetailPage({ params }: PageProps) {
-  const cookieStore = await cookies();
-  const authUser = await getAuthUser(cookieStore);
-  if (!authUser) redirect("/login");
 
   const { slug } = await params;
 

@@ -52,27 +52,6 @@ export default function AddToCart({
     setTimeout(() => setAdded(false), 1500);
   };
 
-  // Paywall: must be logged in to see prices and purchase
-  if (!authLoading && !isLoggedIn) {
-    return (
-      <div className="space-y-6">
-        <div className="rounded-2xl border-2 border-dashed border-stone-200 bg-stone-50 p-8 text-center">
-          <Lock className="h-8 w-8 text-stone-300 mx-auto mb-3" />
-          <h3 className="text-lg font-semibold text-stone-700 mb-1">Sign in to view pricing</h3>
-          <p className="text-sm text-stone-500 mb-1">Create a free account to see prices and place orders.</p>
-          <p className="text-xs text-stone-400 mb-4">All products are for laboratory research use only.</p>
-          <div className="flex items-center justify-center gap-3">
-            <Link href="/login" className="rounded-xl bg-sky-400 px-6 py-2.5 text-sm font-semibold text-white hover:bg-sky-500 transition">
-              Sign In
-            </Link>
-            <Link href="/register" className="rounded-xl border border-sky-300 px-6 py-2.5 text-sm font-medium text-sky-700 hover:bg-sky-50 transition">
-              Create Account
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">

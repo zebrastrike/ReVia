@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
 import { Search } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import { getAuthUser } from "@/lib/auth";
 import { getActiveTier, resolvePriceForVariant } from "@/lib/pricing";
 import ProductCard from "@/components/ProductCard";
 import FloatingOrbs from "@/components/FloatingOrbs";
@@ -19,9 +16,6 @@ export default async function ShopPage({
 }: {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
-  const cookieStore = await cookies();
-  const user = await getAuthUser(cookieStore);
-  if (!user) redirect("/login");
 
   const { category, q, sort, page: pageParam } = await searchParams;
   const PRODUCTS_PER_PAGE = 12;
