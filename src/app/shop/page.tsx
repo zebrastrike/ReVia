@@ -293,37 +293,6 @@ export default async function ShopPage({
         )}
       </div>
 
-      {/* Categories at bottom */}
-      <div className="relative z-10 mt-12 rounded-2xl border border-sky-200/40 bg-sky-50/60 backdrop-blur-sm p-6">
-        <h2 className="text-sm font-bold uppercase tracking-widest text-stone-700 mb-4 px-1">
-          Browse by Category
-        </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-          <Link
-            href="/shop"
-            className={`rounded-lg px-3 py-2.5 text-xs font-medium text-center transition ${
-              !category
-                ? "bg-sky-400 text-white shadow-sm"
-                : "bg-white/70 text-stone-600 border border-sky-200/40 hover:bg-white hover:shadow-sm"
-            }`}
-          >
-            All Products
-          </Link>
-          {categories.map((cat) => (
-            <Link
-              key={cat.id}
-              href={`/shop?category=${cat.slug}${sort ? `&sort=${sort}` : ""}`}
-              className={`rounded-lg px-3 py-2.5 text-xs font-medium text-center transition ${
-                category === cat.slug
-                  ? "bg-sky-400 text-white shadow-sm"
-                  : "bg-white/70 text-stone-600 border border-sky-200/40 hover:bg-white hover:shadow-sm"
-              }`}
-            >
-              {cat.name}
-            </Link>
-          ))}
-        </div>
-      </div>
     </section>
   );
 }
