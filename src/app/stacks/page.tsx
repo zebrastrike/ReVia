@@ -103,8 +103,6 @@ export default async function StacksPage() {
 
       {/* Disclaimer */}
       <p className="mt-16 text-center text-xs text-stone-400 max-w-2xl mx-auto">
-        All products are sold for laboratory research use only (RUO). Not intended for human or animal consumption, or for use in the diagnosis, treatment, cure, or prevention of any disease.
-      </p>
     </section>
   );
 }

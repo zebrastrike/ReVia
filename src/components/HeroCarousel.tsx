@@ -5,23 +5,23 @@ import { ChevronRight } from "lucide-react";
 
 const slides = [
   {
-    image: "/images/carousel-wellness.png",
+    image: "/images/carousel-wellness.webp",
     title: "Science-Driven",
-    subtitle: "Wellness",
-    description: "Premium peptides for modern health and longevity research.",
+    subtitle: "Research",
+    description: "Research-grade peptides for laboratory and institutional use.",
     link: "/shop",
     linkText: "Shop Now",
   },
   {
-    image: "/images/carousel-performance.png",
+    image: "/images/carousel-performance.webp",
     title: "Longevity.",
     subtitle: "Performance.",
-    description: "Trusted compounds for recovery, endurance, and body composition.",
+    description: "Trusted compounds for recovery, endurance, and body composition research.",
     link: "/shop?category=growth-hormone",
     linkText: "Explore",
   },
   {
-    image: "/images/carousel-lifestyle.png",
+    image: "/images/carousel-lifestyle.webp",
     title: "Trusted Science.",
     subtitle: "Real Results.",
     description: "99%+ purity. Third-party tested. USA manufactured.",

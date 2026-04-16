@@ -109,8 +109,6 @@ export default function ProductDetailView({
 
         {/* Disclaimer */}
         <div className="mt-8 rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs leading-relaxed text-stone-500">
-          All products are sold for laboratory research use only (RUO). Not intended for human or animal consumption, or for use in the diagnosis, treatment, cure, or prevention of any disease.
-        </div>
       </div>
     </div>
   );
