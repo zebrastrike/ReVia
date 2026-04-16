@@ -7,7 +7,7 @@ import FeaturedProducts from "@/components/FeaturedProducts";
 import CategoriesSection from "@/components/CategoriesSection";
 import NewsletterBanner from "@/components/NewsletterBanner";
 import HomeFAQ from "@/components/HomeFAQ";
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const tier = await getActiveTier();
