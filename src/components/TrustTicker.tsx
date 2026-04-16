@@ -47,12 +47,12 @@ export default function TrustTicker() {
 
       <motion.div
         className="flex gap-8 whitespace-nowrap"
-        animate={{ x: ["0%", "-50%"] }}
+        animate={{ x: ["-50%", "0%"] }}
         transition={{
           x: {
             repeat: Infinity,
             repeatType: "loop",
-            duration: 40,
+            duration: 35,
             ease: "linear",
           },
         }}

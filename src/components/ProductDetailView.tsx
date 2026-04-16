@@ -109,7 +109,7 @@ export default function ProductDetailView({
 
         {/* Disclaimer */}
         <div className="mt-8 rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs leading-relaxed text-stone-500">
-          These statements have not been evaluated by the FDA. This product is not intended to diagnose, treat, cure, or prevent any disease. Consult a healthcare professional before use.
+          All products are sold for laboratory research use only (RUO). Not intended for human or animal consumption, or for use in the diagnosis, treatment, cure, or prevention of any disease.
         </div>
       </div>
     </div>
