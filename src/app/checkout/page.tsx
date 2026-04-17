@@ -43,6 +43,8 @@ export default function CheckoutPage() {
     zip: "",
   });
 
+  const [password, setPassword] = useState("");
+  const [emailExists, setEmailExists] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [orderInvoice, setOrderInvoice] = useState<string | null>(null);
@@ -243,6 +245,7 @@ export default function CheckoutPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setEmailExists(false);
     setSubmitting(true);
 
     try {
@@ -271,12 +274,16 @@ export default function CheckoutPage() {
           couponCode: appliedCoupon || undefined,
           affiliateCode: appliedAffiliate?.code || undefined,
           turnstileToken: turnstileToken || undefined,
+          password: !isLoggedIn && password ? password : undefined,
         }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
+        if (data.code === "EMAIL_EXISTS") {
+          setEmailExists(true);
+        }
         throw new Error(data.error || "Failed to place order");
       }
 
@@ -300,28 +307,6 @@ export default function CheckoutPage() {
       setSubmitting(false);
     }
   };
-
-  // Auth gate — redirect to login if not signed in
-  if (!authLoading && !isLoggedIn) {
-    return (
-      <section className="relative mx-auto flex max-w-xl flex-col items-center px-4 py-32 text-center">
-        <FloatingOrbs />
-        <div className="relative z-10">
-          <Lock className="mx-auto h-12 w-12 text-stone-300 mb-4" />
-          <h1 className="text-xl font-bold text-stone-900">Sign in to checkout</h1>
-          <p className="mt-2 text-sm text-stone-500">You need an account to place orders.</p>
-          <div className="mt-6 flex items-center justify-center gap-3">
-            <Link href="/login" className="rounded-xl bg-sky-400 px-6 py-3 text-sm font-semibold text-white hover:bg-sky-500 transition">
-              Sign In
-            </Link>
-            <Link href="/register" className="rounded-xl border border-sky-300 px-6 py-3 text-sm font-medium text-sky-700 hover:bg-sky-50 transition">
-              Create Account
-            </Link>
-          </div>
-        </div>
-      </section>
-    );
-  }
 
   if (orderId) {
     const paymentLabels: Record<PaymentMethod, string> = {
@@ -503,6 +488,51 @@ export default function CheckoutPage() {
                   />
                 </div>
               </div>
+
+              {!authLoading && !isLoggedIn && (
+                <div className="rounded-xl border border-sky-200/60 bg-sky-50/40 p-4 space-y-3">
+                  <div className="flex items-start gap-2.5">
+                    <ShieldCheck className="h-4 w-4 shrink-0 text-sky-500 mt-0.5" />
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-stone-800">Set a password to track this order</p>
+                      <p className="text-xs text-stone-500 mt-0.5">
+                        Your account is created automatically from the info above — just add a password so you can view tracking and reorder in one click.
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs font-medium text-stone-500">
+                      Create Password
+                    </label>
+                    <input
+                      required
+                      type="password"
+                      placeholder="At least 8 characters, with a letter and a number"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      autoComplete="new-password"
+                      minLength={8}
+                      className={inputClass}
+                      disabled={submitting}
+                    />
+                  </div>
+                  {emailExists ? (
+                    <p className="text-xs text-stone-600">
+                      Already have an account with this email?{" "}
+                      <Link href={`/login?returnTo=/checkout`} className="font-semibold text-sky-600 hover:text-sky-500 underline">
+                        Sign in to continue
+                      </Link>
+                    </p>
+                  ) : (
+                    <p className="text-xs text-stone-400">
+                      Already a researcher?{" "}
+                      <Link href={`/login?returnTo=/checkout`} className="text-sky-600 hover:text-sky-500 underline">
+                        Sign in
+                      </Link>
+                    </p>
+                  )}
+                </div>
+              )}
 
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-stone-500">

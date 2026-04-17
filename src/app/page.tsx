@@ -1,7 +1,4 @@
-import { cookies } from "next/headers";
-import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { getAuthUser } from "@/lib/auth";
 import { getActiveTier, resolvePriceForVariant } from "@/lib/pricing";
 import HeroBanner from "@/components/HeroBanner";
 import HeroCarousel from "@/components/HeroCarousel";
@@ -13,11 +10,6 @@ import TrustTicker from "@/components/TrustTicker";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const cookieStore = await cookies();
-  const user = await getAuthUser(cookieStore);
-  const isLoggedIn = !!user;
-
-  // Always fetch featured products (for mystery carousel)
   const tier = await getActiveTier();
   const rawFeatured = await prisma.product.findMany({
     where: { featured: true, active: true },
@@ -28,7 +20,7 @@ export default async function HomePage() {
     id: p.id, name: p.name, slug: p.slug, image: p.image,
     variants: p.variants.map((v) => ({
       id: v.id, label: v.label,
-      price: isLoggedIn ? resolvePriceForVariant(v, tier) : 0,
+      price: resolvePriceForVariant(v, tier),
     })),
     category: { name: p.category.name },
   }));
@@ -54,39 +46,11 @@ export default async function HomePage() {
         {/* Image links (3 cards) */}
         <HeroCarousel />
 
-        {/* Featured Products Carousel — always visible */}
+        {/* Featured Products Carousel */}
         <div className="relative">
           <div className="absolute inset-0 bg-gradient-to-b from-sky-50/40 via-white to-sky-50/30" />
           <div className="relative">
-            {/* Real carousel always runs — fog + lock on top for guests */}
-            <div className="relative">
-              <div className={!isLoggedIn ? "pointer-events-none select-none" : ""}>
-                <FeaturedProducts products={featuredProducts} />
-              </div>
-
-              {/* Fog + lock overlay for guests */}
-              {!isLoggedIn && (
-                <div className="absolute inset-0 backdrop-blur-[2px] bg-[#F0EDE5]/30 flex items-center justify-center z-10">
-                  <div className="text-center px-4">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-stone-800/90 mx-auto mb-4 shadow-lg">
-                      <svg className="h-7 w-7 text-sky-400" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-                      </svg>
-                    </div>
-                    <p className="text-xl font-bold text-stone-800">Sign in to browse our catalog</p>
-                    <p className="text-sm text-stone-500 mt-1.5 mb-5 max-w-md mx-auto">Create a free research account to view products and pricing</p>
-                    <div className="flex items-center justify-center gap-3">
-                      <Link href="/login" className="rounded-xl bg-sky-400 px-7 py-3 text-sm font-semibold text-white hover:bg-sky-500 transition shadow-md shadow-sky-400/20">
-                        Sign In
-                      </Link>
-                      <Link href="/register" className="rounded-xl border-2 border-sky-300 px-7 py-3 text-sm font-semibold text-sky-700 hover:bg-sky-50 transition">
-                        Create Account
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+            <FeaturedProducts products={featuredProducts} />
           </div>
         </div>
 

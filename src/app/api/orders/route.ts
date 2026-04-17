@@ -1,11 +1,13 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import crypto from "crypto";
+import { serialize } from "cookie";
 import { prisma } from "@/lib/prisma";
-import { getAuthUser } from "@/lib/auth";
-import { sendOrderConfirmation, sendAdminNewOrderAlert } from "@/lib/email";
+import { getAuthUser, hashPassword, generateToken, type AuthUser } from "@/lib/auth";
+import { sendOrderConfirmation, sendAdminNewOrderAlert, sendVerificationEmail } from "@/lib/email";
 import { rateLimit } from "@/lib/rate-limit";
-import { validateShippingAddress, validateOrderItems, sanitizeString } from "@/lib/validation";
+import { validateShippingAddress, validateOrderItems, sanitizeString, validateEmail, validatePassword } from "@/lib/validation";
 import { calculateTax } from "@/lib/tax";
 import type { PaymentMethod } from "@/lib/constants";
 import { verifyTurnstile } from "@/lib/turnstile";
@@ -59,18 +61,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // ── Check auth FIRST (required — checkout requires login) ──
+    // ── Auth (existing session) OR inline account creation from checkout fields ──
     const cookieStore = await cookies();
-    const user = await getAuthUser(cookieStore);
-    if (!user) {
-      return NextResponse.json(
-        { error: "You must be logged in to place an order" },
-        { status: 401 }
-      );
-    }
+    let user: AuthUser | { id: string; email: string; name: string; role: string } | null =
+      await getAuthUser(cookieStore);
 
     const body = await request.json();
-    const { items, shipping, couponCode, paymentMethod, shippingCost: clientShippingCost, turnstileToken, affiliateCode } = body as {
+    const { items, shipping, couponCode, paymentMethod, shippingCost: clientShippingCost, turnstileToken, affiliateCode, password } = body as {
       items: OrderItemInput[];
       shipping: ShippingInput;
       couponCode?: string;
@@ -78,7 +75,78 @@ export async function POST(request: NextRequest) {
       shippingCost?: number;
       turnstileToken?: string;
       affiliateCode?: string;
+      password?: string;
     };
+
+    // Inline signup: no existing session → use checkout name/email + password to create account
+    let newUserAuthCookie: string | null = null;
+    let createdNewUser = false;
+    if (!user) {
+      if (!password) {
+        return NextResponse.json(
+          { error: "Password required to create your account" },
+          { status: 400 }
+        );
+      }
+      const inlineEmail = sanitizeString(shipping?.email ?? "").toLowerCase();
+      const inlineName = sanitizeString(shipping?.name ?? "");
+      if (!validateEmail(inlineEmail)) {
+        return NextResponse.json(
+          { error: "Invalid email format" },
+          { status: 400 }
+        );
+      }
+      if (!inlineName) {
+        return NextResponse.json(
+          { error: "Name is required" },
+          { status: 400 }
+        );
+      }
+      const pwCheck = validatePassword(password);
+      if (!pwCheck.valid) {
+        return NextResponse.json(
+          { error: pwCheck.message },
+          { status: 400 }
+        );
+      }
+      const existing = await prisma.user.findUnique({ where: { email: inlineEmail } });
+      if (existing) {
+        return NextResponse.json(
+          {
+            error: "An account with this email already exists. Please sign in to continue.",
+            code: "EMAIL_EXISTS",
+          },
+          { status: 409 }
+        );
+      }
+      const hashed = await hashPassword(password);
+      const verifyToken = crypto.randomBytes(32).toString("hex");
+      const referralCode = `REVIA-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
+      const created = await prisma.user.create({
+        data: {
+          email: inlineEmail,
+          name: inlineName,
+          password: hashed,
+          verifyToken,
+          emailVerified: false,
+          referralCode,
+        },
+        select: { id: true, email: true, name: true, role: true },
+      });
+      sendVerificationEmail(inlineName, inlineEmail, verifyToken).catch((e) =>
+        console.error("verification email failed:", e)
+      );
+      user = created;
+      createdNewUser = true;
+      const token = generateToken(created);
+      newUserAuthCookie = serialize("auth-token", token, {
+        httpOnly: true,
+        path: "/",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 7,
+        secure: process.env.NODE_ENV === "production",
+      });
+    }
 
     // ── Verify Turnstile (bot protection) ──
     if (turnstileToken) {
@@ -315,7 +383,7 @@ export async function POST(request: NextRequest) {
       console.error("Failed to send admin order alert:", adminEmailErr);
     }
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         order: {
           id: order.id,
@@ -324,9 +392,12 @@ export async function POST(request: NextRequest) {
           status: order.status,
           paymentMethod: order.paymentMethod,
         },
+        accountCreated: createdNewUser,
       },
       { status: 201 }
     );
+    if (newUserAuthCookie) response.headers.append("Set-Cookie", newUserAuthCookie);
+    return response;
   } catch (err) {
     console.error("POST /api/orders error:", err);
     return NextResponse.json(
