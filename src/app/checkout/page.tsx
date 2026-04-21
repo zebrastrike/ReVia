@@ -610,7 +610,6 @@ export default function CheckoutPage() {
                 {([
                   { key: "zelle" as PaymentMethod, icon: Banknote, label: "Zelle", desc: "Instant, fee-free payment via Zelle" },
                   { key: "wire" as PaymentMethod, icon: Building2, label: "Wire Transfer", desc: "Domestic or international wire transfer" },
-                  { key: "card" as PaymentMethod, icon: ShieldCheck, label: "Credit / Debit Card", desc: "A secure payment link will be sent to your email" },
                   { key: "bitcoin" as PaymentMethod, icon: Bitcoin, label: "Bitcoin (Kraken Pay)", desc: "Pay with BTC via Kraken Pay" },
                 ]).map((method) => (
                   <label
