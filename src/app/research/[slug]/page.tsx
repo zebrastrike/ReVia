@@ -24,9 +24,17 @@ export async function generateMetadata({
     return { title: "Compound Not Found | ReVia" };
   }
 
+  const url = `https://revialife.com/research/${slug}`;
   return {
     title: `${compound.name} Research Summary | ReVia`,
     description: compound.description,
+    alternates: { canonical: url },
+    openGraph: {
+      title: `${compound.name} Research Summary | ReVia`,
+      description: compound.description,
+      type: "article",
+      url,
+    },
   };
 }
 

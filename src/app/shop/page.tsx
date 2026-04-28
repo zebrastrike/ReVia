@@ -5,10 +5,13 @@ import { prisma } from "@/lib/prisma";
 import { getActiveTier, resolvePriceForVariant } from "@/lib/pricing";
 import ProductCard from "@/components/ProductCard";
 import FloatingOrbs from "@/components/FloatingOrbs";
-export const dynamic = "force-dynamic";
+
+// ISR — cache for 60s, serve stale while revalidating up to 5min
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Shop | ReVia",
+  alternates: { canonical: "https://revialife.com/shop" },
 };
 
 export default async function ShopPage({

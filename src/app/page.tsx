@@ -9,6 +9,10 @@ import HomeFAQ from "@/components/HomeFAQ";
 import TrustTicker from "@/components/TrustTicker";
 export const dynamic = "force-dynamic";
 
+export const metadata = {
+  alternates: { canonical: "https://revialife.com" },
+};
+
 export default async function HomePage() {
   const tier = await getActiveTier();
   const rawFeatured = await prisma.product.findMany({

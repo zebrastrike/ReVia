@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "Compound Research Library | ReVia",
   description:
     "Explore published research summaries for peptides, small molecules, and amino acid blends. All compounds are sold for research use only (RUO).",
+  alternates: { canonical: "https://revialife.com/research" },
 };
 
 export default async function ResearchPage({

@@ -10,7 +10,9 @@ import JsonLd from "@/components/JsonLd";
 import { getProductImage, getVariantImages } from "@/lib/product-images";
 import ProductDetailView from "@/components/ProductDetailView";
 import BatchTimeline from "@/components/BatchTimeline";
-export const dynamic = "force-dynamic";
+
+// ISR — re-render at most every 60s
+export const revalidate = 60;
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -22,17 +24,26 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     where: { slug },
     include: { category: true, variants: true },
   });
-  if (!product) return { title: "Product Not Found" };
+  if (!product) return { title: "Product Not Found | ReVia" };
   const minPrice = Math.min(...product.variants.map((v) => v.price));
+  const url = `https://revialife.com/shop/${slug}`;
+  const desc =
+    product.description ||
+    `${product.name} - Research-grade peptide from ReVia. Starting at $${(minPrice / 100).toFixed(2)}.`;
   return {
-    title: product.name,
-    description:
-      product.description ||
-      `${product.name} - Research-grade peptide from ReVia. Starting at $${(minPrice / 100).toFixed(2)}.`,
+    title: `${product.name} | ReVia`,
+    description: desc,
+    alternates: { canonical: url },
     openGraph: {
       title: `${product.name} | ReVia`,
-      description: product.description || `Research-grade ${product.name}`,
+      description: desc,
       type: "website",
+      url,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${product.name} | ReVia`,
+      description: desc,
     },
   };
 }

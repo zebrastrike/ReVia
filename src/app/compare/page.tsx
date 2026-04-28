@@ -5,6 +5,8 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Compare Research Compounds | ReVia",
+  description: "Side-by-side comparison of ReVia's research-grade peptides and compounds — variants, pricing, and stock status.",
+  alternates: { canonical: "https://revialife.com/compare" },
 };
 
 export default async function ComparePage() {

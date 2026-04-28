@@ -51,7 +51,7 @@ const jost = Jost({
 export const metadata: Metadata = {
   title: {
     default: "ReVia | Premium Peptides, Proven Purity",
-    template: "%s | ReVia",
+    template: "%s",
   },
   description:
     "Your #1 trusted source for independently verified peptides with >99% purity. Same-day shipping, 85+ compounds, US-based.",
@@ -72,22 +72,29 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "ReVia",
+    url: "https://revialife.com",
     title: "ReVia | Premium Peptides, Proven Purity",
     description:
       "Your #1 trusted source for independently verified peptides with >99% purity.",
+    images: [
+      {
+        url: "/images/hero-vials.png",
+        width: 1200,
+        height: 630,
+        alt: "ReVia — Premium peptides, proven purity",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "ReVia | Premium Peptides, Proven Purity",
     description:
       "Your #1 trusted source for independently verified peptides with >99% purity.",
+    images: ["/images/hero-vials.png"],
   },
   robots: {
     index: true,
     follow: true,
-  },
-  alternates: {
-    canonical: "https://revialife.com",
   },
 };
 

@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Learn | ReVia",
   description:
     "Articles, industry news, and compound research summaries from the ReVia team. Explore published research and stay up to date.",
+  alternates: { canonical: "https://revialife.com/learn" },
 };
 
 function readTime(html: string): number {

@@ -92,11 +92,20 @@ const STACK_META: Record<
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const product = await prisma.product.findUnique({ where: { slug }, include: { variants: true } });
-  if (!product) return { title: "Stack Not Found" };
+  if (!product) return { title: "Stack Not Found | ReVia" };
   const meta = STACK_META[slug];
+  const url = `https://revialife.com/stacks/${slug}`;
+  const desc = meta?.tagline ?? product.description ?? `${product.name} — precision peptide stack from ReVia.`;
   return {
     title: `${product.name} | ReVia Stacks`,
-    description: meta?.tagline ?? product.description ?? `${product.name} — precision peptide stack from ReVia.`,
+    description: desc,
+    alternates: { canonical: url },
+    openGraph: {
+      title: `${product.name} | ReVia Stacks`,
+      description: desc,
+      type: "website",
+      url,
+    },
   };
 }
 
