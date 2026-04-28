@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { ShoppingCart, Check, Clock, XCircle, Lock, Minus, Plus } from "lucide-react";
+import { ShoppingCart, Check, Clock, XCircle, Minus, Plus } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { useAuth } from "@/lib/useAuth";
 
@@ -30,7 +29,7 @@ export default function AddToCart({
   const [added, setAdded] = useState(false);
   const [qty, setQty] = useState(1);
   const addItem = useCartStore((s) => s.addItem);
-  const { isLoggedIn, loading: authLoading } = useAuth();
+  const { loading: authLoading } = useAuth();
 
   const selected = variants.find((v) => v.id === selectedId);
   const status = selected?.stockStatus ?? (selected?.inStock ? "in_stock" : "out_of_stock");
@@ -155,7 +154,7 @@ export default function AddToCart({
         </div>
       )}
 
-      {/* Add to cart / Pre-order / Out of stock / Sign in button */}
+      {/* Add to cart / Pre-order / Out of stock */}
       {isOutOfStock ? (
         <button
           disabled
@@ -164,14 +163,6 @@ export default function AddToCart({
           <XCircle className="h-5 w-5" />
           Out of Stock
         </button>
-      ) : !authLoading && !isLoggedIn ? (
-        <Link
-          href="/login"
-          className="flex w-full items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold bg-sky-400 text-white hover:bg-sky-500 transition"
-        >
-          <Lock className="h-5 w-5" />
-          Sign In to Purchase
-        </Link>
       ) : (
         <button
           onClick={handleAdd}

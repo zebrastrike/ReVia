@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingCart, Lock } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { useCartStore } from "@/store/cart";
-import { useAuth } from "@/lib/useAuth";
 import { getProductImage, getVariantImages } from "@/lib/product-images";
 
 interface Variant {
@@ -44,7 +43,6 @@ const catColors: Record<string, string> = {
 
 export default function ProductCard({ product }: { product: Product }) {
   const addItem = useCartStore((s) => s.addItem);
-  const { isLoggedIn } = useAuth();
 
   const cheapest = product.variants.length
     ? product.variants.reduce((min, v) => (v.price < min.price ? v : min), product.variants[0])
@@ -114,29 +112,18 @@ export default function ProductCard({ product }: { product: Product }) {
               ${(cheapest.price / 100).toFixed(2)}
             </span>
           )}
-          {isLoggedIn ? (
-            hasMultiple ? (
-              <span className="rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-sky-700 border border-sky-300/50 transition group-hover:bg-sky-50">
-                Options
-              </span>
-            ) : (
-              <button
-                onClick={handleAdd}
-                className="flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-sky-700 border border-sky-300/50 transition hover:bg-sky-50 active:scale-95"
-              >
-                <ShoppingCart className="h-3.5 w-3.5" />
-                Add
-              </button>
-            )
+          {hasMultiple ? (
+            <span className="rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-sky-700 border border-sky-300/50 transition group-hover:bg-sky-50">
+              Options
+            </span>
           ) : (
-            <Link
-              href="/login"
-              onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-1.5 rounded-lg bg-sky-50 px-3 py-1.5 text-xs font-medium text-sky-600 border border-sky-200 transition hover:bg-sky-100"
+            <button
+              onClick={handleAdd}
+              className="flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-sky-700 border border-sky-300/50 transition hover:bg-sky-50 active:scale-95"
             >
-              <Lock className="h-3 w-3" />
-              Sign In
-            </Link>
+              <ShoppingCart className="h-3.5 w-3.5" />
+              Add
+            </button>
           )}
         </div>
       </div>
