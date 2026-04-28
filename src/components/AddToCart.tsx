@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ShoppingCart, Check, Clock, XCircle, Lock } from "lucide-react";
+import { ShoppingCart, Check, Clock, XCircle, Lock, Minus, Plus } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { useAuth } from "@/lib/useAuth";
 
@@ -28,6 +28,7 @@ export default function AddToCart({
     }
   );
   const [added, setAdded] = useState(false);
+  const [qty, setQty] = useState(1);
   const addItem = useCartStore((s) => s.addItem);
   const { isLoggedIn, loading: authLoading } = useAuth();
 
@@ -47,8 +48,9 @@ export default function AddToCart({
       slug: productSlug,
       image: productImage ?? undefined,
       isPreOrder,
-    });
+    }, qty);
     setAdded(true);
+    setQty(1);
     setTimeout(() => setAdded(false), 1500);
   };
 
@@ -109,6 +111,47 @@ export default function AddToCart({
               </p>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Quantity selector */}
+      {!isOutOfStock && (
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-medium text-neutral-500">Quantity</span>
+          <div className="flex items-center gap-2 rounded-xl border border-neutral-200 bg-white">
+            <button
+              type="button"
+              onClick={() => setQty((q) => Math.max(1, q - 1))}
+              disabled={qty <= 1}
+              className="px-3 py-2 text-neutral-500 hover:text-neutral-800 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              aria-label="Decrease quantity"
+            >
+              <Minus className="h-4 w-4" />
+            </button>
+            <input
+              type="number"
+              inputMode="numeric"
+              min={1}
+              max={99}
+              value={qty}
+              onChange={(e) => {
+                const n = parseInt(e.target.value, 10);
+                if (Number.isNaN(n)) { setQty(1); return; }
+                setQty(Math.max(1, Math.min(99, n)));
+              }}
+              className="w-12 bg-transparent text-center text-sm font-semibold text-neutral-800 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              aria-label="Quantity"
+            />
+            <button
+              type="button"
+              onClick={() => setQty((q) => Math.min(99, q + 1))}
+              disabled={qty >= 99}
+              className="px-3 py-2 text-neutral-500 hover:text-neutral-800 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              aria-label="Increase quantity"
+            >
+              <Plus className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       )}
 

@@ -24,7 +24,7 @@ export interface OrderWithItems {
   total: number;
   status: string;
   paymentMethod: string;
-  shippingCost?: number; // cents
+  shippingCost?: number | null; // cents
   items: OrderItemForEmail[];
   createdAt: Date | string;
 }

@@ -115,6 +115,10 @@ model Order {
   serviceLevel       String?  // "Priority", "First", "Express"
   labelUrl           String?  // EasyPost label PDF URL
   total              Float
+  subtotal           Float?  // pre-discount items subtotal in cents (null on legacy orders)
+  couponDiscount     Float?  // discount applied in cents (null on legacy orders)
+  taxAmount          Float?  // tax in cents (null on legacy orders)
+  shippingCost       Float?  // shipping fee in cents (null on legacy orders)
   affiliateId   String?
   couponId      String?
   coupon        Coupon?        @relation(fields: [couponId], references: [id])

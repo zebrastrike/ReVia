@@ -437,6 +437,13 @@ export default function CheckoutPage() {
       <FloatingOrbs />
 
       <div className="relative z-10">
+        <Link
+          href="/shop"
+          className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-sky-600 transition mb-3"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+          Continue shopping
+        </Link>
         <h1 className="text-4xl font-bold tracking-tight text-stone-900 sm:text-5xl">
           Checkout
         </h1>

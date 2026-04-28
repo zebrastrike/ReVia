@@ -224,13 +224,15 @@ export async function POST(request: NextRequest) {
     }
 
     // ── Calculate total from verified prices ──
-    let total = sanitizedItems.reduce((sum, i) => {
+    const subtotal = sanitizedItems.reduce((sum, i) => {
       const dbPrice = variantPriceMap.get(i.variantId)!;
       return sum + dbPrice * i.quantity;
     }, 0);
+    let total = subtotal;
 
     // ── Apply coupon if provided ──
     let appliedCouponId: string | null = null;
+    let couponDiscountAmount = 0;
     if (couponCode) {
       const coupon = await prisma.coupon.findUnique({
         where: { code: couponCode.toUpperCase().trim() },
@@ -280,6 +282,7 @@ export async function POST(request: NextRequest) {
 
       total = Math.max(0, total - discount);
       appliedCouponId = coupon.id;
+      couponDiscountAmount = discount;
     }
 
     // ── Calculate tax based on state ──
@@ -320,6 +323,10 @@ export async function POST(request: NextRequest) {
         city: sanitizedShipping.city,
         state: sanitizedShipping.state,
         zip: sanitizedShipping.zip,
+        subtotal,
+        couponDiscount: couponDiscountAmount,
+        taxAmount: tax,
+        shippingCost: shipping_fee,
         total,
         affiliateId,
         couponId: appliedCouponId,

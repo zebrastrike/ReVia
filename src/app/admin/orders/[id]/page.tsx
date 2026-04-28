@@ -33,7 +33,7 @@ export default async function OrderDetailPage({
 
   const order = await prisma.order.findUnique({
     where: { id },
-    include: { items: true, user: true, cryptoPayment: true },
+    include: { items: true, user: true, cryptoPayment: true, coupon: true },
   });
 
   if (!order) notFound();
@@ -187,10 +187,68 @@ export default async function OrderDetailPage({
             ))}
           </tbody>
           <tfoot>
-            <tr className="border-t border-neutral-200 bg-neutral-50">
-              <td colSpan={4} className="px-5 py-3 text-right font-semibold text-neutral-700">Total</td>
-              <td className="px-5 py-3 text-right text-lg font-bold text-neutral-900">${(order.total / 100).toFixed(2)}</td>
-            </tr>
+            {order.subtotal != null ? (
+              <>
+                <tr className="border-t border-neutral-200 bg-neutral-50">
+                  <td colSpan={4} className="px-5 py-2.5 text-right text-sm text-neutral-500">Subtotal</td>
+                  <td className="px-5 py-2.5 text-right text-sm text-neutral-700">${(order.subtotal / 100).toFixed(2)}</td>
+                </tr>
+                {order.coupon && (order.couponDiscount ?? 0) > 0 && (
+                  <tr className="bg-neutral-50">
+                    <td colSpan={4} className="px-5 py-2.5 text-right text-sm">
+                      <span className="text-sky-600">
+                        Coupon{" "}
+                        <Link href={`/admin/coupons/${order.coupon.id}`} className="font-mono font-semibold hover:text-sky-500 underline">
+                          {order.coupon.code}
+                        </Link>
+                      </span>
+                    </td>
+                    <td className="px-5 py-2.5 text-right text-sm text-sky-600">−${((order.couponDiscount ?? 0) / 100).toFixed(2)}</td>
+                  </tr>
+                )}
+                {(order.shippingCost ?? 0) > 0 && (
+                  <tr className="bg-neutral-50">
+                    <td colSpan={4} className="px-5 py-2.5 text-right text-sm text-neutral-500">Shipping</td>
+                    <td className="px-5 py-2.5 text-right text-sm text-neutral-700">${((order.shippingCost ?? 0) / 100).toFixed(2)}</td>
+                  </tr>
+                )}
+                {(order.taxAmount ?? 0) > 0 && (
+                  <tr className="bg-neutral-50">
+                    <td colSpan={4} className="px-5 py-2.5 text-right text-sm text-neutral-500">Tax</td>
+                    <td className="px-5 py-2.5 text-right text-sm text-neutral-700">${((order.taxAmount ?? 0) / 100).toFixed(2)}</td>
+                  </tr>
+                )}
+                <tr className="border-t border-neutral-200 bg-neutral-100">
+                  <td colSpan={4} className="px-5 py-3 text-right font-semibold text-neutral-700">Total</td>
+                  <td className="px-5 py-3 text-right text-lg font-bold text-neutral-900">${(order.total / 100).toFixed(2)}</td>
+                </tr>
+              </>
+            ) : (
+              <>
+                {order.coupon && (
+                  <tr className="bg-neutral-50">
+                    <td colSpan={4} className="px-5 py-2.5 text-right text-sm">
+                      <span className="text-sky-600">
+                        Coupon{" "}
+                        <Link href={`/admin/coupons/${order.coupon.id}`} className="font-mono font-semibold hover:text-sky-500 underline">
+                          {order.coupon.code}
+                        </Link>
+                      </span>
+                    </td>
+                    <td className="px-5 py-2.5 text-right text-sm text-neutral-400">—</td>
+                  </tr>
+                )}
+                <tr className="border-t border-neutral-200 bg-neutral-50">
+                  <td colSpan={4} className="px-5 py-3 text-right font-semibold text-neutral-700">Total</td>
+                  <td className="px-5 py-3 text-right text-lg font-bold text-neutral-900">${(order.total / 100).toFixed(2)}</td>
+                </tr>
+                <tr>
+                  <td colSpan={5} className="px-5 py-2 text-right text-[11px] text-neutral-400 italic">
+                    Legacy order — subtotal/shipping/tax breakdown unavailable
+                  </td>
+                </tr>
+              </>
+            )}
           </tfoot>
         </table>
       </div>

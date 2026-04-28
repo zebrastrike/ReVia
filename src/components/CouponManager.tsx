@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Trash2, Loader2, X, ToggleLeft, ToggleRight, Pencil, Save, Ban, UserCheck } from "lucide-react";
+import Link from "next/link";
+import { Plus, Trash2, Loader2, X, ToggleLeft, ToggleRight, Pencil, Save, Ban, UserCheck, ChevronRight } from "lucide-react";
 
 interface Coupon {
   id: string;
@@ -243,7 +244,14 @@ export default function CouponManager({
                       {isEditing ? (
                         <input type="text" value={editData.code ?? ""} onChange={(e) => setEditData(p => ({ ...p, code: e.target.value }))} className="font-mono text-lg font-bold text-sky-600 bg-sky-50 border border-sky-200 rounded-lg px-3 py-1 w-48 outline-none focus:border-sky-400" />
                       ) : (
-                        <span className="font-mono text-lg font-bold text-sky-600">{coupon.code}</span>
+                        <Link
+                          href={`/admin/coupons/${coupon.id}`}
+                          className="group inline-flex items-center gap-1 font-mono text-lg font-bold text-sky-600 hover:text-sky-500 transition"
+                          title="View usage"
+                        >
+                          {coupon.code}
+                          <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition" />
+                        </Link>
                       )}
                       <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${coupon.active ? "bg-emerald-50 text-emerald-700" : "bg-neutral-100 text-neutral-400"}`}>
                         {coupon.active ? "Active" : "Disabled"}
