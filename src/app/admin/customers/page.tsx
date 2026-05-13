@@ -14,15 +14,18 @@ export default async function CustomersPage() {
 
   const totalCustomers = users.filter((u) => u.role === "customer").length;
   const repeatBuyers = users.filter((u) => u._count.orders > 1).length;
-  const totalLifetimeValue = users.reduce((sum, u) => sum + u.orders.reduce((s, o) => s + o.total, 0), 0);
-  const avgOrderValue = users.reduce((sum, u) => sum + u._count.orders, 0);
-  const avgSpend = avgOrderValue > 0 ? totalLifetimeValue / avgOrderValue : 0;
+  const totalLifetimeValueCents = users.reduce((sum, u) => sum + u.orders.reduce((s, o) => s + o.total, 0), 0);
+  const totalOrderCount = users.reduce((sum, u) => sum + u._count.orders, 0);
+  const avgOrderValueCents = totalOrderCount > 0 ? totalLifetimeValueCents / totalOrderCount : 0;
+
+  const fmtUsd = (cents: number) =>
+    `$${(cents / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   const insights = [
     { label: "Total Customers", value: totalCustomers.toLocaleString(), icon: Users, color: "text-sky-500", bg: "bg-sky-50" },
     { label: "Repeat Buyers", value: repeatBuyers.toLocaleString(), icon: Repeat, color: "text-purple-500", bg: "bg-purple-50" },
-    { label: "Lifetime Revenue", value: `$${totalLifetimeValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, icon: DollarSign, color: "text-sky-500", bg: "bg-sky-50" },
-    { label: "Avg Order Value", value: `$${avgSpend.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, icon: TrendingUp, color: "text-amber-500", bg: "bg-amber-50" },
+    { label: "Lifetime Revenue", value: fmtUsd(totalLifetimeValueCents), icon: DollarSign, color: "text-sky-500", bg: "bg-sky-50" },
+    { label: "Avg Order Value", value: fmtUsd(avgOrderValueCents), icon: TrendingUp, color: "text-amber-500", bg: "bg-amber-50" },
   ];
 
   return (
