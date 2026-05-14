@@ -44,7 +44,7 @@ interface ShippingInput {
   zip: string;
 }
 
-const VALID_PAYMENT_METHODS: PaymentMethod[] = ["zelle", "wire", "bitcoin"];
+const VALID_PAYMENT_METHODS: PaymentMethod[] = ["zelle", "wire", "bitcoin", "card"];
 
 export async function POST(request: NextRequest) {
   try {
