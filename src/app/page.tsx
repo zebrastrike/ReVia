@@ -33,7 +33,7 @@ export default async function HomePage() {
     <div className="relative">
       {/* Hero background */}
       <div className="absolute top-4 left-4 right-4 h-[55vh] sm:top-6 sm:left-8 sm:right-8 sm:h-[65vh] lg:left-12 lg:right-12 z-0 overflow-hidden rounded-2xl sm:rounded-3xl">
-        <img src="/images/hero-vials.webp" alt="" className="h-full w-full object-cover object-[65%_20%]" />
+        <img src="/images/hero-overlook.webp" alt="" className="h-full w-full object-cover object-[60%_30%]" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#F0EDE5] via-transparent to-transparent" />
         <div className="absolute inset-0 bg-[#F0EDE5]/70 sm:hidden" />
         <div className="absolute inset-0 hidden sm:block bg-gradient-to-r from-[#F0EDE5]/80 from-10% to-transparent to-50%" />
