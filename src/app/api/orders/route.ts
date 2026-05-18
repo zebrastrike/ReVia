@@ -78,16 +78,14 @@ export async function POST(request: NextRequest) {
       password?: string;
     };
 
-    // Inline signup: no existing session → use checkout name/email + password to create account
+    // Optional inline signup: if no session AND password supplied, create an
+    // account at checkout. If no session and no password, proceed as guest —
+    // the Order gets created with userId=null and we still send the customer
+    // their order-confirmation email. Customers can claim/create an account
+    // later via the normal signup flow.
     let newUserAuthCookie: string | null = null;
     let createdNewUser = false;
-    if (!user) {
-      if (!password) {
-        return NextResponse.json(
-          { error: "Password required to create your account" },
-          { status: 400 }
-        );
-      }
+    if (!user && password) {
       const inlineEmail = sanitizeString(shipping?.email ?? "").toLowerCase();
       const inlineName = sanitizeString(shipping?.name ?? "");
       if (!validateEmail(inlineEmail)) {
@@ -338,7 +336,7 @@ export async function POST(request: NextRequest) {
     const codeToUse = explicitCode || refCookie;
     if (codeToUse) {
       const affiliate = await prisma.affiliate.findUnique({ where: { affiliateCode: codeToUse } });
-      if (affiliate && affiliate.status === "approved" && affiliate.userId !== user.id) {
+      if (affiliate && affiliate.status === "approved" && affiliate.userId !== (user?.id ?? null)) {
         affiliateId = affiliate.id;
       }
     }
@@ -363,7 +361,7 @@ export async function POST(request: NextRequest) {
         paymentMethod: method,
         paymentStatus: "awaiting",
         status: "pending_payment",
-        userId: user.id,
+        userId: user?.id ?? null,
         items: {
           create: sanitizedItems.map((i) => ({
             productName: i.productName,
